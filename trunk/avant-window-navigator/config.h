@@ -5,7 +5,7 @@
 #define ENABLE_NLS 1
 
 /* Gettext package */
-#define GETTEXT_PACKAGE "affinity"
+#define GETTEXT_PACKAGE "avant-window-navigator"
 
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #define HAVE_BIND_TEXTDOMAIN_CODESET 1
@@ -53,19 +53,19 @@
 #define HAVE_UNISTD_H 1
 
 /* Name of package */
-#define PACKAGE "affinity"
+#define PACKAGE "avant-window-navigator"
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT ""
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "affinity"
+#define PACKAGE_NAME "avant-window-navigator"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "affinity 0.1.0"
+#define PACKAGE_STRING "avant-window-navigator 0.1.0"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "affinity"
+#define PACKAGE_TARNAME "avant-window-navigator"
 
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "0.1.0"

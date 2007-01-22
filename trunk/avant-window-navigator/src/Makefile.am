@@ -2,13 +2,13 @@ INCLUDES =					\
 	$(AWN_CFLAGS)			\
 	$(WARN_CFLAGS)
 
-bin_PROGRAMS = affinity
+bin_PROGRAMS = avant-window-navigator
 
 AM_CPPFLAGS =								\
 	-DDATADIR=\""$(datadir)"\"					\
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
 
-affinity_SOURCES =			\
+avant_window_navigator_SOURCES =			\
 	main.c				\
 	awn-gconf.c			\
 	awn-bar.c   			\
@@ -18,5 +18,5 @@ affinity_SOURCES =			\
 	awn-window.c	 		
                                         						
 
-affinity_LDADD =			\
+avant_window_navigator_LDADD =			\
 	$(AWN_LIBS)						

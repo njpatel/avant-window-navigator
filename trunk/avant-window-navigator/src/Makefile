@@ -17,9 +17,9 @@
 srcdir = .
 top_srcdir = ..
 
-pkgdatadir = $(datadir)/affinity
-pkglibdir = $(libdir)/affinity
-pkgincludedir = $(includedir)/affinity
+pkgdatadir = $(datadir)/avant-window-navigator
+pkglibdir = $(libdir)/avant-window-navigator
+pkgincludedir = $(includedir)/avant-window-navigator
 top_builddir = ..
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 INSTALL = /usr/bin/install -c
@@ -36,7 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = i686-pc-linux-gnu
 host_triplet = i686-pc-linux-gnu
-bin_PROGRAMS = affinity$(EXEEXT)
+bin_PROGRAMS = avant-window-navigator$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -49,12 +49,12 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_affinity_OBJECTS = main.$(OBJEXT) awn-gconf.$(OBJEXT) \
+am_avant_window_navigator_OBJECTS = main.$(OBJEXT) awn-gconf.$(OBJEXT) \
 	awn-bar.$(OBJEXT) awn-app.$(OBJEXT) awn-win-manager.$(OBJEXT) \
 	awn-title.$(OBJEXT) awn-window.$(OBJEXT)
-affinity_OBJECTS = $(am_affinity_OBJECTS)
+avant_window_navigator_OBJECTS = $(am_avant_window_navigator_OBJECTS)
 am__DEPENDENCIES_1 =
-affinity_DEPENDENCIES = $(am__DEPENDENCIES_1)
+avant_window_navigator_DEPENDENCIES = $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -66,21 +66,21 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(affinity_SOURCES)
-DIST_SOURCES = $(affinity_SOURCES)
+SOURCES = $(avant_window_navigator_SOURCES)
+DIST_SOURCES = $(avant_window_navigator_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/njp/svn/affinity/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/njp/svn/avant-window-navigator/trunk/avant-window-navigator/missing --run aclocal-1.9
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 ALL_LINGUAS =  
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/njp/svn/affinity/missing --run tar
+AMTAR = ${SHELL} /home/njp/svn/avant-window-navigator/trunk/avant-window-navigator/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/njp/svn/affinity/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/njp/svn/affinity/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/njp/svn/affinity/missing --run automake-1.9
+AUTOCONF = ${SHELL} /home/njp/svn/avant-window-navigator/trunk/avant-window-navigator/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/njp/svn/avant-window-navigator/trunk/avant-window-navigator/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/njp/svn/avant-window-navigator/trunk/avant-window-navigator/missing --run automake-1.9
 AWK = gawk
 AWN_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libwnck-1.0 -I/usr/include/librsvg-2 -I/usr/include/gconf/2 -I/usr/include/orbit-2.0  
 AWN_LIBS = -pthread -L/lib -lwnck-1 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lrsvg-2 -lgdk_pixbuf-2.0 -lgobject-2.0 -lgconf-2 -lORBit-2 -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lglib-2.0  
@@ -112,7 +112,7 @@ GCONF_SCHEMAS_INSTALL_FALSE = #
 GCONF_SCHEMAS_INSTALL_TRUE = 
 GCONF_SCHEMA_CONFIG_SOURCE = xml:merged:/etc/gconf/gconf.xml.defaults
 GCONF_SCHEMA_FILE_DIR = $(sysconfdir)/gconf/schemas
-GETTEXT_PACKAGE = affinity
+GETTEXT_PACKAGE = avant-window-navigator
 GLIB_CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  
 GLIB_GENMARSHAL = glib-genmarshal
 GLIB_LIBS = -L/lib -lgobject-2.0 -lglib-2.0  
@@ -161,15 +161,15 @@ LTLIBOBJS =
 MAINT = 
 MAINTAINER_MODE_FALSE = #
 MAINTAINER_MODE_TRUE = 
-MAKEINFO = ${SHELL} /home/njp/svn/affinity/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/njp/svn/avant-window-navigator/trunk/avant-window-navigator/missing --run makeinfo
 MKINSTALLDIRS = ./mkinstalldirs
 MSGFMT = /usr/bin/msgfmt
 OBJEXT = o
-PACKAGE = affinity
+PACKAGE = avant-window-navigator
 PACKAGE_BUGREPORT = 
-PACKAGE_NAME = affinity
-PACKAGE_STRING = affinity 0.1.0
-PACKAGE_TARNAME = affinity
+PACKAGE_NAME = avant-window-navigator
+PACKAGE_STRING = avant-window-navigator 0.1.0
+PACKAGE_TARNAME = avant-window-navigator
 PACKAGE_VERSION = 0.1.0
 PATH_SEPARATOR = :
 PKG_CONFIG = /usr/bin/pkg-config
@@ -217,7 +217,7 @@ host_os = linux-gnu
 host_vendor = pc
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /home/njp/svn/affinity/install-sh
+install_sh = /home/njp/svn/avant-window-navigator/trunk/avant-window-navigator/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
@@ -239,7 +239,7 @@ AM_CPPFLAGS = \
 	-DDATADIR=\""$(datadir)"\"					\
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
 
-affinity_SOURCES = \
+avant_window_navigator_SOURCES = \
 	main.c				\
 	awn-gconf.c			\
 	awn-bar.c   			\
@@ -248,7 +248,7 @@ affinity_SOURCES = \
 	awn-title.c                     \
 	awn-window.c	 		
 
-affinity_LDADD = \
+avant_window_navigator_LDADD = \
 	$(AWN_LIBS)						
 
 all: all-am
@@ -312,9 +312,9 @@ clean-binPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-affinity$(EXEEXT): $(affinity_OBJECTS) $(affinity_DEPENDENCIES) 
-	@rm -f affinity$(EXEEXT)
-	$(LINK) $(affinity_LDFLAGS) $(affinity_OBJECTS) $(affinity_LDADD) $(LIBS)
+avant-window-navigator$(EXEEXT): $(avant_window_navigator_OBJECTS) $(avant_window_navigator_DEPENDENCIES) 
+	@rm -f avant-window-navigator$(EXEEXT)
+	$(LINK) $(avant_window_navigator_LDFLAGS) $(avant_window_navigator_OBJECTS) $(avant_window_navigator_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

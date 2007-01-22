@@ -36,7 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = affinity$(EXEEXT)
+bin_PROGRAMS = avant-window-navigator$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -49,12 +49,12 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_affinity_OBJECTS = main.$(OBJEXT) awn-gconf.$(OBJEXT) \
+am_avant_window_navigator_OBJECTS = main.$(OBJEXT) awn-gconf.$(OBJEXT) \
 	awn-bar.$(OBJEXT) awn-app.$(OBJEXT) awn-win-manager.$(OBJEXT) \
 	awn-title.$(OBJEXT) awn-window.$(OBJEXT)
-affinity_OBJECTS = $(am_affinity_OBJECTS)
+avant_window_navigator_OBJECTS = $(am_avant_window_navigator_OBJECTS)
 am__DEPENDENCIES_1 =
-affinity_DEPENDENCIES = $(am__DEPENDENCIES_1)
+avant_window_navigator_DEPENDENCIES = $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -66,8 +66,8 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(affinity_SOURCES)
-DIST_SOURCES = $(affinity_SOURCES)
+SOURCES = $(avant_window_navigator_SOURCES)
+DIST_SOURCES = $(avant_window_navigator_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -239,7 +239,7 @@ AM_CPPFLAGS = \
 	-DDATADIR=\""$(datadir)"\"					\
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
 
-affinity_SOURCES = \
+avant_window_navigator_SOURCES = \
 	main.c				\
 	awn-gconf.c			\
 	awn-bar.c   			\
@@ -248,7 +248,7 @@ affinity_SOURCES = \
 	awn-title.c                     \
 	awn-window.c	 		
 
-affinity_LDADD = \
+avant_window_navigator_LDADD = \
 	$(AWN_LIBS)						
 
 all: all-am
@@ -312,9 +312,9 @@ clean-binPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-affinity$(EXEEXT): $(affinity_OBJECTS) $(affinity_DEPENDENCIES) 
-	@rm -f affinity$(EXEEXT)
-	$(LINK) $(affinity_LDFLAGS) $(affinity_OBJECTS) $(affinity_LDADD) $(LIBS)
+avant-window-navigator$(EXEEXT): $(avant_window_navigator_OBJECTS) $(avant_window_navigator_DEPENDENCIES) 
+	@rm -f avant-window-navigator$(EXEEXT)
+	$(LINK) $(avant_window_navigator_LDFLAGS) $(avant_window_navigator_OBJECTS) $(avant_window_navigator_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

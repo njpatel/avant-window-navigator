@@ -23,12 +23,12 @@
 #include "config.h"
 
 
-#define BAR_PATH	"/apps/affinity/bar"
+#define BAR_PATH	"/apps/avant-window-navigator/bar"
 
-#define BAR_ROUNDED_CORNERS	"/apps/affinity/bar/rounded_corners"	/* bool */
-#define BAR_RENDER_PATTERN	"/apps/affinity/bar/render_pattern"	/* bool */
-#define BAR_PATTERN_URI		"/apps/affinity/bar/pattern_uri" 	/* string */
-#define BAR_PATTERN_ALPHA 	"/apps/affinity/bar/pattern_alpha" 	/* float */
+#define BAR_ROUNDED_CORNERS	"/apps/avant-window-navigator/bar/rounded_corners"	/* bool */
+#define BAR_RENDER_PATTERN	"/apps/avant-window-navigator/bar/render_pattern"	/* bool */
+#define BAR_PATTERN_URI		"/apps/avant-window-navigator/bar/pattern_uri" 		/* string */
+#define BAR_PATTERN_ALPHA 	"/apps/avant-window-navigator/bar/pattern_alpha" 	/* float */
 
 
 

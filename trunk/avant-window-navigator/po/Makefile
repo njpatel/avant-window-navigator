@@ -17,8 +17,8 @@
 # We have the following line for use by intltoolize:
 # INTLTOOL_MAKEFILE
 
-GETTEXT_PACKAGE = affinity
-PACKAGE = affinity
+GETTEXT_PACKAGE = avant-window-navigator
+PACKAGE = avant-window-navigator
 VERSION = 0.1.0
 
 SHELL = /bin/sh
@@ -36,7 +36,7 @@ libdir = ${exec_prefix}/lib
 DATADIRNAME = share
 itlocaledir = $(prefix)/$(DATADIRNAME)/locale
 subdir = po
-install_sh = /home/njp/svn/affinity/install-sh
+install_sh = /home/njp/svn/avant-window-navigator/trunk/avant-window-navigator/install-sh
 # Automake >= 1.8 provides mkdir -p --.
 # Until it can be supposed, use the safe fallback:
 mkdir_p = $(install_sh) -d

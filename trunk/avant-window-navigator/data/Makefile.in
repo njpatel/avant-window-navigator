@@ -218,7 +218,7 @@ slicelocaledir = @slicelocaledir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 schemasdir = @GCONF_SCHEMA_FILE_DIR@
-schemas_DATA = affinity.schemas
+schemas_DATA = avant-window-navigator.schemas
 EXTRA_DIST = $(schemas_DATA).in.in 
 CLEANFILES = $(schemas_DATA) $(schemas_DATA).in
 all: all-am
