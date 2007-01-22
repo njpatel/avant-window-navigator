@@ -1,5 +1,5 @@
 schemasdir   = @GCONF_SCHEMA_FILE_DIR@
-schemas_DATA = affinity.schemas
+schemas_DATA = avant-window-navigator.schemas
 @INTLTOOL_SCHEMAS_RULE@
 
 
