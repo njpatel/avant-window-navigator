@@ -54,6 +54,13 @@ typedef struct {
 	/* App settings */
 	gchar *active_png;
 	
+	/* Title settings */
+	AwnColor text_color;
+	AwnColor shadow_color;
+	gboolean italic;
+	gboolean bold;
+	gfloat font_size;
+	
 	
 } AwnSettings;
 

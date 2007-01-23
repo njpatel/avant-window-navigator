@@ -143,5 +143,60 @@
 			<long>PNG file to use for active windows.</long>
 		 </locale>
 	</schema>
+	<schema>
+		<key>/schemas/apps/avant-window-navigator/title/text_color</key>
+		<applyto>/apps/avant-window-navigator/title/text_color</applyto>
+		<owner>avant-window-navigator</owner>
+		<type>string</type>
+		<default>FFFFFF22</default>
+		<locale name="C">
+			<short>Color of title text.</short>
+			<long>Color in hex as REDGREENBLUEALPHA i.e. FFFFFF33</long>
+		 </locale>
+	</schema>
+	<schema>
+		<key>/schemas/apps/avant-window-navigator/title/shadow_color</key>
+		<applyto>/apps/avant-window-navigator/title/shadow_color</applyto>
+		<owner>avant-window-navigator</owner>
+		<type>string</type>
+		<default>00000011</default>
+		<locale name="C">
+			<short>Color of title text shadow.</short>
+			<long>Color in hex as REDGREENBLUEALPHA i.e. FFFFFF33</long>
+		 </locale>
+	</schema>
+	<schema>
+		<key>/schemas/apps/avant-window-navigator/title/italic</key>
+		<applyto>/apps/avant-window-navigator/title/italic</applyto>
+		<owner>avant-window-navigator</owner>
+		<type>bool</type>
+		<default>false</default>
+		<locale name="C">
+			<short>If text should be in italics.</short>
+			<long>If text should be in italics.</long>
+		 </locale>
+	</schema>
+	<schema>
+		<key>/schemas/apps/avant-window-navigator/title/bold</key>
+		<applyto>/apps/avant-window-navigator/title/bold</applyto>
+		<owner>avant-window-navigator</owner>
+		<type>bool</type>
+		<default>false</default>
+		<locale name="C">
+			<short>If text should be bold.</short>
+			<long>If text should be bold.</long>
+		 </locale>
+	</schema>
+	<schema>
+		<key>/schemas/apps/avant-window-navigator/title/font_size</key>
+		<applyto>/apps/avant-window-navigator/title/font_size</applyto>
+		<owner>avant-window-navigator</owner>
+		<type>float</type>
+		<default>14.0</default>
+		<locale name="C">
+			<short>Size of font.</short>
+			<long>Size, in pixels, of font.</long>
+		 </locale>
+	</schema>
 </schemalist>
 </gconfschemafile>

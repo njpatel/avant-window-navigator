@@ -74,7 +74,7 @@ awn_win_mgr_new (AwnSettings *set)
 	                  G_CALLBACK(awn_win_mgr_workspace_changed), 
 	                  (gpointer)hbox);
 	
-	title = awn_title_new();
+	title = awn_title_new(settings);
 	awn_title_show(AWN_TITLE (title), " ", 0, 0);
 	gtk_widget_show(title);
 	
@@ -234,6 +234,7 @@ on_state_changed (WnckWindow *window, WnckWindowState  old,
 		        g_print("No more attention required\n");
 		        app->current_state = AWN_APP_STATE_NORMAL;
 		}
+		app->current_state = AWN_APP_STATE_NORMAL;
 	}
 	
         

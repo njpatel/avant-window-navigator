@@ -25,6 +25,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include "awn-gconf.h"
 
 G_BEGIN_DECLS
 
@@ -53,7 +54,7 @@ struct _AwnTitleClass {
 
 GType awn_title_get_type (void);
 
-GtkWidget *awn_title_new (void);
+GtkWidget *awn_title_new (AwnSettings *sets);
 
 void awn_title_show (AwnTitle *title, const char *name, gint x, gint y);
 void awn_title_hide (AwnTitle *title);

@@ -30,6 +30,8 @@ G_DEFINE_TYPE (AwnTitle, awn_title, GTK_TYPE_WINDOW)
 static gint AWN_TITLE_DEFAULT_WIDTH		= 1024;
 static gint AWN_TITLE_DEFAULT_HEIGHT		= 40;
 
+static AwnSettings *settings = NULL;
+
 
 static void awn_title_destroy (GtkObject *object);
 static void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
@@ -62,8 +64,9 @@ awn_title_init( AwnTitle *title )
 }
 
 GtkWidget *
-awn_title_new( void )
+awn_title_new( AwnSettings *sets )
 {
+        settings = sets;
         AwnTitle *this = g_object_new(AWN_TITLE_TYPE, 
         			    "type", GTK_WINDOW_TOPLEVEL,
         			    "type-hint", GDK_WINDOW_TYPE_HINT_DOCK,
@@ -167,18 +170,28 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 	cairo_text_extents_t extents;
 
 	double x,y;
+	
+	int font_slant = CAIRO_FONT_SLANT_NORMAL;
+	int font_weight = CAIRO_FONT_WEIGHT_NORMAL;
+	
+	if (settings->italic)
+		font_slant = CAIRO_FONT_SLANT_ITALIC;
+	
+	if (settings->bold)
+		font_weight = CAIRO_FONT_WEIGHT_BOLD;
+	
+	cairo_select_font_face (cr, "Sans",font_slant, font_weight);
 
-	cairo_select_font_face (cr, "Sans",
-	//CAIRO_FONT_SLANT_NORMAL,
-	CAIRO_FONT_SLANT_ITALIC,
-	CAIRO_FONT_WEIGHT_BOLD);
-
-	cairo_set_font_size (cr, 14);
+	cairo_set_font_size (cr, settings->font_size);
+	
 	cairo_text_extents (cr, utf8, &extents);
 	x = (width/2)-(extents.width/2 + extents.x_bearing);
 	y = (height/2)-(extents.height/2 + extents.y_bearing);
 	
 	x = x_pos - (extents.width/2)+ extents.x_bearing;
+	
+	if (x <0 )
+		x = 0;
 	
 	/* background 
 	cairo_set_source_rgba (cr, 0.0f, 0.0f, 0.0f, 0.3f);
@@ -186,26 +199,32 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 		       (double) x-6, (double) y-extents.height-5 );
 	*/
 	/* shadow */
-	cairo_set_source_rgba (cr, 0.0f, 0.0f, 0.0f, 0.7f);
+	cairo_set_source_rgba (cr, settings->shadow_color.red, 
+				   settings->shadow_color.green, 
+				   settings->shadow_color.blue,
+				   settings->shadow_color.alpha);
 	cairo_move_to (cr, x+1, y+1);
 	cairo_show_text (cr, utf8);
-	/*
-	cairo_set_source_rgba (cr, 0.0f, 0.0f, 0.0f, 0.4f);
-	cairo_move_to (cr, x+2, y+2);
-	cairo_show_text (cr, utf8);
-	 */
-	/* outline  
-	cairo_set_source_rgba (cr, 0.778, 0.276, 0.188, 1.0f);
-	cairo_move_to (cr, x-0.5, y-0.5);
-	cairo_show_text (cr, utf8);
-	*/
 	
 	/* text */
 	//cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, 1.0f);
-	cairo_set_source_rgba (cr, 0.878, 0.376, 0.188, 1.0f);
+	cairo_set_source_rgba (cr, settings->text_color.red, 
+				   settings->text_color.green, 
+				   settings->text_color.blue,
+				   settings->text_color.alpha);
 	cairo_move_to (cr, x, y);
 	cairo_show_text (cr, utf8);
-	
+
+	/*
+	cairo_text_path (cr, utf8);
+	cairo_fill_preserve (cr);
+	cairo_set_source_rgba (cr, settings->shadow_color.red, 
+				   settings->shadow_color.green, 
+				   settings->shadow_color.blue,
+				   1.0);
+	cairo_set_line_width (cr, 0.7);
+	cairo_stroke (cr);	
+	*/
 }
 
 static void 

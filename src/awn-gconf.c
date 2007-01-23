@@ -24,7 +24,6 @@
 
 
 #define BAR_PATH		"/apps/avant-window-navigator/bar"
-
 #define BAR_ROUNDED_CORNERS	"/apps/avant-window-navigator/bar/rounded_corners"	/* bool */
 #define BAR_CORNER_RADIUS 	"/apps/avant-window-navigator/bar/corner_radius" 	/* float */
 #define BAR_RENDER_PATTERN	"/apps/avant-window-navigator/bar/render_pattern"	/* bool */
@@ -38,12 +37,17 @@
 #define BAR_HILIGHT_COLOR	"/apps/avant-window-navigator/bar/hilight_color"		/*string */
 
 #define WINMAN_PATH		"/apps/avant-window-navigator/window_manager"
-
 #define WINMAN_SHOW_ALL_WINS	"/apps/avant-window-navigator/window_manager/show_all_windows" /*bool*/
 
 #define APP_PATH		"/apps/avant-window-navigator/app"
-
 #define APP_ACTIVE_PNG		"/apps/avant-window-navigator/app/active_png" /*bool*/
+
+#define TITLE_PATH		"/apps/avant-window-navigator/title"
+#define TITLE_TEXT_COLOR	"/apps/avant-window-navigator/title/text_color" /*color*/
+#define TITLE_SHADOW_COLOR	"/apps/avant-window-navigator/title/shadow_color" /*color*/
+#define TITLE_ITALIC		"/apps/avant-window-navigator/title/italic" /*bool*/
+#define TITLE_BOLD		"/apps/avant-window-navigator/title/bold" /*bool*/
+#define TITLE_FONT_SIZE		"/apps/avant-window-navigator/title/font_size" /*bool*/
 
 /* globals */
 static AwnSettings *settings		= NULL;
@@ -92,14 +96,19 @@ awn_gconf_new()
 	
 	/* Window Manager settings */
 	gconf_client_add_dir(client, WINMAN_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	
 	awn_load_bool(client, WINMAN_SHOW_ALL_WINS, &s->show_all_windows);
 	
 	/* App settings */
 	gconf_client_add_dir(client, APP_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	
 	awn_load_string(client, APP_ACTIVE_PNG, &s->active_png);
 	
+	/* Title settings */
+	gconf_client_add_dir(client, TITLE_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
+	awn_load_color(client, TITLE_TEXT_COLOR, &s->text_color);
+	awn_load_color(client, TITLE_SHADOW_COLOR, &s->shadow_color);
+	awn_load_bool(client, TITLE_ITALIC, &s->italic);
+	awn_load_bool(client, TITLE_BOLD, &s->bold);
+	awn_load_float(client, TITLE_FONT_SIZE, &s->font_size);	
 	return s;
 }
 

@@ -557,7 +557,7 @@ sub Console_WriteError_InvalidOption
 
 sub GenerateHeaders
 {
-    my $EXTRACT = "/home/njp/svn/avant-window-navigator/avant-window-navigator/intltool-extract";
+    my $EXTRACT = "/home/njp/svn/avant-window-navigator/intltool-extract";
     chomp $EXTRACT;
 
     $EXTRACT = $ENV{"INTLTOOL_EXTRACT"} if $ENV{"INTLTOOL_EXTRACT"};

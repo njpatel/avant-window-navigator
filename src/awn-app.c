@@ -235,7 +235,7 @@ awn_app_set_needs_attention(AwnApp *app, gboolean needs_attention)
         if (wnck_window_needs_attention(app->window)) {
                 
                 if (app->current_step != AWN_APP_STATE_NEEDS_ATTENTION) {
-                	g_timeout_add(AWN_FRAME_RATE, (GSourceFunc)urgent_effect, (gpointer)app);
+                	g_timeout_add(AWN_FRAME_RATE+20, (GSourceFunc)urgent_effect, (gpointer)app);
                 } 
 
         }
@@ -245,6 +245,8 @@ void
 awn_app_set_active(AwnApp *app, gboolean active)
 {
 	if (!app)
+		return;
+	if (app->current_state == AWN_APP_STATE_CLOSING)
 		return;
 	g_return_if_fail(WNCK_IS_WINDOW(app->window));
 	g_return_if_fail(GDK_IS_PIXBUF(app->current_icon));

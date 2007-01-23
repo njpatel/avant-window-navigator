@@ -501,12 +501,12 @@ s,@INSTALL_DATA@,${INSTALL} -m 644,;t t
 s,@CYGPATH_W@,echo,;t t
 s,@PACKAGE@,avant-window-navigator,;t t
 s,@VERSION@,0.1.0,;t t
-s,@ACLOCAL@,${SHELL} /home/njp/svn/avant-window-navigator/avant-window-navigator/missing --run aclocal-1.9,;t t
-s,@AUTOCONF@,${SHELL} /home/njp/svn/avant-window-navigator/avant-window-navigator/missing --run autoconf,;t t
-s,@AUTOMAKE@,${SHELL} /home/njp/svn/avant-window-navigator/avant-window-navigator/missing --run automake-1.9,;t t
-s,@AUTOHEADER@,${SHELL} /home/njp/svn/avant-window-navigator/avant-window-navigator/missing --run autoheader,;t t
-s,@MAKEINFO@,${SHELL} /home/njp/svn/avant-window-navigator/avant-window-navigator/missing --run makeinfo,;t t
-s,@install_sh@,/home/njp/svn/avant-window-navigator/avant-window-navigator/install-sh,;t t
+s,@ACLOCAL@,${SHELL} /home/njp/svn/avant-window-navigator/missing --run aclocal-1.9,;t t
+s,@AUTOCONF@,${SHELL} /home/njp/svn/avant-window-navigator/missing --run autoconf,;t t
+s,@AUTOMAKE@,${SHELL} /home/njp/svn/avant-window-navigator/missing --run automake-1.9,;t t
+s,@AUTOHEADER@,${SHELL} /home/njp/svn/avant-window-navigator/missing --run autoheader,;t t
+s,@MAKEINFO@,${SHELL} /home/njp/svn/avant-window-navigator/missing --run makeinfo,;t t
+s,@install_sh@,/home/njp/svn/avant-window-navigator/install-sh,;t t
 s,@STRIP@,strip,;t t
 s,@ac_ct_STRIP@,strip,;t t
 s,@INSTALL_STRIP_PROGRAM@,${SHELL} $(install_sh) -c -s,;t t
@@ -514,7 +514,7 @@ s,@mkdir_p@,mkdir -p --,;t t
 s,@AWK@,gawk,;t t
 s,@SET_MAKE@,,;t t
 s,@am__leading_dot@,.,;t t
-s,@AMTAR@,${SHELL} /home/njp/svn/avant-window-navigator/avant-window-navigator/missing --run tar,;t t
+s,@AMTAR@,${SHELL} /home/njp/svn/avant-window-navigator/missing --run tar,;t t
 s,@am__tar@,tar --format=ustar -chf - "$$tardir",;t t
 s,@am__untar@,tar -xf -,;t t
 s,@MAINTAINER_MODE_TRUE@,,;t t
