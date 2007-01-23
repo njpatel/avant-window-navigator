@@ -64,5 +64,6 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 data/Makefile
+data/active/Makefile
 po/Makefile.in
 ])

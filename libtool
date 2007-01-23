@@ -44,7 +44,7 @@ available_tags=" CXX F77"
 
 # ### BEGIN LIBTOOL CONFIG
 
-# Libtool was configured on host localhost.localdomain:
+# Libtool was configured on host Fedora:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
@@ -7266,7 +7266,7 @@ disable_libs=static
 # End:
 # ### BEGIN LIBTOOL TAG CONFIG: CXX
 
-# Libtool was configured on host localhost.localdomain:
+# Libtool was configured on host Fedora:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
@@ -7574,7 +7574,7 @@ include_expsyms=""
 
 # ### BEGIN LIBTOOL TAG CONFIG: F77
 
-# Libtool was configured on host localhost.localdomain:
+# Libtool was configured on host Fedora:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
