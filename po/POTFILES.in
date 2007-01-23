@@ -1,6 +1,4 @@
-# List of source files containing translatable strings.
-# Please keep this file sorted alphabetically.
-src/awn-window.c
-
+avant-preferences/window.glade
+avant-preferences/avant-preferences.py
 
 

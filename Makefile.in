@@ -235,7 +235,8 @@ target_alias = @target_alias@
 SUBDIRS = \
 	src				\
 	data				\
-	po
+	po				\
+	avant-preferences
 
 EXTRA_DIST = \
 	intltool-extract.in		\

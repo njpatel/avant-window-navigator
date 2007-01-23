@@ -25,7 +25,7 @@ dnl ==============================================
 GETTEXT_PACKAGE=avant-window-navigator
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
-ALL_LINGUAS=" "
+ALL_LINGUAS="en_GB"
 
 IT_PROG_INTLTOOL([0.34])
 AM_GLIB_GNU_GETTEXT
@@ -62,6 +62,7 @@ dnl ==============================================
 
 AC_OUTPUT([
 Makefile
+avant-preferences/Makefile
 src/Makefile
 data/Makefile
 data/active/Makefile

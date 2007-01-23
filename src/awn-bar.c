@@ -214,12 +214,10 @@ render (cairo_t *cr, gint x_width, gint height)
 	
 	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
 	
-	if (settings->render_pattern)
-		pattern_engine(cr, x, width, height);
-	
 	glass_engine(cr, x, width, height);
 	
-	
+	if (settings->render_pattern)
+		pattern_engine(cr, x, width, height);
 	
 	/* internal hi-lightborder */
 	cairo_set_source_rgba (cr, settings->hilight_color.red, 

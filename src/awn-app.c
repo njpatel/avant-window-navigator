@@ -241,6 +241,23 @@ awn_app_set_needs_attention(AwnApp *app, gboolean needs_attention)
         }
 }
 
+static void
+awn_app_create_active_icon(AwnApp *app)
+{
+	GError *err = NULL;
+       	app->active_icon = gdk_pixbuf_new_from_file(settings->active_png, &err);
+        	
+        	
+       	int width = gdk_pixbuf_get_width(app->current_icon);
+       	int pad = (int) ( (60 - width ) / 2);
+       	
+       	gdk_pixbuf_composite (app->current_icon, app->active_icon, 
+       				pad, 12 ,48, 48, 
+       				pad, 12.0, 1.0, 1.0,
+                                       GDK_INTERP_HYPER, 255);
+	g_object_ref(G_OBJECT(app->active_icon));
+}
+
 void 
 awn_app_set_active(AwnApp *app, gboolean active)
 {
@@ -248,25 +265,13 @@ awn_app_set_active(AwnApp *app, gboolean active)
 		return;
 	if (app->current_state == AWN_APP_STATE_CLOSING)
 		return;
-	g_return_if_fail(WNCK_IS_WINDOW(app->window));
-	g_return_if_fail(GDK_IS_PIXBUF(app->current_icon));
+	
 	g_return_if_fail(GTK_IS_IMAGE(app->image));
 	
-	if (!app->active_icon) {
+	if (!app->active_icon) 
+		awn_app_create_active_icon(app);
 	
-		GError *err = NULL;
-        	app->active_icon = gdk_pixbuf_new_from_file(settings->active_png, &err);
-        	
-        	
-        	int width = gdk_pixbuf_get_width(app->current_icon);
-        	int pad = (int) ( (60 - width ) / 2);
-        	
-        	gdk_pixbuf_composite (app->current_icon, app->active_icon, 
-        				pad, 12 ,48, 48, 
-        				pad, 12.0, 1.0, 1.0,
-                                        GDK_INTERP_HYPER, 255);
-       		g_object_ref(G_OBJECT(app->active_icon));
-       	}
+	
        	if (active)
        		gtk_image_set_from_pixbuf(GTK_IMAGE(app->image), app->active_icon);
        	else 

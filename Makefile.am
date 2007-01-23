@@ -1,7 +1,8 @@
 SUBDIRS =				\
 	src				\
 	data				\
-	po
+	po				\
+	avant-preferences
 
 
 
