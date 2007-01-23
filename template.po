@@ -1,0 +1,1407 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#: avant-preferences/avant-preferences.py:99
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-01-23 23:15+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: avant-preferences/window.glade:1
+msgid "1.0"
+msgstr ""
+
+#: avant-preferences/window.glade:1
+msgid "no"
+msgstr ""
+
+#: avant-preferences/window.glade:2
+msgid "http://glade.gnome.org/glade-2.0.dtd"
+msgstr ""
+
+#: avant-preferences/window.glade:5
+msgid "gnome"
+msgstr ""
+
+#: avant-preferences/window.glade:7
+msgid "GtkWindow"
+msgstr ""
+
+#: avant-preferences/window.glade:7 avant-preferences/avant-preferences.py:128
+msgid "main_window"
+msgstr ""
+
+#: avant-preferences/window.glade:8 avant-preferences/window.glade:28
+#: avant-preferences/window.glade:34 avant-preferences/window.glade:45
+#: avant-preferences/window.glade:51 avant-preferences/window.glade:58
+#: avant-preferences/window.glade:70 avant-preferences/window.glade:76
+#: avant-preferences/window.glade:82 avant-preferences/window.glade:107
+#: avant-preferences/window.glade:128 avant-preferences/window.glade:134
+#: avant-preferences/window.glade:159 avant-preferences/window.glade:180
+#: avant-preferences/window.glade:186 avant-preferences/window.glade:211
+#: avant-preferences/window.glade:237 avant-preferences/window.glade:248
+#: avant-preferences/window.glade:260 avant-preferences/window.glade:266
+#: avant-preferences/window.glade:283 avant-preferences/window.glade:319
+#: avant-preferences/window.glade:329 avant-preferences/window.glade:341
+#: avant-preferences/window.glade:347 avant-preferences/window.glade:364
+#: avant-preferences/window.glade:404 avant-preferences/window.glade:434
+#: avant-preferences/window.glade:441 avant-preferences/window.glade:453
+#: avant-preferences/window.glade:467 avant-preferences/window.glade:503
+#: avant-preferences/window.glade:527 avant-preferences/window.glade:533
+#: avant-preferences/window.glade:540 avant-preferences/window.glade:552
+#: avant-preferences/window.glade:558 avant-preferences/window.glade:564
+#: avant-preferences/window.glade:589 avant-preferences/window.glade:610
+#: avant-preferences/window.glade:616 avant-preferences/window.glade:641
+#: avant-preferences/window.glade:666 avant-preferences/window.glade:696
+#: avant-preferences/window.glade:703 avant-preferences/window.glade:715
+#: avant-preferences/window.glade:721 avant-preferences/window.glade:727
+#: avant-preferences/window.glade:752 avant-preferences/window.glade:773
+#: avant-preferences/window.glade:779 avant-preferences/window.glade:804
+#: avant-preferences/window.glade:829 avant-preferences/window.glade:859
+#: avant-preferences/window.glade:866 avant-preferences/window.glade:878
+#: avant-preferences/window.glade:884 avant-preferences/window.glade:890
+#: avant-preferences/window.glade:915 avant-preferences/window.glade:936
+#: avant-preferences/window.glade:942 avant-preferences/window.glade:967
+#: avant-preferences/window.glade:992 avant-preferences/window.glade:1022
+#: avant-preferences/window.glade:1029 avant-preferences/window.glade:1041
+#: avant-preferences/window.glade:1047 avant-preferences/window.glade:1053
+#: avant-preferences/window.glade:1079 avant-preferences/window.glade:1085
+#: avant-preferences/window.glade:1109 avant-preferences/window.glade:1115
+#: avant-preferences/window.glade:1140 avant-preferences/window.glade:1169
+#: avant-preferences/window.glade:1199 avant-preferences/window.glade:1206
+#: avant-preferences/window.glade:1218 avant-preferences/window.glade:1224
+#: avant-preferences/window.glade:1230 avant-preferences/window.glade:1260
+#: avant-preferences/window.glade:1296 avant-preferences/window.glade:1320
+#: avant-preferences/window.glade:1326 avant-preferences/window.glade:1333
+#: avant-preferences/window.glade:1345 avant-preferences/window.glade:1351
+#: avant-preferences/window.glade:1357 avant-preferences/window.glade:1387
+#: avant-preferences/window.glade:1423 avant-preferences/window.glade:1453
+#: avant-preferences/window.glade:1467
+msgid "visible"
+msgstr ""
+
+#: avant-preferences/window.glade:9 avant-preferences/window.glade:454
+#: avant-preferences/window.glade:1086
+msgid "title"
+msgstr ""
+
+#: avant-preferences/window.glade:9 avant-preferences/window.glade:83
+#: avant-preferences/window.glade:135 avant-preferences/window.glade:187
+#: avant-preferences/window.glade:284 avant-preferences/window.glade:365
+#: avant-preferences/window.glade:405 avant-preferences/window.glade:454
+#: avant-preferences/window.glade:468 avant-preferences/window.glade:504
+#: avant-preferences/window.glade:565 avant-preferences/window.glade:617
+#: avant-preferences/window.glade:667 avant-preferences/window.glade:728
+#: avant-preferences/window.glade:780 avant-preferences/window.glade:830
+#: avant-preferences/window.glade:891 avant-preferences/window.glade:943
+#: avant-preferences/window.glade:993 avant-preferences/window.glade:1055
+#: avant-preferences/window.glade:1086 avant-preferences/window.glade:1116
+#: avant-preferences/window.glade:1170 avant-preferences/window.glade:1232
+#: avant-preferences/window.glade:1261 avant-preferences/window.glade:1297
+#: avant-preferences/window.glade:1359 avant-preferences/window.glade:1388
+#: avant-preferences/window.glade:1424
+msgid "yes"
+msgstr ""
+
+#: avant-preferences/window.glade:10 avant-preferences/window.glade:421
+#: avant-preferences/window.glade:484 avant-preferences/window.glade:520
+#: avant-preferences/window.glade:683 avant-preferences/window.glade:846
+#: avant-preferences/window.glade:1009 avant-preferences/window.glade:1186
+#: avant-preferences/window.glade:1277 avant-preferences/window.glade:1313
+#: avant-preferences/window.glade:1404 avant-preferences/window.glade:1440
+msgid "type"
+msgstr ""
+
+#: avant-preferences/window.glade:11
+msgid "window_position"
+msgstr ""
+
+#: avant-preferences/window.glade:12
+msgid "modal"
+msgstr ""
+
+#: avant-preferences/window.glade:13
+msgid "resizable"
+msgstr ""
+
+#: avant-preferences/window.glade:14
+msgid "destroy_with_parent"
+msgstr ""
+
+#: avant-preferences/window.glade:15
+msgid "icon_name"
+msgstr ""
+
+#: avant-preferences/window.glade:16
+msgid "decorated"
+msgstr ""
+
+#: avant-preferences/window.glade:17
+msgid "skip_taskbar_hint"
+msgstr ""
+
+#: avant-preferences/window.glade:18
+msgid "skip_pager_hint"
+msgstr ""
+
+#: avant-preferences/window.glade:19
+msgid "type_hint"
+msgstr ""
+
+#: avant-preferences/window.glade:20
+msgid "gravity"
+msgstr ""
+
+#: avant-preferences/window.glade:21
+msgid "focus_on_map"
+msgstr ""
+
+#: avant-preferences/window.glade:22
+msgid "urgency_hint"
+msgstr ""
+
+#: avant-preferences/window.glade:23
+msgid "destroy_event"
+msgstr ""
+
+#: avant-preferences/window.glade:23
+msgid "on_main_window_destroy_event"
+msgstr ""
+
+#: avant-preferences/window.glade:23
+msgid "Tue, 23 Jan 2007 16:06:45 GMT"
+msgstr ""
+
+#: avant-preferences/window.glade:26 avant-preferences/window.glade:43
+#: avant-preferences/window.glade:69 avant-preferences/window.glade:525
+#: avant-preferences/window.glade:551 avant-preferences/window.glade:714
+#: avant-preferences/window.glade:877 avant-preferences/window.glade:1040
+#: avant-preferences/window.glade:1217 avant-preferences/window.glade:1318
+#: avant-preferences/window.glade:1344
+msgid "GtkVBox"
+msgstr ""
+
+#: avant-preferences/window.glade:26 avant-preferences/window.glade:69
+msgid "vbox3"
+msgstr ""
+
+#: avant-preferences/window.glade:27 avant-preferences/window.glade:44
+#: avant-preferences/window.glade:526 avant-preferences/window.glade:1319
+msgid "border_width"
+msgstr ""
+
+#: avant-preferences/window.glade:29 avant-preferences/window.glade:46
+#: avant-preferences/window.glade:71 avant-preferences/window.glade:77
+#: avant-preferences/window.glade:129 avant-preferences/window.glade:181
+#: avant-preferences/window.glade:261 avant-preferences/window.glade:342
+#: avant-preferences/window.glade:528 avant-preferences/window.glade:553
+#: avant-preferences/window.glade:559 avant-preferences/window.glade:611
+#: avant-preferences/window.glade:716 avant-preferences/window.glade:722
+#: avant-preferences/window.glade:774 avant-preferences/window.glade:879
+#: avant-preferences/window.glade:885 avant-preferences/window.glade:937
+#: avant-preferences/window.glade:1042 avant-preferences/window.glade:1048
+#: avant-preferences/window.glade:1080 avant-preferences/window.glade:1110
+#: avant-preferences/window.glade:1219 avant-preferences/window.glade:1225
+#: avant-preferences/window.glade:1321 avant-preferences/window.glade:1346
+#: avant-preferences/window.glade:1352 avant-preferences/window.glade:1454
+msgid "homogeneous"
+msgstr ""
+
+#: avant-preferences/window.glade:30 avant-preferences/window.glade:47
+#: avant-preferences/window.glade:72 avant-preferences/window.glade:78
+#: avant-preferences/window.glade:130 avant-preferences/window.glade:182
+#: avant-preferences/window.glade:262 avant-preferences/window.glade:343
+#: avant-preferences/window.glade:529 avant-preferences/window.glade:554
+#: avant-preferences/window.glade:560 avant-preferences/window.glade:612
+#: avant-preferences/window.glade:717 avant-preferences/window.glade:723
+#: avant-preferences/window.glade:775 avant-preferences/window.glade:880
+#: avant-preferences/window.glade:886 avant-preferences/window.glade:938
+#: avant-preferences/window.glade:1043 avant-preferences/window.glade:1049
+#: avant-preferences/window.glade:1081 avant-preferences/window.glade:1111
+#: avant-preferences/window.glade:1220 avant-preferences/window.glade:1226
+#: avant-preferences/window.glade:1322 avant-preferences/window.glade:1347
+#: avant-preferences/window.glade:1353 avant-preferences/window.glade:1455
+msgid "spacing"
+msgstr ""
+
+#: avant-preferences/window.glade:33
+msgid "GtkNotebook"
+msgstr ""
+
+#: avant-preferences/window.glade:33
+msgid "notebook1"
+msgstr ""
+
+#: avant-preferences/window.glade:35 avant-preferences/window.glade:108
+#: avant-preferences/window.glade:160 avant-preferences/window.glade:212
+#: avant-preferences/window.glade:238 avant-preferences/window.glade:320
+#: avant-preferences/window.glade:590 avant-preferences/window.glade:642
+#: avant-preferences/window.glade:753 avant-preferences/window.glade:805
+#: avant-preferences/window.glade:916 avant-preferences/window.glade:968
+#: avant-preferences/window.glade:1054 avant-preferences/window.glade:1141
+#: avant-preferences/window.glade:1231 avant-preferences/window.glade:1358
+#: avant-preferences/window.glade:1468
+msgid "can_focus"
+msgstr ""
+
+#: avant-preferences/window.glade:36
+msgid "show_tabs"
+msgstr ""
+
+#: avant-preferences/window.glade:37
+msgid "show_border"
+msgstr ""
+
+#: avant-preferences/window.glade:38
+msgid "tab_pos"
+msgstr ""
+
+#: avant-preferences/window.glade:39
+msgid "scrollable"
+msgstr ""
+
+#: avant-preferences/window.glade:40
+msgid "enable_popup"
+msgstr ""
+
+#: avant-preferences/window.glade:43
+msgid "vbox1"
+msgstr ""
+
+#: avant-preferences/window.glade:50 avant-preferences/window.glade:433
+#: avant-preferences/window.glade:532 avant-preferences/window.glade:695
+#: avant-preferences/window.glade:858 avant-preferences/window.glade:1021
+#: avant-preferences/window.glade:1198 avant-preferences/window.glade:1325
+msgid "GtkFrame"
+msgstr ""
+
+#: avant-preferences/window.glade:50
+msgid "frame1"
+msgstr ""
+
+#: avant-preferences/window.glade:52 avant-preferences/window.glade:435
+#: avant-preferences/window.glade:534 avant-preferences/window.glade:697
+#: avant-preferences/window.glade:860 avant-preferences/window.glade:1023
+#: avant-preferences/window.glade:1200 avant-preferences/window.glade:1327
+msgid "label_xalign"
+msgstr ""
+
+#: avant-preferences/window.glade:53 avant-preferences/window.glade:436
+#: avant-preferences/window.glade:535 avant-preferences/window.glade:698
+#: avant-preferences/window.glade:861 avant-preferences/window.glade:1024
+#: avant-preferences/window.glade:1201 avant-preferences/window.glade:1328
+msgid "label_yalign"
+msgstr ""
+
+#: avant-preferences/window.glade:54 avant-preferences/window.glade:437
+#: avant-preferences/window.glade:536 avant-preferences/window.glade:699
+#: avant-preferences/window.glade:862 avant-preferences/window.glade:1025
+#: avant-preferences/window.glade:1202 avant-preferences/window.glade:1329
+msgid "shadow_type"
+msgstr ""
+
+#: avant-preferences/window.glade:57 avant-preferences/window.glade:247
+#: avant-preferences/window.glade:328 avant-preferences/window.glade:440
+#: avant-preferences/window.glade:539 avant-preferences/window.glade:702
+#: avant-preferences/window.glade:865 avant-preferences/window.glade:1028
+#: avant-preferences/window.glade:1205 avant-preferences/window.glade:1332
+msgid "GtkAlignment"
+msgstr ""
+
+#: avant-preferences/window.glade:57
+msgid "alignment1"
+msgstr ""
+
+#: avant-preferences/window.glade:59 avant-preferences/window.glade:89
+#: avant-preferences/window.glade:141 avant-preferences/window.glade:193
+#: avant-preferences/window.glade:249 avant-preferences/window.glade:269
+#: avant-preferences/window.glade:290 avant-preferences/window.glade:330
+#: avant-preferences/window.glade:350 avant-preferences/window.glade:371
+#: avant-preferences/window.glade:411 avant-preferences/window.glade:442
+#: avant-preferences/window.glade:474 avant-preferences/window.glade:510
+#: avant-preferences/window.glade:541 avant-preferences/window.glade:571
+#: avant-preferences/window.glade:623 avant-preferences/window.glade:673
+#: avant-preferences/window.glade:704 avant-preferences/window.glade:734
+#: avant-preferences/window.glade:786 avant-preferences/window.glade:836
+#: avant-preferences/window.glade:867 avant-preferences/window.glade:897
+#: avant-preferences/window.glade:949 avant-preferences/window.glade:999
+#: avant-preferences/window.glade:1030 avant-preferences/window.glade:1122
+#: avant-preferences/window.glade:1176 avant-preferences/window.glade:1207
+#: avant-preferences/window.glade:1267 avant-preferences/window.glade:1303
+#: avant-preferences/window.glade:1334 avant-preferences/window.glade:1394
+#: avant-preferences/window.glade:1430
+msgid "xalign"
+msgstr ""
+
+#: avant-preferences/window.glade:60 avant-preferences/window.glade:90
+#: avant-preferences/window.glade:142 avant-preferences/window.glade:194
+#: avant-preferences/window.glade:250 avant-preferences/window.glade:270
+#: avant-preferences/window.glade:291 avant-preferences/window.glade:331
+#: avant-preferences/window.glade:351 avant-preferences/window.glade:372
+#: avant-preferences/window.glade:412 avant-preferences/window.glade:443
+#: avant-preferences/window.glade:475 avant-preferences/window.glade:511
+#: avant-preferences/window.glade:542 avant-preferences/window.glade:572
+#: avant-preferences/window.glade:624 avant-preferences/window.glade:674
+#: avant-preferences/window.glade:705 avant-preferences/window.glade:735
+#: avant-preferences/window.glade:787 avant-preferences/window.glade:837
+#: avant-preferences/window.glade:868 avant-preferences/window.glade:898
+#: avant-preferences/window.glade:950 avant-preferences/window.glade:1000
+#: avant-preferences/window.glade:1031 avant-preferences/window.glade:1123
+#: avant-preferences/window.glade:1177 avant-preferences/window.glade:1208
+#: avant-preferences/window.glade:1268 avant-preferences/window.glade:1304
+#: avant-preferences/window.glade:1335 avant-preferences/window.glade:1395
+#: avant-preferences/window.glade:1431
+msgid "yalign"
+msgstr ""
+
+#: avant-preferences/window.glade:61 avant-preferences/window.glade:251
+#: avant-preferences/window.glade:332 avant-preferences/window.glade:444
+#: avant-preferences/window.glade:543 avant-preferences/window.glade:706
+#: avant-preferences/window.glade:869 avant-preferences/window.glade:1032
+#: avant-preferences/window.glade:1209 avant-preferences/window.glade:1336
+msgid "xscale"
+msgstr ""
+
+#: avant-preferences/window.glade:62 avant-preferences/window.glade:252
+#: avant-preferences/window.glade:333 avant-preferences/window.glade:445
+#: avant-preferences/window.glade:544 avant-preferences/window.glade:707
+#: avant-preferences/window.glade:870 avant-preferences/window.glade:1033
+#: avant-preferences/window.glade:1210 avant-preferences/window.glade:1337
+msgid "yscale"
+msgstr ""
+
+#: avant-preferences/window.glade:63 avant-preferences/window.glade:253
+#: avant-preferences/window.glade:334 avant-preferences/window.glade:446
+#: avant-preferences/window.glade:545 avant-preferences/window.glade:708
+#: avant-preferences/window.glade:871 avant-preferences/window.glade:1034
+#: avant-preferences/window.glade:1211 avant-preferences/window.glade:1338
+msgid "top_padding"
+msgstr ""
+
+#: avant-preferences/window.glade:64 avant-preferences/window.glade:254
+#: avant-preferences/window.glade:335 avant-preferences/window.glade:447
+#: avant-preferences/window.glade:546 avant-preferences/window.glade:709
+#: avant-preferences/window.glade:872 avant-preferences/window.glade:1035
+#: avant-preferences/window.glade:1212 avant-preferences/window.glade:1339
+msgid "bottom_padding"
+msgstr ""
+
+#: avant-preferences/window.glade:65 avant-preferences/window.glade:255
+#: avant-preferences/window.glade:336 avant-preferences/window.glade:448
+#: avant-preferences/window.glade:547 avant-preferences/window.glade:710
+#: avant-preferences/window.glade:873 avant-preferences/window.glade:1036
+#: avant-preferences/window.glade:1213 avant-preferences/window.glade:1340
+msgid "left_padding"
+msgstr ""
+
+#: avant-preferences/window.glade:66 avant-preferences/window.glade:256
+#: avant-preferences/window.glade:337 avant-preferences/window.glade:449
+#: avant-preferences/window.glade:548 avant-preferences/window.glade:711
+#: avant-preferences/window.glade:874 avant-preferences/window.glade:1037
+#: avant-preferences/window.glade:1214 avant-preferences/window.glade:1341
+msgid "right_padding"
+msgstr ""
+
+#: avant-preferences/window.glade:75 avant-preferences/window.glade:127
+#: avant-preferences/window.glade:179 avant-preferences/window.glade:259
+#: avant-preferences/window.glade:340 avant-preferences/window.glade:557
+#: avant-preferences/window.glade:609 avant-preferences/window.glade:720
+#: avant-preferences/window.glade:772 avant-preferences/window.glade:883
+#: avant-preferences/window.glade:935 avant-preferences/window.glade:1046
+#: avant-preferences/window.glade:1078 avant-preferences/window.glade:1108
+#: avant-preferences/window.glade:1223 avant-preferences/window.glade:1350
+#: avant-preferences/window.glade:1452
+msgid "GtkHBox"
+msgstr ""
+
+#: avant-preferences/window.glade:75
+msgid "hbox1"
+msgstr ""
+
+#: avant-preferences/window.glade:81 avant-preferences/window.glade:133
+#: avant-preferences/window.glade:185 avant-preferences/window.glade:282
+#: avant-preferences/window.glade:363 avant-preferences/window.glade:403
+#: avant-preferences/window.glade:466 avant-preferences/window.glade:502
+#: avant-preferences/window.glade:563 avant-preferences/window.glade:615
+#: avant-preferences/window.glade:665 avant-preferences/window.glade:726
+#: avant-preferences/window.glade:778 avant-preferences/window.glade:828
+#: avant-preferences/window.glade:889 avant-preferences/window.glade:941
+#: avant-preferences/window.glade:991 avant-preferences/window.glade:1114
+#: avant-preferences/window.glade:1168 avant-preferences/window.glade:1259
+#: avant-preferences/window.glade:1295 avant-preferences/window.glade:1386
+#: avant-preferences/window.glade:1422
+msgid "GtkLabel"
+msgstr ""
+
+#: avant-preferences/window.glade:81
+msgid "label5"
+msgstr ""
+
+#: avant-preferences/window.glade:83 avant-preferences/window.glade:135
+#: avant-preferences/window.glade:187 avant-preferences/window.glade:284
+#: avant-preferences/window.glade:365 avant-preferences/window.glade:405
+#: avant-preferences/window.glade:468 avant-preferences/window.glade:504
+#: avant-preferences/window.glade:565 avant-preferences/window.glade:617
+#: avant-preferences/window.glade:667 avant-preferences/window.glade:728
+#: avant-preferences/window.glade:780 avant-preferences/window.glade:830
+#: avant-preferences/window.glade:891 avant-preferences/window.glade:943
+#: avant-preferences/window.glade:993 avant-preferences/window.glade:1055
+#: avant-preferences/window.glade:1116 avant-preferences/window.glade:1170
+#: avant-preferences/window.glade:1232 avant-preferences/window.glade:1261
+#: avant-preferences/window.glade:1297 avant-preferences/window.glade:1359
+#: avant-preferences/window.glade:1388 avant-preferences/window.glade:1424
+#: avant-preferences/window.glade:1469
+msgid "label"
+msgstr ""
+
+#: avant-preferences/window.glade:84 avant-preferences/window.glade:136
+#: avant-preferences/window.glade:188 avant-preferences/window.glade:285
+#: avant-preferences/window.glade:366 avant-preferences/window.glade:406
+#: avant-preferences/window.glade:469 avant-preferences/window.glade:505
+#: avant-preferences/window.glade:566 avant-preferences/window.glade:618
+#: avant-preferences/window.glade:668 avant-preferences/window.glade:729
+#: avant-preferences/window.glade:781 avant-preferences/window.glade:831
+#: avant-preferences/window.glade:892 avant-preferences/window.glade:944
+#: avant-preferences/window.glade:994 avant-preferences/window.glade:1056
+#: avant-preferences/window.glade:1117 avant-preferences/window.glade:1171
+#: avant-preferences/window.glade:1233 avant-preferences/window.glade:1262
+#: avant-preferences/window.glade:1298 avant-preferences/window.glade:1360
+#: avant-preferences/window.glade:1389 avant-preferences/window.glade:1425
+msgid "use_underline"
+msgstr ""
+
+#: avant-preferences/window.glade:85 avant-preferences/window.glade:137
+#: avant-preferences/window.glade:189 avant-preferences/window.glade:286
+#: avant-preferences/window.glade:367 avant-preferences/window.glade:407
+#: avant-preferences/window.glade:470 avant-preferences/window.glade:506
+#: avant-preferences/window.glade:567 avant-preferences/window.glade:619
+#: avant-preferences/window.glade:669 avant-preferences/window.glade:730
+#: avant-preferences/window.glade:782 avant-preferences/window.glade:832
+#: avant-preferences/window.glade:893 avant-preferences/window.glade:945
+#: avant-preferences/window.glade:995 avant-preferences/window.glade:1118
+#: avant-preferences/window.glade:1172 avant-preferences/window.glade:1263
+#: avant-preferences/window.glade:1299 avant-preferences/window.glade:1390
+#: avant-preferences/window.glade:1426
+msgid "use_markup"
+msgstr ""
+
+#: avant-preferences/window.glade:86 avant-preferences/window.glade:138
+#: avant-preferences/window.glade:190 avant-preferences/window.glade:287
+#: avant-preferences/window.glade:368 avant-preferences/window.glade:408
+#: avant-preferences/window.glade:471 avant-preferences/window.glade:507
+#: avant-preferences/window.glade:568 avant-preferences/window.glade:620
+#: avant-preferences/window.glade:670 avant-preferences/window.glade:731
+#: avant-preferences/window.glade:783 avant-preferences/window.glade:833
+#: avant-preferences/window.glade:894 avant-preferences/window.glade:946
+#: avant-preferences/window.glade:996 avant-preferences/window.glade:1119
+#: avant-preferences/window.glade:1173 avant-preferences/window.glade:1264
+#: avant-preferences/window.glade:1300 avant-preferences/window.glade:1391
+#: avant-preferences/window.glade:1427
+msgid "justify"
+msgstr ""
+
+#: avant-preferences/window.glade:87 avant-preferences/window.glade:139
+#: avant-preferences/window.glade:191 avant-preferences/window.glade:218
+#: avant-preferences/window.glade:288 avant-preferences/window.glade:369
+#: avant-preferences/window.glade:409 avant-preferences/window.glade:472
+#: avant-preferences/window.glade:508 avant-preferences/window.glade:569
+#: avant-preferences/window.glade:621 avant-preferences/window.glade:671
+#: avant-preferences/window.glade:732 avant-preferences/window.glade:784
+#: avant-preferences/window.glade:834 avant-preferences/window.glade:895
+#: avant-preferences/window.glade:947 avant-preferences/window.glade:997
+#: avant-preferences/window.glade:1120 avant-preferences/window.glade:1174
+#: avant-preferences/window.glade:1265 avant-preferences/window.glade:1301
+#: avant-preferences/window.glade:1392 avant-preferences/window.glade:1428
+msgid "wrap"
+msgstr ""
+
+#: avant-preferences/window.glade:88 avant-preferences/window.glade:140
+#: avant-preferences/window.glade:192 avant-preferences/window.glade:289
+#: avant-preferences/window.glade:370 avant-preferences/window.glade:410
+#: avant-preferences/window.glade:473 avant-preferences/window.glade:509
+#: avant-preferences/window.glade:570 avant-preferences/window.glade:622
+#: avant-preferences/window.glade:672 avant-preferences/window.glade:733
+#: avant-preferences/window.glade:785 avant-preferences/window.glade:835
+#: avant-preferences/window.glade:896 avant-preferences/window.glade:948
+#: avant-preferences/window.glade:998 avant-preferences/window.glade:1121
+#: avant-preferences/window.glade:1175 avant-preferences/window.glade:1266
+#: avant-preferences/window.glade:1302 avant-preferences/window.glade:1393
+#: avant-preferences/window.glade:1429
+msgid "selectable"
+msgstr ""
+
+#: avant-preferences/window.glade:91 avant-preferences/window.glade:143
+#: avant-preferences/window.glade:195 avant-preferences/window.glade:271
+#: avant-preferences/window.glade:292 avant-preferences/window.glade:352
+#: avant-preferences/window.glade:373 avant-preferences/window.glade:413
+#: avant-preferences/window.glade:476 avant-preferences/window.glade:512
+#: avant-preferences/window.glade:573 avant-preferences/window.glade:625
+#: avant-preferences/window.glade:675 avant-preferences/window.glade:736
+#: avant-preferences/window.glade:788 avant-preferences/window.glade:838
+#: avant-preferences/window.glade:899 avant-preferences/window.glade:951
+#: avant-preferences/window.glade:1001 avant-preferences/window.glade:1124
+#: avant-preferences/window.glade:1178 avant-preferences/window.glade:1269
+#: avant-preferences/window.glade:1305 avant-preferences/window.glade:1396
+#: avant-preferences/window.glade:1432
+msgid "xpad"
+msgstr ""
+
+#: avant-preferences/window.glade:92 avant-preferences/window.glade:144
+#: avant-preferences/window.glade:196 avant-preferences/window.glade:272
+#: avant-preferences/window.glade:293 avant-preferences/window.glade:353
+#: avant-preferences/window.glade:374 avant-preferences/window.glade:414
+#: avant-preferences/window.glade:477 avant-preferences/window.glade:513
+#: avant-preferences/window.glade:574 avant-preferences/window.glade:626
+#: avant-preferences/window.glade:676 avant-preferences/window.glade:737
+#: avant-preferences/window.glade:789 avant-preferences/window.glade:839
+#: avant-preferences/window.glade:900 avant-preferences/window.glade:952
+#: avant-preferences/window.glade:1002 avant-preferences/window.glade:1125
+#: avant-preferences/window.glade:1179 avant-preferences/window.glade:1270
+#: avant-preferences/window.glade:1306 avant-preferences/window.glade:1397
+#: avant-preferences/window.glade:1433
+msgid "ypad"
+msgstr ""
+
+#: avant-preferences/window.glade:93 avant-preferences/window.glade:145
+#: avant-preferences/window.glade:197 avant-preferences/window.glade:294
+#: avant-preferences/window.glade:375 avant-preferences/window.glade:415
+#: avant-preferences/window.glade:478 avant-preferences/window.glade:514
+#: avant-preferences/window.glade:575 avant-preferences/window.glade:627
+#: avant-preferences/window.glade:677 avant-preferences/window.glade:738
+#: avant-preferences/window.glade:790 avant-preferences/window.glade:840
+#: avant-preferences/window.glade:901 avant-preferences/window.glade:953
+#: avant-preferences/window.glade:1003 avant-preferences/window.glade:1126
+#: avant-preferences/window.glade:1180 avant-preferences/window.glade:1271
+#: avant-preferences/window.glade:1307 avant-preferences/window.glade:1398
+#: avant-preferences/window.glade:1434
+msgid "ellipsize"
+msgstr ""
+
+#: avant-preferences/window.glade:94 avant-preferences/window.glade:146
+#: avant-preferences/window.glade:198 avant-preferences/window.glade:295
+#: avant-preferences/window.glade:376 avant-preferences/window.glade:416
+#: avant-preferences/window.glade:459 avant-preferences/window.glade:479
+#: avant-preferences/window.glade:515 avant-preferences/window.glade:576
+#: avant-preferences/window.glade:628 avant-preferences/window.glade:678
+#: avant-preferences/window.glade:739 avant-preferences/window.glade:791
+#: avant-preferences/window.glade:841 avant-preferences/window.glade:902
+#: avant-preferences/window.glade:954 avant-preferences/window.glade:1004
+#: avant-preferences/window.glade:1091 avant-preferences/window.glade:1127
+#: avant-preferences/window.glade:1181 avant-preferences/window.glade:1272
+#: avant-preferences/window.glade:1308 avant-preferences/window.glade:1399
+#: avant-preferences/window.glade:1435
+msgid "width_chars"
+msgstr ""
+
+#: avant-preferences/window.glade:95 avant-preferences/window.glade:147
+#: avant-preferences/window.glade:199 avant-preferences/window.glade:296
+#: avant-preferences/window.glade:377 avant-preferences/window.glade:417
+#: avant-preferences/window.glade:480 avant-preferences/window.glade:516
+#: avant-preferences/window.glade:577 avant-preferences/window.glade:629
+#: avant-preferences/window.glade:679 avant-preferences/window.glade:740
+#: avant-preferences/window.glade:792 avant-preferences/window.glade:842
+#: avant-preferences/window.glade:903 avant-preferences/window.glade:955
+#: avant-preferences/window.glade:1005 avant-preferences/window.glade:1128
+#: avant-preferences/window.glade:1182 avant-preferences/window.glade:1273
+#: avant-preferences/window.glade:1309 avant-preferences/window.glade:1400
+#: avant-preferences/window.glade:1436
+msgid "single_line_mode"
+msgstr ""
+
+#: avant-preferences/window.glade:96 avant-preferences/window.glade:148
+#: avant-preferences/window.glade:200 avant-preferences/window.glade:297
+#: avant-preferences/window.glade:378 avant-preferences/window.glade:418
+#: avant-preferences/window.glade:481 avant-preferences/window.glade:517
+#: avant-preferences/window.glade:578 avant-preferences/window.glade:630
+#: avant-preferences/window.glade:680 avant-preferences/window.glade:741
+#: avant-preferences/window.glade:793 avant-preferences/window.glade:843
+#: avant-preferences/window.glade:904 avant-preferences/window.glade:956
+#: avant-preferences/window.glade:1006 avant-preferences/window.glade:1129
+#: avant-preferences/window.glade:1183 avant-preferences/window.glade:1274
+#: avant-preferences/window.glade:1310 avant-preferences/window.glade:1401
+#: avant-preferences/window.glade:1437
+msgid "angle"
+msgstr ""
+
+#: avant-preferences/window.glade:99 avant-preferences/window.glade:113
+#: avant-preferences/window.glade:120 avant-preferences/window.glade:151
+#: avant-preferences/window.glade:165 avant-preferences/window.glade:172
+#: avant-preferences/window.glade:203 avant-preferences/window.glade:222
+#: avant-preferences/window.glade:229 avant-preferences/window.glade:275
+#: avant-preferences/window.glade:300 avant-preferences/window.glade:311
+#: avant-preferences/window.glade:356 avant-preferences/window.glade:381
+#: avant-preferences/window.glade:392 avant-preferences/window.glade:426
+#: avant-preferences/window.glade:489 avant-preferences/window.glade:581
+#: avant-preferences/window.glade:595 avant-preferences/window.glade:602
+#: avant-preferences/window.glade:633 avant-preferences/window.glade:647
+#: avant-preferences/window.glade:654 avant-preferences/window.glade:688
+#: avant-preferences/window.glade:744 avant-preferences/window.glade:758
+#: avant-preferences/window.glade:765 avant-preferences/window.glade:796
+#: avant-preferences/window.glade:810 avant-preferences/window.glade:817
+#: avant-preferences/window.glade:851 avant-preferences/window.glade:907
+#: avant-preferences/window.glade:921 avant-preferences/window.glade:928
+#: avant-preferences/window.glade:959 avant-preferences/window.glade:973
+#: avant-preferences/window.glade:980 avant-preferences/window.glade:1014
+#: avant-preferences/window.glade:1064 avant-preferences/window.glade:1071
+#: avant-preferences/window.glade:1094 avant-preferences/window.glade:1101
+#: avant-preferences/window.glade:1132 avant-preferences/window.glade:1150
+#: avant-preferences/window.glade:1157 avant-preferences/window.glade:1191
+#: avant-preferences/window.glade:1241 avant-preferences/window.glade:1248
+#: avant-preferences/window.glade:1282 avant-preferences/window.glade:1368
+#: avant-preferences/window.glade:1375 avant-preferences/window.glade:1409
+#: avant-preferences/window.glade:1445 avant-preferences/window.glade:1475
+#: avant-preferences/window.glade:1482
+msgid "padding"
+msgstr ""
+
+#: avant-preferences/window.glade:100 avant-preferences/window.glade:114
+#: avant-preferences/window.glade:121 avant-preferences/window.glade:152
+#: avant-preferences/window.glade:166 avant-preferences/window.glade:173
+#: avant-preferences/window.glade:204 avant-preferences/window.glade:223
+#: avant-preferences/window.glade:230 avant-preferences/window.glade:276
+#: avant-preferences/window.glade:301 avant-preferences/window.glade:312
+#: avant-preferences/window.glade:357 avant-preferences/window.glade:382
+#: avant-preferences/window.glade:393 avant-preferences/window.glade:427
+#: avant-preferences/window.glade:490 avant-preferences/window.glade:582
+#: avant-preferences/window.glade:596 avant-preferences/window.glade:603
+#: avant-preferences/window.glade:634 avant-preferences/window.glade:648
+#: avant-preferences/window.glade:655 avant-preferences/window.glade:689
+#: avant-preferences/window.glade:745 avant-preferences/window.glade:759
+#: avant-preferences/window.glade:766 avant-preferences/window.glade:797
+#: avant-preferences/window.glade:811 avant-preferences/window.glade:818
+#: avant-preferences/window.glade:852 avant-preferences/window.glade:908
+#: avant-preferences/window.glade:922 avant-preferences/window.glade:929
+#: avant-preferences/window.glade:960 avant-preferences/window.glade:974
+#: avant-preferences/window.glade:981 avant-preferences/window.glade:1015
+#: avant-preferences/window.glade:1065 avant-preferences/window.glade:1072
+#: avant-preferences/window.glade:1095 avant-preferences/window.glade:1102
+#: avant-preferences/window.glade:1133 avant-preferences/window.glade:1151
+#: avant-preferences/window.glade:1158 avant-preferences/window.glade:1192
+#: avant-preferences/window.glade:1242 avant-preferences/window.glade:1249
+#: avant-preferences/window.glade:1283 avant-preferences/window.glade:1369
+#: avant-preferences/window.glade:1376 avant-preferences/window.glade:1410
+#: avant-preferences/window.glade:1446 avant-preferences/window.glade:1476
+#: avant-preferences/window.glade:1483
+msgid "expand"
+msgstr ""
+
+#: avant-preferences/window.glade:101 avant-preferences/window.glade:115
+#: avant-preferences/window.glade:122 avant-preferences/window.glade:153
+#: avant-preferences/window.glade:167 avant-preferences/window.glade:174
+#: avant-preferences/window.glade:205 avant-preferences/window.glade:224
+#: avant-preferences/window.glade:231 avant-preferences/window.glade:277
+#: avant-preferences/window.glade:302 avant-preferences/window.glade:313
+#: avant-preferences/window.glade:358 avant-preferences/window.glade:383
+#: avant-preferences/window.glade:394 avant-preferences/window.glade:428
+#: avant-preferences/window.glade:491 avant-preferences/window.glade:583
+#: avant-preferences/window.glade:597 avant-preferences/window.glade:604
+#: avant-preferences/window.glade:635 avant-preferences/window.glade:649
+#: avant-preferences/window.glade:656 avant-preferences/window.glade:690
+#: avant-preferences/window.glade:746 avant-preferences/window.glade:760
+#: avant-preferences/window.glade:767 avant-preferences/window.glade:798
+#: avant-preferences/window.glade:812 avant-preferences/window.glade:819
+#: avant-preferences/window.glade:853 avant-preferences/window.glade:909
+#: avant-preferences/window.glade:923 avant-preferences/window.glade:930
+#: avant-preferences/window.glade:961 avant-preferences/window.glade:975
+#: avant-preferences/window.glade:982 avant-preferences/window.glade:1016
+#: avant-preferences/window.glade:1066 avant-preferences/window.glade:1073
+#: avant-preferences/window.glade:1096 avant-preferences/window.glade:1103
+#: avant-preferences/window.glade:1134 avant-preferences/window.glade:1152
+#: avant-preferences/window.glade:1159 avant-preferences/window.glade:1193
+#: avant-preferences/window.glade:1243 avant-preferences/window.glade:1250
+#: avant-preferences/window.glade:1284 avant-preferences/window.glade:1370
+#: avant-preferences/window.glade:1377 avant-preferences/window.glade:1411
+#: avant-preferences/window.glade:1447 avant-preferences/window.glade:1477
+#: avant-preferences/window.glade:1484
+msgid "fill"
+msgstr ""
+
+#: avant-preferences/window.glade:106 avant-preferences/window.glade:158
+#: avant-preferences/window.glade:588 avant-preferences/window.glade:640
+#: avant-preferences/window.glade:751 avant-preferences/window.glade:803
+#: avant-preferences/window.glade:914 avant-preferences/window.glade:966
+msgid "GtkColorButton"
+msgstr ""
+
+#: avant-preferences/window.glade:106
+#: avant-preferences/avant-preferences.py:144
+msgid "textcolor"
+msgstr ""
+
+#: avant-preferences/window.glade:109 avant-preferences/window.glade:161
+#: avant-preferences/window.glade:591 avant-preferences/window.glade:643
+#: avant-preferences/window.glade:754 avant-preferences/window.glade:806
+#: avant-preferences/window.glade:917 avant-preferences/window.glade:969
+msgid "use_alpha"
+msgstr ""
+
+#: avant-preferences/window.glade:110 avant-preferences/window.glade:162
+#: avant-preferences/window.glade:240 avant-preferences/window.glade:322
+#: avant-preferences/window.glade:592 avant-preferences/window.glade:644
+#: avant-preferences/window.glade:755 avant-preferences/window.glade:807
+#: avant-preferences/window.glade:918 avant-preferences/window.glade:970
+#: avant-preferences/window.glade:1058 avant-preferences/window.glade:1235
+#: avant-preferences/window.glade:1362 avant-preferences/window.glade:1472
+msgid "focus_on_click"
+msgstr ""
+
+#: avant-preferences/window.glade:127
+msgid "hbox2"
+msgstr ""
+
+#: avant-preferences/window.glade:133
+msgid "label6"
+msgstr ""
+
+#: avant-preferences/window.glade:158
+#: avant-preferences/avant-preferences.py:145
+msgid "shadowcolor"
+msgstr ""
+
+#: avant-preferences/window.glade:179
+msgid "hbox5"
+msgstr ""
+
+#: avant-preferences/window.glade:185
+msgid "label9"
+msgstr ""
+
+#: avant-preferences/window.glade:210
+msgid "GtkSpinButton"
+msgstr ""
+
+#: avant-preferences/window.glade:210
+#: avant-preferences/avant-preferences.py:140
+msgid "fontsizespin"
+msgstr ""
+
+#: avant-preferences/window.glade:213
+msgid "climb_rate"
+msgstr ""
+
+#: avant-preferences/window.glade:214 avant-preferences/window.glade:1144
+msgid "digits"
+msgstr ""
+
+#: avant-preferences/window.glade:215
+msgid "numeric"
+msgstr ""
+
+#: avant-preferences/window.glade:216 avant-preferences/window.glade:1145
+msgid "update_policy"
+msgstr ""
+
+#: avant-preferences/window.glade:217
+msgid "snap_to_ticks"
+msgstr ""
+
+#: avant-preferences/window.glade:219 avant-preferences/window.glade:1147
+msgid "adjustment"
+msgstr ""
+
+#: avant-preferences/window.glade:236 avant-preferences/window.glade:318
+#: avant-preferences/window.glade:1052 avant-preferences/window.glade:1229
+#: avant-preferences/window.glade:1356
+msgid "GtkCheckButton"
+msgstr ""
+
+#: avant-preferences/window.glade:236
+#: avant-preferences/avant-preferences.py:134
+msgid "italiccheck"
+msgstr ""
+
+#: avant-preferences/window.glade:239 avant-preferences/window.glade:321
+#: avant-preferences/window.glade:1057 avant-preferences/window.glade:1234
+#: avant-preferences/window.glade:1361 avant-preferences/window.glade:1471
+msgid "relief"
+msgstr ""
+
+#: avant-preferences/window.glade:241 avant-preferences/window.glade:323
+#: avant-preferences/window.glade:1059 avant-preferences/window.glade:1236
+#: avant-preferences/window.glade:1363
+msgid "active"
+msgstr ""
+
+#: avant-preferences/window.glade:242 avant-preferences/window.glade:324
+#: avant-preferences/window.glade:1060 avant-preferences/window.glade:1237
+#: avant-preferences/window.glade:1364
+msgid "inconsistent"
+msgstr ""
+
+#: avant-preferences/window.glade:243 avant-preferences/window.glade:325
+#: avant-preferences/window.glade:1061 avant-preferences/window.glade:1238
+#: avant-preferences/window.glade:1365
+msgid "draw_indicator"
+msgstr ""
+
+#: avant-preferences/window.glade:244
+#: avant-preferences/avant-preferences.py:220
+msgid "toggled"
+msgstr ""
+
+#: avant-preferences/window.glade:244
+msgid "on_italiccheck_toggled"
+msgstr ""
+
+#: avant-preferences/window.glade:244
+msgid "Tue, 23 Jan 2007 17:42:57 GMT"
+msgstr ""
+
+#: avant-preferences/window.glade:247
+msgid "alignment2"
+msgstr ""
+
+#: avant-preferences/window.glade:259
+msgid "hbox3"
+msgstr ""
+
+#: avant-preferences/window.glade:265 avant-preferences/window.glade:346
+msgid "GtkImage"
+msgstr ""
+
+#: avant-preferences/window.glade:265
+msgid "image1"
+msgstr ""
+
+#: avant-preferences/window.glade:267 avant-preferences/window.glade:348
+msgid "stock"
+msgstr ""
+
+#: avant-preferences/window.glade:268 avant-preferences/window.glade:349
+msgid "icon_size"
+msgstr ""
+
+#: avant-preferences/window.glade:282
+msgid "label7"
+msgstr ""
+
+#: avant-preferences/window.glade:318
+#: avant-preferences/avant-preferences.py:135
+msgid "boldcheck"
+msgstr ""
+
+#: avant-preferences/window.glade:328
+msgid "alignment3"
+msgstr ""
+
+#: avant-preferences/window.glade:340
+msgid "hbox4"
+msgstr ""
+
+#: avant-preferences/window.glade:346
+msgid "image2"
+msgstr ""
+
+#: avant-preferences/window.glade:363
+msgid "label8"
+msgstr ""
+
+#: avant-preferences/window.glade:403
+msgid "label3"
+msgstr ""
+
+#: avant-preferences/window.glade:433
+msgid "frame2"
+msgstr ""
+
+#: avant-preferences/window.glade:440
+msgid "alignment4"
+msgstr ""
+
+#: avant-preferences/window.glade:452 avant-preferences/window.glade:1084
+msgid "GtkFileChooserButton"
+msgstr ""
+
+#: avant-preferences/window.glade:452
+#: avant-preferences/avant-preferences.py:137
+msgid "activefilechooser"
+msgstr ""
+
+#: avant-preferences/window.glade:455 avant-preferences/window.glade:1087
+msgid "action"
+msgstr ""
+
+#: avant-preferences/window.glade:456 avant-preferences/window.glade:1088
+msgid "local_only"
+msgstr ""
+
+#: avant-preferences/window.glade:457 avant-preferences/window.glade:1089
+msgid "show_hidden"
+msgstr ""
+
+#: avant-preferences/window.glade:458 avant-preferences/window.glade:1090
+msgid "do_overwrite_confirmation"
+msgstr ""
+
+#: avant-preferences/window.glade:466
+msgid "label10"
+msgstr ""
+
+#: avant-preferences/window.glade:496 avant-preferences/window.glade:1289
+#: avant-preferences/window.glade:1416
+msgid "tab_expand"
+msgstr ""
+
+#: avant-preferences/window.glade:497 avant-preferences/window.glade:1290
+#: avant-preferences/window.glade:1417
+msgid "tab_fill"
+msgstr ""
+
+#: avant-preferences/window.glade:502
+msgid "label1"
+msgstr ""
+
+#: avant-preferences/window.glade:525
+msgid "vbox4"
+msgstr ""
+
+#: avant-preferences/window.glade:532
+msgid "frame8"
+msgstr ""
+
+#: avant-preferences/window.glade:539
+msgid "alignment10"
+msgstr ""
+
+#: avant-preferences/window.glade:551
+msgid "vbox11"
+msgstr ""
+
+#: avant-preferences/window.glade:557
+msgid "hbox18"
+msgstr ""
+
+#: avant-preferences/window.glade:563
+msgid "label29"
+msgstr ""
+
+#: avant-preferences/window.glade:588
+#: avant-preferences/avant-preferences.py:147
+msgid "mainbordercolor"
+msgstr ""
+
+#: avant-preferences/window.glade:609
+msgid "hbox19"
+msgstr ""
+
+#: avant-preferences/window.glade:615
+msgid "label30"
+msgstr ""
+
+#: avant-preferences/window.glade:640
+#: avant-preferences/avant-preferences.py:148
+msgid "internalbordercolor"
+msgstr ""
+
+#: avant-preferences/window.glade:665
+msgid "label31"
+msgstr ""
+
+#: avant-preferences/window.glade:695
+msgid "frame3"
+msgstr ""
+
+#: avant-preferences/window.glade:702
+msgid "alignment5"
+msgstr ""
+
+#: avant-preferences/window.glade:714
+msgid "vbox5"
+msgstr ""
+
+#: avant-preferences/window.glade:720
+msgid "hbox8"
+msgstr ""
+
+#: avant-preferences/window.glade:726
+msgid "label11"
+msgstr ""
+
+#: avant-preferences/window.glade:751
+#: avant-preferences/avant-preferences.py:150
+msgid "gradientcolor1"
+msgstr ""
+
+#: avant-preferences/window.glade:772
+msgid "hbox9"
+msgstr ""
+
+#: avant-preferences/window.glade:778
+msgid "label12"
+msgstr ""
+
+#: avant-preferences/window.glade:803
+#: avant-preferences/avant-preferences.py:151
+msgid "gradientcolor2"
+msgstr ""
+
+#: avant-preferences/window.glade:828
+msgid "label16"
+msgstr ""
+
+#: avant-preferences/window.glade:858
+msgid "frame4"
+msgstr ""
+
+#: avant-preferences/window.glade:865
+msgid "alignment6"
+msgstr ""
+
+#: avant-preferences/window.glade:877
+msgid "vbox6"
+msgstr ""
+
+#: avant-preferences/window.glade:883
+msgid "hbox10"
+msgstr ""
+
+#: avant-preferences/window.glade:889
+msgid "label17"
+msgstr ""
+
+#: avant-preferences/window.glade:914
+#: avant-preferences/avant-preferences.py:153
+msgid "highlightcolor1"
+msgstr ""
+
+#: avant-preferences/window.glade:935
+msgid "hbox11"
+msgstr ""
+
+#: avant-preferences/window.glade:941
+msgid "label18"
+msgstr ""
+
+#: avant-preferences/window.glade:966
+#: avant-preferences/avant-preferences.py:154
+msgid "highlightcolor2"
+msgstr ""
+
+#: avant-preferences/window.glade:991
+msgid "label19"
+msgstr ""
+
+#: avant-preferences/window.glade:1021
+msgid "frame5"
+msgstr ""
+
+#: avant-preferences/window.glade:1028
+msgid "alignment7"
+msgstr ""
+
+#: avant-preferences/window.glade:1040
+msgid "vbox7"
+msgstr ""
+
+#: avant-preferences/window.glade:1046
+msgid "hbox12"
+msgstr ""
+
+#: avant-preferences/window.glade:1052
+#: avant-preferences/avant-preferences.py:131
+msgid "patterncheck"
+msgstr ""
+
+#: avant-preferences/window.glade:1078
+msgid "hbox13"
+msgstr ""
+
+#: avant-preferences/window.glade:1084
+#: avant-preferences/avant-preferences.py:138
+msgid "patternchooserbutton"
+msgstr ""
+
+#: avant-preferences/window.glade:1108
+msgid "hbox14"
+msgstr ""
+
+#: avant-preferences/window.glade:1114
+msgid "label23"
+msgstr ""
+
+#: avant-preferences/window.glade:1139
+msgid "GtkHScale"
+msgstr ""
+
+#: avant-preferences/window.glade:1139
+#: avant-preferences/avant-preferences.py:142
+msgid "patternscale"
+msgstr ""
+
+#: avant-preferences/window.glade:1142
+msgid "draw_value"
+msgstr ""
+
+#: avant-preferences/window.glade:1143
+msgid "value_pos"
+msgstr ""
+
+#: avant-preferences/window.glade:1146
+msgid "inverted"
+msgstr ""
+
+#: avant-preferences/window.glade:1168
+msgid "label22"
+msgstr ""
+
+#: avant-preferences/window.glade:1198
+msgid "frame6"
+msgstr ""
+
+#: avant-preferences/window.glade:1205
+msgid "alignment8"
+msgstr ""
+
+#: avant-preferences/window.glade:1217
+msgid "vbox8"
+msgstr ""
+
+#: avant-preferences/window.glade:1223
+msgid "hbox15"
+msgstr ""
+
+#: avant-preferences/window.glade:1229
+#: avant-preferences/avant-preferences.py:132
+msgid "roundedcornerscheck"
+msgstr ""
+
+#: avant-preferences/window.glade:1259
+msgid "label25"
+msgstr ""
+
+#: avant-preferences/window.glade:1295
+msgid "label2"
+msgstr ""
+
+#: avant-preferences/window.glade:1318
+msgid "vbox9"
+msgstr ""
+
+#: avant-preferences/window.glade:1325
+msgid "frame7"
+msgstr ""
+
+#: avant-preferences/window.glade:1332
+msgid "alignment9"
+msgstr ""
+
+#: avant-preferences/window.glade:1344
+msgid "vbox10"
+msgstr ""
+
+#: avant-preferences/window.glade:1350
+msgid "hbox17"
+msgstr ""
+
+#: avant-preferences/window.glade:1356
+#: avant-preferences/avant-preferences.py:133
+msgid "allwindowscheck"
+msgstr ""
+
+#: avant-preferences/window.glade:1386
+msgid "label28"
+msgstr ""
+
+#: avant-preferences/window.glade:1422
+msgid "label4"
+msgstr ""
+
+#: avant-preferences/window.glade:1452
+msgid "hbox7"
+msgstr ""
+
+#: avant-preferences/window.glade:1466
+msgid "GtkButton"
+msgstr ""
+
+#: avant-preferences/window.glade:1466
+msgid "closebutton"
+msgstr ""
+
+#: avant-preferences/window.glade:1470
+msgid "use_stock"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:26
+msgid "2.0"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:50
+msgid "/apps/avant-window-navigator/bar"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:51
+msgid "/apps/avant-window-navigator/bar/rounded_corners"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:52
+msgid "/apps/avant-window-navigator/bar/corner_radius"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:53
+msgid "/apps/avant-window-navigator/bar/render_pattern"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:54
+msgid "/apps/avant-window-navigator/bar/pattern_uri"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:55
+msgid "/apps/avant-window-navigator/bar/pattern_alpha"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:56
+msgid "/apps/avant-window-navigator/bar/glass_step_1"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:57
+msgid "/apps/avant-window-navigator/bar/glass_step_2"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:58
+msgid "/apps/avant-window-navigator/bar/glass_histep_1"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:59
+msgid "/apps/avant-window-navigator/bar/glass_histep_2"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:60
+msgid "/apps/avant-window-navigator/bar/border_color"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:61
+msgid "/apps/avant-window-navigator/bar/hilight_color"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:63
+msgid "/apps/avant-window-navigator/window_manager"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:64
+msgid "/apps/avant-window-navigator/window_manager/show_all_windows"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:66
+msgid "/apps/avant-window-navigator/app"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:67
+msgid "/apps/avant-window-navigator/app/active_png"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:69
+msgid "/apps/avant-window-navigator/title"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:70
+msgid "/apps/avant-window-navigator/title/text_color"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:71
+msgid "/apps/avant-window-navigator/title/shadow_color"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:72
+msgid "/apps/avant-window-navigator/title/italic"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:73
+msgid "/apps/avant-window-navigator/title/bold"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:74
+msgid "/apps/avant-window-navigator/title/font_size"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:76
+msgid "/usr/share/avant-window-navigator/"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:80
+msgid "return the hexadecimal string representation of integer n"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:83
+msgid "00"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:84
+#, c-format
+msgid "%X"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:87
+msgid "return the integer value of a hexadecimal string s"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:91
+msgid "returns a gtk.gdk.Color from a hex string RRGGBBAA"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:98
+msgid "makes avant-readable string from gdk.color & alpha (0-65535) "
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:110
+msgid "This is the main class, duh"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:123
+msgid "window.glade"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:129
+msgid "delete-event"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:160
+msgid "color-set"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:170
+#: avant-preferences/avant-preferences.py:182
+msgid "value-changed"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:189
+msgid "sets up png choosers"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:191
+msgid "PNG Files"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:192
+msgid "*.png"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:193
+msgid "*.PNG"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:197
+msgid "update-preview"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:199
+msgid "selection-changed"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:218
+msgid "sets up checkboxes"
+msgstr ""
+
+#: avant-preferences/avant-preferences.py:226
+msgid "__main__"
+msgstr ""
