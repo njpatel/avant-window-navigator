@@ -79,8 +79,8 @@ awn_title_new( AwnSettings *sets )
 	GdkScreen *screen = gtk_window_get_screen(GTK_WINDOW(this));
 	AWN_TITLE_DEFAULT_WIDTH = gdk_screen_get_width(screen);
 	
-	        
-        gtk_window_resize (GTK_WIDGET(this), AWN_TITLE_DEFAULT_WIDTH, AWN_TITLE_DEFAULT_HEIGHT);
+	gtk_window_resize (GTK_WIDGET(this), AWN_TITLE_DEFAULT_WIDTH, AWN_TITLE_DEFAULT_HEIGHT);
+        
         g_signal_connect (G_OBJECT (this),"destroy",
 			  G_CALLBACK (gtk_main_quit), NULL);
 	

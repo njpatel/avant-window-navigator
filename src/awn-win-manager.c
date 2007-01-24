@@ -34,6 +34,7 @@ static AwnApp *active		= NULL;
 static GtkWidget *bar		= NULL;
 static GtkWidget *title		= NULL;
 static AwnSettings *settings	= NULL;
+static AwnApp *last_active 	= NULL;
 
 static void awn_win_mgr_window_opened (WnckScreen *screen, WnckWindow *window, GtkWidget *hbox);
 static void awn_win_mgr_window_closed (WnckScreen *screen, WnckWindow *window, GtkWidget *hbox);
@@ -115,6 +116,9 @@ _destroy (AwnApp *app, gpointer xid)
 	
 	id = GPOINTER_TO_UINT(xid);
 	if (app->xid == id) {
+		if (last_active)
+			if (app->xid == last_active->xid)
+				last_active = NULL;
 		app->window = NULL;
 		gtk_widget_hide(app->alignment);
 		apps = g_list_remove(apps, app);
@@ -139,7 +143,7 @@ awn_win_mgr_window_closed (WnckScreen *screen, WnckWindow *window, GtkWidget *hb
 	g_list_foreach(apps, _refresh, (gpointer)space);
 }
 
-static AwnApp *last_active = NULL;
+
 
 static void
 _activate (AwnApp *app, gpointer xid) 
