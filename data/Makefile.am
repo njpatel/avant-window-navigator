@@ -1,5 +1,12 @@
 SUBDIRS = active
 
+icon_DATA =  \
+	avant-window-navigator.svg	\
+	avant-window-navigator-24.png	\
+	avant-window-navigator-48.png
+
+icondir = $(pkgdatadir)
+
 schemasdir   = @GCONF_SCHEMA_FILE_DIR@
 schemas_DATA = avant-window-navigator.schemas
 @INTLTOOL_SCHEMAS_RULE@
@@ -15,6 +22,6 @@ install-data-local:
 		done \
 	fi
 
-EXTRA_DIST = $(schemas_DATA).in.in 
+EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA)
 
 CLEANFILES = $(schemas_DATA) $(schemas_DATA).in
