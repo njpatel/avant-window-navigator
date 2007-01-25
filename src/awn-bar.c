@@ -27,12 +27,13 @@
 
 G_DEFINE_TYPE (AwnBar, awn_bar, GTK_TYPE_WINDOW)
 
-#define AWN_BAR_DEFAULT_WIDTH		1280
+#define AWN_BAR_DEFAULT_WIDTH		1024
 #define AWN_BAR_DEFAULT_HEIGHT		100
 
 static AwnSettings *settings		= NULL;
 static gint dest_width			= 0;
 static current_width 			= 400;
+static gint screen_width		= 1024;
 
 static void awn_bar_destroy (GtkObject *object);
 static void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
@@ -75,9 +76,8 @@ awn_bar_new( AwnSettings *set )
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);
         
-        gtk_window_resize (GTK_WIDGET(this), AWN_BAR_DEFAULT_WIDTH, AWN_BAR_DEFAULT_HEIGHT);
-        
         _position_window(GTK_WINDOW(this));
+        
         g_signal_connect (G_OBJECT (this), "expose-event",
 			  G_CALLBACK (_on_expose), NULL);
 	
@@ -192,7 +192,7 @@ render (cairo_t *cr, gint x_width, gint height)
 	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 	cairo_paint (cr);
 	
-	double x = (1280-width)/2;
+	double x = (screen_width-width)/2;
 	
 	cairo_move_to(cr, x, 0);
 	cairo_set_line_width(cr, 1.0);
@@ -326,6 +326,7 @@ _on_configure (GtkWidget* pWidget, GdkEventConfigure* pEvent, gpointer userData)
 	gint iNewWidth = pEvent->width;
 	gint iNewHeight = pEvent->height;
 
+	/* if size has changed, update shape */
 	if (1)
 	{
 		_update_input_shape (pWidget, iNewWidth, iNewHeight);
@@ -347,10 +348,12 @@ _position_window (GtkWidget *window)
 	screen = gtk_window_get_screen(GTK_WINDOW(window));
 	sw = gdk_screen_get_width(screen);
 	sh = gdk_screen_get_height(screen);
-	
+	screen_width = sw;
 	x = (int) ((sw - ww) / 2);
 	y = (int) (sh-wh);
 	
+	if (ww != sw)
+		gtk_window_resize(GTK_WINDOW(window), sw, 100);
 	gtk_window_move(GTK_WINDOW(window), x, y);
 }
 
