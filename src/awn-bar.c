@@ -156,22 +156,7 @@ glass_engine (cairo_t *cr, double x, gint width, gint height)
 	cairo_fill(cr);
 	cairo_pattern_destroy(pat);
 	
-	/* hilight gradient */
-	pat = cairo_pattern_create_linear (0.0, 0.0, 0.0, height);
-	cairo_pattern_add_color_stop_rgba (pat, 0.5,  
-						settings->g_histep_1.red, 
-				   		settings->g_histep_1.green, 
-				   		settings->g_histep_1.blue,
-				   		settings->g_histep_1.alpha);
-	cairo_pattern_add_color_stop_rgba (pat, 1,   
-						settings->g_histep_2.red, 
-				   		settings->g_histep_2.green, 
-				   		settings->g_histep_2.blue,
-				   		settings->g_histep_2.alpha);
-	render_rect (cr, x+1, height/2, width-2, height/5, 0);
-	cairo_set_source(cr, pat);
-	cairo_fill(cr);
-	cairo_pattern_destroy(pat);
+
 
 }
 
@@ -218,6 +203,25 @@ render (cairo_t *cr, gint x_width, gint height)
 	
 	if (settings->render_pattern)
 		pattern_engine(cr, x, width, height);
+	
+	/* hilight gradient */
+	cairo_pattern_t *pat;
+	
+	pat = cairo_pattern_create_linear (0.0, 0.0, 0.0, height);
+	cairo_pattern_add_color_stop_rgba (pat, 0.5,  
+						settings->g_histep_1.red, 
+				   		settings->g_histep_1.green, 
+				   		settings->g_histep_1.blue,
+				   		settings->g_histep_1.alpha);
+	cairo_pattern_add_color_stop_rgba (pat, 1,   
+						settings->g_histep_2.red, 
+				   		settings->g_histep_2.green, 
+				   		settings->g_histep_2.blue,
+				   		settings->g_histep_2.alpha);
+	render_rect (cr, x+1, height/2, width-2, height/5, 0);
+	cairo_set_source(cr, pat);
+	cairo_fill(cr);
+	cairo_pattern_destroy(pat);
 	
 	/* internal hi-lightborder */
 	cairo_set_source_rgba (cr, settings->hilight_color.red, 

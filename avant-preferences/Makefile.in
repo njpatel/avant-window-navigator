@@ -222,7 +222,7 @@ glade_DATA = \
 
 gladedir = $(pkgdatadir)/
 EXTRA_DIST = $(glade_DATA) \
-	avant-preferences.py
+	avant-preferences.in.py
 
 all: all-am
 
@@ -405,6 +405,7 @@ uninstall-am: uninstall-gladeDATA uninstall-info-am
 
 
 install-exec-local:
+	sed -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" avant-preferences.in.py > avant-preferences.py
 	$(INSTALL) -m 755 avant-preferences.py $(DESTDIR)$(bindir)/avant-preferences
 
 clean:

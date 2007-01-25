@@ -88,6 +88,8 @@ awn_app_new (WnckWindow *window, AwnSettings *sets)
 	app->current_state = AWN_APP_STATE_NORMAL;
 	app->effect_lock = FALSE;
 	app->mouse_in = FALSE;
+	if ( wnck_window_is_skip_tasklist(window) )
+		return app;
 	g_timeout_add(AWN_FRAME_RATE, (GSourceFunc)opening_effect, (gpointer)app);
 	return app;
 }

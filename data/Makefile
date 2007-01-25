@@ -59,9 +59,10 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(schemasdir)"
+am__installdirs = "$(DESTDIR)$(icondir)" "$(DESTDIR)$(schemasdir)"
+iconDATA_INSTALL = $(INSTALL_DATA)
 schemasDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(schemas_DATA)
+DATA = $(icon_DATA) $(schemas_DATA)
 ETAGS = etags
 CTAGS = ctags
 DIST_SUBDIRS = $(SUBDIRS)
@@ -227,9 +228,15 @@ slicelocaledir = ${prefix}/${DATADIRNAME}/locale
 sysconfdir = ${prefix}/etc
 target_alias = 
 SUBDIRS = active
+icon_DATA = \
+	avant-window-navigator.svg	\
+	avant-window-navigator-24.png	\
+	avant-window-navigator-48.png
+
+icondir = $(pkgdatadir)
 schemasdir = $(sysconfdir)/gconf/schemas
 schemas_DATA = avant-window-navigator.schemas
-EXTRA_DIST = $(schemas_DATA).in.in 
+EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA)
 CLEANFILES = $(schemas_DATA) $(schemas_DATA).in
 all: all-recursive
 
@@ -273,6 +280,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-iconDATA: $(icon_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icondir)" || $(mkdir_p) "$(DESTDIR)$(icondir)"
+	@list='$(icon_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(iconDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icondir)/$$f'"; \
+	  $(iconDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icondir)/$$f"; \
+	done
+
+uninstall-iconDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icon_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icondir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icondir)/$$f"; \
+	done
 install-schemasDATA: $(schemas_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(schemasdir)" || $(mkdir_p) "$(DESTDIR)$(schemasdir)"
@@ -470,7 +494,7 @@ check: check-recursive
 all-am: Makefile $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(schemasdir)"; do \
+	for dir in "$(DESTDIR)$(icondir)" "$(DESTDIR)$(schemasdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-recursive
@@ -517,7 +541,8 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-data-local install-schemasDATA
+install-data-am: install-data-local install-iconDATA \
+	install-schemasDATA
 
 install-exec-am:
 
@@ -543,7 +568,8 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-info-am uninstall-schemasDATA
+uninstall-am: uninstall-iconDATA uninstall-info-am \
+	uninstall-schemasDATA
 
 uninstall-info: uninstall-info-recursive
 
@@ -553,13 +579,14 @@ uninstall-info: uninstall-info-recursive
 	distclean-recursive distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
 	install-data-am install-data-local install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-schemasDATA install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
+	install-exec-am install-iconDATA install-info install-info-am \
+	install-man install-schemasDATA install-strip installcheck \
+	installcheck-am installdirs installdirs-am maintainer-clean \
 	maintainer-clean-generic maintainer-clean-recursive \
 	mostlyclean mostlyclean-generic mostlyclean-libtool \
 	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-info-am uninstall-schemasDATA
+	uninstall uninstall-am uninstall-iconDATA uninstall-info-am \
+	uninstall-schemasDATA
 
 %.schemas:   %.schemas.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -s -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
 

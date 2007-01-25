@@ -20,7 +20,7 @@
 #
 #  Notes: Avant Window Navigator preferences window
 
-import sys
+import sys, os
 try:
  	import pygtk
   	pygtk.require("2.0")
@@ -73,7 +73,7 @@ TITLE_ITALIC		= "/apps/avant-window-navigator/title/italic" 			#bool
 TITLE_BOLD		= "/apps/avant-window-navigator/title/bold" 			#bool
 TITLE_FONT_SIZE		= "/apps/avant-window-navigator/title/font_size" 		#float
 
-DATA_DIR = "/usr/share/avant-window-navigator/"
+DATA_DIR = "/usr/share/avant-window-navigator"
 
 
 def dec2hex(n):
@@ -81,7 +81,7 @@ def dec2hex(n):
 	n = int(n)
 	if n == 0:
 		return "00"
-	return "%X" % n
+	return "%0.2X" % n
  
 def hex2dec(s):
 	"""return the integer value of a hexadecimal string s"""
@@ -120,13 +120,19 @@ class main:
 		self.client.add_dir(TITLE_PATH, gconf.CLIENT_PRELOAD_NONE)
 		
 		#Set the Glade file
-		self.gladefile = DATA_DIR + "window.glade" 
+		self.gladefile = os.path.join(DATA_DIR, "window.glade") 
 		print self.gladefile 
 	        self.wTree = gtk.glade.XML(self.gladefile, domain=APP) 
 		
 		#Get the Main Window, and connect the "destroy" event
 		self.window = self.wTree.get_widget("main_window")
 		self.window.connect("delete-event", gtk.main_quit)
+		
+		close = self.wTree.get_widget("closebutton")
+		close.connect("clicked", gtk.main_quit)
+		
+		refresh = self.wTree.get_widget("refreshbutton")
+		refresh.connect("clicked", self.refresh)
 		
 		self.setup_bool (BAR_RENDER_PATTERN, self.wTree.get_widget("patterncheck"))
 		self.setup_bool (BAR_ROUNDED_CORNERS, self.wTree.get_widget("roundedcornerscheck"))
@@ -153,6 +159,23 @@ class main:
 		self.setup_color(BAR_GLASS_HISTEP_1, self.wTree.get_widget("highlightcolor1"))
 		self.setup_color(BAR_GLASS_HISTEP_1, self.wTree.get_widget("highlightcolor2"))
 
+	def refresh(self, button):
+		w = gtk.Window()
+		i = gtk.IconTheme()
+		w.set_icon(i.load_icon("gtk-refresh", 48, gtk.ICON_LOOKUP_FORCE_SVG))
+		v = gtk.VBox()
+		l = gtk.Label("Refreshed")
+		b = gtk.Button(stock="gtk-close")
+		b.connect("clicked", self.win_destroy, w)
+		v.pack_start(l, True, True, 2)
+		v.pack_start(b)
+		w.add(v)
+		w.resize(200, 100)
+		w.show_all()
+	
+	def win_destroy(self, button, w):
+		w.destroy()
+	
 	def setup_color(self, key, colorbut):
 		color, alpha = make_color(self.client.get_string(key))
 		colorbut.set_color(color)
