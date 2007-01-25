@@ -75,6 +75,8 @@ awn_bar_new( AwnSettings *set )
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);
         
+        gtk_window_resize (GTK_WIDGET(this), AWN_BAR_DEFAULT_WIDTH, AWN_BAR_DEFAULT_HEIGHT);
+        
         _position_window(GTK_WINDOW(this));
         g_signal_connect (G_OBJECT (this), "expose-event",
 			  G_CALLBACK (_on_expose), NULL);
@@ -337,18 +339,13 @@ _position_window (GtkWidget *window)
 	gint sw, sh;
 	gint x, y;
 	
+	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
 	screen = gtk_window_get_screen(GTK_WINDOW(window));
 	sw = gdk_screen_get_width(screen);
 	sh = gdk_screen_get_height(screen);
 	
-	gtk_window_resize(window, sw, AWN_BAR_DEFAULT_HEIGHT);
-	
-	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
-	
-	
 	x = (int) ((sw - ww) / 2);
 	y = (int) (sh-wh);
-	
 	
 	gtk_window_move(GTK_WINDOW(window), x, y);
 }

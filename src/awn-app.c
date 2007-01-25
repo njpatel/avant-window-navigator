@@ -109,9 +109,8 @@ opening_effect (AwnApp *app)
 		app->effect_direction = AWN_APP_EFFECT_DIRECTION_UP;
 		
 	}
-	GtkWidget *align = app->alignment;
-	g_return_val_if_fail(GTK_IS_ALIGNMENT(align), FALSE);
 	
+	GtkWidget *align = app->alignment;
 	gint max = 10;
 	
 	app->current_step++;
@@ -299,7 +298,7 @@ mouse_over_effect (AwnApp *app)
 		app->effect_direction = AWN_APP_EFFECT_DIRECTION_UP;
 		
 	}
-
+	
 	GtkWidget *align = app->alignment;
 	gint max = 10;
 	
@@ -373,7 +372,6 @@ awn_app_close(AwnApp *app)
 {
 	app->current_state = AWN_APP_STATE_CLOSING;
 	app->current_effect = AWN_APP_EFFECT_CLOSING;
-	sleep(1);
 	gtk_widget_destroy(app->alignment);
 	if (app->active_icon)
 		g_object_unref(G_OBJECT(app->active_icon));
