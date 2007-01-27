@@ -2,6 +2,13 @@ glade_DATA =  \
 	   window.glade
 gladedir = $(pkgdatadir)/
 
+desktopdir   = $(datadir)/applications
+desktop_DATA = avant-preferences.desktop
+@INTLTOOL_DESKTOP_RULE@
+
+
+$(desktop_DATA).in: $(desktop_DATA).in.in
+	sed -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" $< > $@
 
 install-exec-local:
 	sed -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" avant-preferences.in.py > avant-preferences.py
@@ -11,4 +18,4 @@ EXTRA_DIST = $(glade_DATA) \
 	avant-preferences.in.py
 
 clean:
-	rm -f *.pyo *.pyc *.bak *.gladep
+	rm -f *.pyo *.pyc *.bak *.gladep $(desktop_DATA) $(desktop_DATA).in

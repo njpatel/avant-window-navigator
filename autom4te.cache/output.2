@@ -463,7 +463,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT ACLOCAL_AMFLAGS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE WARN_CFLAGS CPP EGREP build build_cpu build_vendor build_os host host_cpu host_vendor host_os SED LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL GETTEXT_PACKAGE INTLTOOL_DESKTOP_RULE INTLTOOL_DIRECTORY_RULE INTLTOOL_KEYS_RULE INTLTOOL_PROP_RULE INTLTOOL_OAF_RULE INTLTOOL_PONG_RULE INTLTOOL_SERVER_RULE INTLTOOL_SHEET_RULE INTLTOOL_SOUNDLIST_RULE INTLTOOL_UI_RULE INTLTOOL_XAM_RULE INTLTOOL_KBD_RULE INTLTOOL_XML_RULE INTLTOOL_XML_NOMERGE_RULE INTLTOOL_CAVES_RULE INTLTOOL_SCHEMAS_RULE INTLTOOL_THEME_RULE INTLTOOL_SERVICE_RULE INTLTOOL_EXTRACT INTLTOOL_MERGE INTLTOOL_UPDATE INTLTOOL_PERL INTLTOOL_ICONV INTLTOOL_MSGFMT INTLTOOL_MSGMERGE INTLTOOL_XGETTEXT ALL_LINGUAS USE_NLS MSGFMT GMSGFMT XGETTEXT CATALOGS CATOBJEXT DATADIRNAME GMOFILES INSTOBJEXT INTLLIBS PO_IN_DATADIR_TRUE PO_IN_DATADIR_FALSE POFILES POSUB MKINSTALLDIRS slicelocaledir PKG_CONFIG GLIB_CFLAGS GLIB_LIBS GLIB_GENMARSHAL GOBJECT_QUERY GLIB_MKENUMS ac_pt_PKG_CONFIG AWN_CFLAGS AWN_LIBS GCONFTOOL GCONF_SCHEMA_CONFIG_SOURCE GCONF_SCHEMA_FILE_DIR GCONF_SCHEMAS_INSTALL_TRUE GCONF_SCHEMAS_INSTALL_FALSE LIB@&t@OBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT ACLOCAL_AMFLAGS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP EGREP build build_cpu build_vendor build_os host host_cpu host_vendor host_os SED LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL GETTEXT_PACKAGE INTLTOOL_DESKTOP_RULE INTLTOOL_DIRECTORY_RULE INTLTOOL_KEYS_RULE INTLTOOL_PROP_RULE INTLTOOL_OAF_RULE INTLTOOL_PONG_RULE INTLTOOL_SERVER_RULE INTLTOOL_SHEET_RULE INTLTOOL_SOUNDLIST_RULE INTLTOOL_UI_RULE INTLTOOL_XAM_RULE INTLTOOL_KBD_RULE INTLTOOL_XML_RULE INTLTOOL_XML_NOMERGE_RULE INTLTOOL_CAVES_RULE INTLTOOL_SCHEMAS_RULE INTLTOOL_THEME_RULE INTLTOOL_SERVICE_RULE INTLTOOL_EXTRACT INTLTOOL_MERGE INTLTOOL_UPDATE INTLTOOL_PERL INTLTOOL_ICONV INTLTOOL_MSGFMT INTLTOOL_MSGMERGE INTLTOOL_XGETTEXT ALL_LINGUAS USE_NLS MSGFMT GMSGFMT XGETTEXT CATALOGS CATOBJEXT DATADIRNAME GMOFILES INSTOBJEXT INTLLIBS PO_IN_DATADIR_TRUE PO_IN_DATADIR_FALSE POFILES POSUB MKINSTALLDIRS slicelocaledir PKG_CONFIG GLIB_CFLAGS GLIB_LIBS GLIB_GENMARSHAL GOBJECT_QUERY GLIB_MKENUMS ac_pt_PKG_CONFIG AWN_CFLAGS AWN_LIBS GCONFTOOL GCONF_SCHEMA_CONFIG_SOURCE GCONF_SCHEMA_FILE_DIR GCONF_SCHEMAS_INSTALL_TRUE GCONF_SCHEMAS_INSTALL_FALSE LIB@&t@OBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1039,11 +1039,8 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-maintainer-mode  enable make rules and dependencies not useful
 			  (and sometimes confusing) to the casual installer
-  --enable-compile-warnings=@<:@no/minimum/yes/maximum/error@:>@ 
-                          Turn on compiler warnings
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
-  --enable-iso-c          Try to warn if code is not ISO C
   --enable-shared@<:@=PKGS@:>@ 
                           build shared libraries @<:@default=yes@:>@
   --enable-static@<:@=PKGS@:>@ 
@@ -3184,143 +3181,6 @@ else
   am__fastdepCC_FALSE=
 fi
 
-
-
-
-            
-    # Check whether --enable-compile-warnings or --disable-compile-warnings was given.
-if test "${enable_compile_warnings+set}" = set; then
-  enableval="$enable_compile_warnings"
-  
-else
-  enable_compile_warnings="yes"
-fi; 
-
-    warnCFLAGS=
-    if test "x$GCC" != xyes; then
-	enable_compile_warnings=no
-    fi
-
-    warning_flags=
-    realsave_CFLAGS="$CFLAGS"
-
-    case "$enable_compile_warnings" in
-    no)
-	warning_flags=
-	;;
-    minimum)
-	warning_flags="-Wall"
-	;;
-    yes)
-	warning_flags="-Wall -Wmissing-prototypes"
-	;;
-    maximum|error)
-	warning_flags="-Wall -Wmissing-prototypes -Wnested-externs -Wpointer-arith"
-	CFLAGS="$warning_flags $CFLAGS"
-	for option in -Wno-sign-compare; do
-		SAVE_CFLAGS="$CFLAGS"
-		CFLAGS="$CFLAGS $option"
-		echo "$as_me:$LINENO: checking whether gcc understands $option" >&5
-echo $ECHO_N "checking whether gcc understands $option... $ECHO_C" >&6
-		cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  has_option=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-has_option=no
-fi
-rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
-		CFLAGS="$SAVE_CFLAGS"
-		echo "$as_me:$LINENO: result: $has_option" >&5
-echo "${ECHO_T}$has_option" >&6
-		if test $has_option = yes; then
-		  warning_flags="$warning_flags $option"
-		fi
-		unset has_option
-		unset SAVE_CFLAGS
-	done
-	unset option
-	if test "$enable_compile_warnings" = "error" ; then
-	    warning_flags="$warning_flags -Werror"
-	fi
-	;;
-    *)
-	{ { echo "$as_me:$LINENO: error: Unknown argument '$enable_compile_warnings' to --enable-compile-warnings" >&5
-echo "$as_me: error: Unknown argument '$enable_compile_warnings' to --enable-compile-warnings" >&2;}
-   { (exit 1); exit 1; }; }
-	;;
-    esac
-    CFLAGS="$realsave_CFLAGS"
-    echo "$as_me:$LINENO: checking what warning flags to pass to the C compiler" >&5
-echo $ECHO_N "checking what warning flags to pass to the C compiler... $ECHO_C" >&6
-    echo "$as_me:$LINENO: result: $warning_flags" >&5
-echo "${ECHO_T}$warning_flags" >&6
-
-    # Check whether --enable-iso-c or --disable-iso-c was given.
-if test "${enable_iso_c+set}" = set; then
-  enableval="$enable_iso_c"
-  
-else
-  enable_iso_c=no
-fi; 
-
-    echo "$as_me:$LINENO: checking what language compliance flags to pass to the C compiler" >&5
-echo $ECHO_N "checking what language compliance flags to pass to the C compiler... $ECHO_C" >&6
-    complCFLAGS=
-    if test "x$enable_iso_c" != "xno"; then
-	if test "x$GCC" = "xyes"; then
-	case " $CFLAGS " in
-	    *\ \	-ansi\ \	*) ;;
-	    *) complCFLAGS="$complCFLAGS -ansi" ;;
-	esac
-	case " $CFLAGS " in
-	    *\ \	-pedantic\ \	*) ;;
-	    *) complCFLAGS="$complCFLAGS -pedantic" ;;
-	esac
-	fi
-    fi
-    echo "$as_me:$LINENO: result: $complCFLAGS" >&5
-echo "${ECHO_T}$complCFLAGS" >&6
-
-    WARN_CFLAGS="$warning_flags $complCFLAGS"
-    
 
 
 echo "$as_me:$LINENO: checking for library containing strerror" >&5
@@ -22177,12 +22037,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_AWN_CFLAGS="$AWN_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \" \$COMMON_MODULES libwnck-1.0 librsvg-2.0 >= 2.13.91 gconf-2.0\"") >&5
-  ($PKG_CONFIG --exists --print-errors " $COMMON_MODULES libwnck-1.0 librsvg-2.0 >= 2.13.91 gconf-2.0") 2>&5
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \" \$COMMON_MODULES libwnck-1.0 gconf-2.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors " $COMMON_MODULES libwnck-1.0 gconf-2.0") 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_AWN_CFLAGS=`$PKG_CONFIG --cflags " $COMMON_MODULES libwnck-1.0 librsvg-2.0 >= 2.13.91 gconf-2.0" 2>/dev/null`
+  pkg_cv_AWN_CFLAGS=`$PKG_CONFIG --cflags " $COMMON_MODULES libwnck-1.0 gconf-2.0" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -22195,12 +22055,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_AWN_LIBS="$AWN_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \" \$COMMON_MODULES libwnck-1.0 librsvg-2.0 >= 2.13.91 gconf-2.0\"") >&5
-  ($PKG_CONFIG --exists --print-errors " $COMMON_MODULES libwnck-1.0 librsvg-2.0 >= 2.13.91 gconf-2.0") 2>&5
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \" \$COMMON_MODULES libwnck-1.0 gconf-2.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors " $COMMON_MODULES libwnck-1.0 gconf-2.0") 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_AWN_LIBS=`$PKG_CONFIG --libs " $COMMON_MODULES libwnck-1.0 librsvg-2.0 >= 2.13.91 gconf-2.0" 2>/dev/null`
+  pkg_cv_AWN_LIBS=`$PKG_CONFIG --libs " $COMMON_MODULES libwnck-1.0 gconf-2.0" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -22219,14 +22079,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        AWN_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors " $COMMON_MODULES libwnck-1.0 librsvg-2.0 >= 2.13.91 gconf-2.0"`
+	        AWN_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors " $COMMON_MODULES libwnck-1.0 gconf-2.0"`
         else 
-	        AWN_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors " $COMMON_MODULES libwnck-1.0 librsvg-2.0 >= 2.13.91 gconf-2.0"`
+	        AWN_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors " $COMMON_MODULES libwnck-1.0 gconf-2.0"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$AWN_PKG_ERRORS" >&5
 
-	{ { echo "$as_me:$LINENO: error: Package requirements ( $COMMON_MODULES libwnck-1.0 librsvg-2.0 >= 2.13.91 gconf-2.0) were not met:
+	{ { echo "$as_me:$LINENO: error: Package requirements ( $COMMON_MODULES libwnck-1.0 gconf-2.0) were not met:
 
 $AWN_PKG_ERRORS
 
@@ -22237,7 +22097,7 @@ Alternatively, you may set the environment variables AWN_CFLAGS
 and AWN_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 " >&5
-echo "$as_me: error: Package requirements ( $COMMON_MODULES libwnck-1.0 librsvg-2.0 >= 2.13.91 gconf-2.0) were not met:
+echo "$as_me: error: Package requirements ( $COMMON_MODULES libwnck-1.0 gconf-2.0) were not met:
 
 $AWN_PKG_ERRORS
 
@@ -23111,7 +22971,6 @@ s,@AMDEPBACKSLASH@,$AMDEPBACKSLASH,;t t
 s,@CCDEPMODE@,$CCDEPMODE,;t t
 s,@am__fastdepCC_TRUE@,$am__fastdepCC_TRUE,;t t
 s,@am__fastdepCC_FALSE@,$am__fastdepCC_FALSE,;t t
-s,@WARN_CFLAGS@,$WARN_CFLAGS,;t t
 s,@CPP@,$CPP,;t t
 s,@EGREP@,$EGREP,;t t
 s,@build@,$build,;t t

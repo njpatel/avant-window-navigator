@@ -53,9 +53,10 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(gladedir)"
+am__installdirs = "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(gladedir)"
+desktopDATA_INSTALL = $(INSTALL_DATA)
 gladeDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(glade_DATA)
+DATA = $(desktop_DATA) $(glade_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = ${SHELL} /home/njp/svn/avant-window-navigator/missing --run aclocal-1.9
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
@@ -68,8 +69,8 @@ AUTOCONF = ${SHELL} /home/njp/svn/avant-window-navigator/missing --run autoconf
 AUTOHEADER = ${SHELL} /home/njp/svn/avant-window-navigator/missing --run autoheader
 AUTOMAKE = ${SHELL} /home/njp/svn/avant-window-navigator/missing --run automake-1.9
 AWK = gawk
-AWN_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libwnck-1.0 -I/usr/include/librsvg-2 -I/usr/include/gconf/2 -I/usr/include/orbit-2.0  
-AWN_LIBS = -pthread -L/lib -lwnck-1 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lrsvg-2 -lgdk_pixbuf-2.0 -lgobject-2.0 -lgconf-2 -lORBit-2 -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lglib-2.0  
+AWN_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libwnck-1.0 -I/usr/include/gconf/2 -I/usr/include/orbit-2.0  
+AWN_LIBS = -pthread -L/lib -lwnck-1 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgconf-2 -lORBit-2 -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lglib-2.0  
 CATALOGS =  en_GB.gmo
 CATOBJEXT = .gmo
 CC = gcc
@@ -170,7 +171,6 @@ SHELL = /bin/sh
 STRIP = strip
 USE_NLS = yes
 VERSION = 0.1.0
-WARN_CFLAGS = -Wall -Wmissing-prototypes 
 XGETTEXT = /usr/bin/xgettext
 ac_ct_AR = ar
 ac_ct_CC = gcc
@@ -221,6 +221,8 @@ glade_DATA = \
 	   window.glade
 
 gladedir = $(pkgdatadir)/
+desktopdir = $(datadir)/applications
+desktop_DATA = avant-preferences.desktop
 EXTRA_DIST = $(glade_DATA) \
 	avant-preferences.in.py
 
@@ -266,6 +268,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-desktopDATA: $(desktop_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(desktopdir)" || $(mkdir_p) "$(DESTDIR)$(desktopdir)"
+	@list='$(desktop_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(desktopDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(desktopdir)/$$f'"; \
+	  $(desktopDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(desktopdir)/$$f"; \
+	done
+
+uninstall-desktopDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(desktop_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(desktopdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(desktopdir)/$$f"; \
+	done
 install-gladeDATA: $(glade_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(gladedir)" || $(mkdir_p) "$(DESTDIR)$(gladedir)"
@@ -321,7 +340,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(gladedir)"; do \
+	for dir in "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(gladedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -364,7 +383,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-gladeDATA
+install-data-am: install-desktopDATA install-gladeDATA
 
 install-exec-am: install-exec-local
 
@@ -390,26 +409,31 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-gladeDATA uninstall-info-am
+uninstall-am: uninstall-desktopDATA uninstall-gladeDATA \
+	uninstall-info-am
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-exec install-exec-am \
-	install-exec-local install-gladeDATA install-info \
-	install-info-am install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
+	install-data install-data-am install-desktopDATA install-exec \
+	install-exec-am install-exec-local install-gladeDATA \
+	install-info install-info-am install-man install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
-	uninstall-gladeDATA uninstall-info-am
+	uninstall-desktopDATA uninstall-gladeDATA uninstall-info-am
 
+%.desktop:   %.desktop.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
+
+$(desktop_DATA).in: $(desktop_DATA).in.in
+	sed -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" $< > $@
 
 install-exec-local:
 	sed -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" avant-preferences.in.py > avant-preferences.py
 	$(INSTALL) -m 755 avant-preferences.py $(DESTDIR)$(bindir)/avant-preferences
 
 clean:
-	rm -f *.pyo *.pyc *.bak *.gladep
+	rm -f *.pyo *.pyc *.bak *.gladep $(desktop_DATA) $(desktop_DATA).in
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

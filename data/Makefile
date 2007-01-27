@@ -59,10 +59,12 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(icondir)" "$(DESTDIR)$(schemasdir)"
+am__installdirs = "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icondir)" \
+	"$(DESTDIR)$(schemasdir)"
+desktopDATA_INSTALL = $(INSTALL_DATA)
 iconDATA_INSTALL = $(INSTALL_DATA)
 schemasDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(icon_DATA) $(schemas_DATA)
+DATA = $(desktop_DATA) $(icon_DATA) $(schemas_DATA)
 ETAGS = etags
 CTAGS = ctags
 DIST_SUBDIRS = $(SUBDIRS)
@@ -78,8 +80,8 @@ AUTOCONF = ${SHELL} /home/njp/svn/avant-window-navigator/missing --run autoconf
 AUTOHEADER = ${SHELL} /home/njp/svn/avant-window-navigator/missing --run autoheader
 AUTOMAKE = ${SHELL} /home/njp/svn/avant-window-navigator/missing --run automake-1.9
 AWK = gawk
-AWN_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libwnck-1.0 -I/usr/include/librsvg-2 -I/usr/include/gconf/2 -I/usr/include/orbit-2.0  
-AWN_LIBS = -pthread -L/lib -lwnck-1 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lrsvg-2 -lgdk_pixbuf-2.0 -lgobject-2.0 -lgconf-2 -lORBit-2 -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lglib-2.0  
+AWN_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libwnck-1.0 -I/usr/include/gconf/2 -I/usr/include/orbit-2.0  
+AWN_LIBS = -pthread -L/lib -lwnck-1 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgconf-2 -lORBit-2 -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lglib-2.0  
 CATALOGS =  en_GB.gmo
 CATOBJEXT = .gmo
 CC = gcc
@@ -180,7 +182,6 @@ SHELL = /bin/sh
 STRIP = strip
 USE_NLS = yes
 VERSION = 0.1.0
-WARN_CFLAGS = -Wall -Wmissing-prototypes 
 XGETTEXT = /usr/bin/xgettext
 ac_ct_AR = ar
 ac_ct_CC = gcc
@@ -228,6 +229,8 @@ slicelocaledir = ${prefix}/${DATADIRNAME}/locale
 sysconfdir = ${prefix}/etc
 target_alias = 
 SUBDIRS = active
+desktopdir = $(datadir)/applications
+desktop_DATA = avant-window-navigator.desktop
 icon_DATA = \
 	avant-window-navigator.svg	\
 	avant-window-navigator-24.png	\
@@ -236,8 +239,8 @@ icon_DATA = \
 icondir = $(pkgdatadir)
 schemasdir = $(sysconfdir)/gconf/schemas
 schemas_DATA = avant-window-navigator.schemas
-EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA)
-CLEANFILES = $(schemas_DATA) $(schemas_DATA).in
+EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA) $(desktop_DATA).in.in 
+CLEANFILES = $(schemas_DATA) $(schemas_DATA).in $(desktop_DATA) $(desktop_DATA).in
 all: all-recursive
 
 .SUFFIXES:
@@ -280,6 +283,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-desktopDATA: $(desktop_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(desktopdir)" || $(mkdir_p) "$(DESTDIR)$(desktopdir)"
+	@list='$(desktop_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(desktopDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(desktopdir)/$$f'"; \
+	  $(desktopDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(desktopdir)/$$f"; \
+	done
+
+uninstall-desktopDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(desktop_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(desktopdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(desktopdir)/$$f"; \
+	done
 install-iconDATA: $(icon_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(icondir)" || $(mkdir_p) "$(DESTDIR)$(icondir)"
@@ -494,7 +514,7 @@ check: check-recursive
 all-am: Makefile $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(icondir)" "$(DESTDIR)$(schemasdir)"; do \
+	for dir in "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icondir)" "$(DESTDIR)$(schemasdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-recursive
@@ -541,8 +561,8 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-data-local install-iconDATA \
-	install-schemasDATA
+install-data-am: install-data-local install-desktopDATA \
+	install-iconDATA install-schemasDATA
 
 install-exec-am:
 
@@ -568,8 +588,8 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-iconDATA uninstall-info-am \
-	uninstall-schemasDATA
+uninstall-am: uninstall-desktopDATA uninstall-iconDATA \
+	uninstall-info-am uninstall-schemasDATA
 
 uninstall-info: uninstall-info-recursive
 
@@ -578,16 +598,21 @@ uninstall-info: uninstall-info-recursive
 	ctags-recursive distclean distclean-generic distclean-libtool \
 	distclean-recursive distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
-	install-data-am install-data-local install-exec \
-	install-exec-am install-iconDATA install-info install-info-am \
-	install-man install-schemasDATA install-strip installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic maintainer-clean-recursive \
-	mostlyclean mostlyclean-generic mostlyclean-libtool \
-	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-iconDATA uninstall-info-am \
+	install-data-am install-data-local install-desktopDATA \
+	install-exec install-exec-am install-iconDATA install-info \
+	install-info-am install-man install-schemasDATA install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic \
+	maintainer-clean-recursive mostlyclean mostlyclean-generic \
+	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
+	tags tags-recursive uninstall uninstall-am \
+	uninstall-desktopDATA uninstall-iconDATA uninstall-info-am \
 	uninstall-schemasDATA
 
+%.desktop:   %.desktop.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
+
+$(desktop_DATA).in: $(desktop_DATA).in.in
+	sed -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" $< > $@
 %.schemas:   %.schemas.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -s -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
 
 $(schemas_DATA).in: $(schemas_DATA).in.in

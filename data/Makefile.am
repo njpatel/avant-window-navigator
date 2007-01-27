@@ -1,5 +1,13 @@
 SUBDIRS = active
 
+desktopdir   = $(datadir)/applications
+desktop_DATA = avant-window-navigator.desktop
+@INTLTOOL_DESKTOP_RULE@
+
+
+$(desktop_DATA).in: $(desktop_DATA).in.in
+	sed -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" $< > $@
+	
 icon_DATA =  \
 	avant-window-navigator.svg	\
 	avant-window-navigator-24.png	\
@@ -22,6 +30,6 @@ install-data-local:
 		done \
 	fi
 
-EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA)
+EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA) $(desktop_DATA).in.in 
 
-CLEANFILES = $(schemas_DATA) $(schemas_DATA).in
+CLEANFILES = $(schemas_DATA) $(schemas_DATA).in $(desktop_DATA) $(desktop_DATA).in

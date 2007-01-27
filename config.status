@@ -538,7 +538,6 @@ s,@AMDEPBACKSLASH@,\,;t t
 s,@CCDEPMODE@,depmode=gcc3,;t t
 s,@am__fastdepCC_TRUE@,,;t t
 s,@am__fastdepCC_FALSE@,#,;t t
-s,@WARN_CFLAGS@,-Wall -Wmissing-prototypes ,;t t
 s,@CPP@,gcc -E,;t t
 s,@EGREP@,grep -E,;t t
 s,@build@,i686-pc-linux-gnu,;t t
@@ -618,8 +617,8 @@ s,@GLIB_GENMARSHAL@,glib-genmarshal,;t t
 s,@GOBJECT_QUERY@,gobject-query,;t t
 s,@GLIB_MKENUMS@,glib-mkenums,;t t
 s,@ac_pt_PKG_CONFIG@,,;t t
-s,@AWN_CFLAGS@,-DORBIT2=1 -pthread -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libwnck-1.0 -I/usr/include/librsvg-2 -I/usr/include/gconf/2 -I/usr/include/orbit-2.0  ,;t t
-s,@AWN_LIBS@,-pthread -L/lib -lwnck-1 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lrsvg-2 -lgdk_pixbuf-2.0 -lgobject-2.0 -lgconf-2 -lORBit-2 -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lglib-2.0  ,;t t
+s,@AWN_CFLAGS@,-DORBIT2=1 -pthread -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libwnck-1.0 -I/usr/include/gconf/2 -I/usr/include/orbit-2.0  ,;t t
+s,@AWN_LIBS@,-pthread -L/lib -lwnck-1 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgconf-2 -lORBit-2 -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lglib-2.0  ,;t t
 s,@GCONFTOOL@,/usr/bin/gconftool-2,;t t
 s,@GCONF_SCHEMA_CONFIG_SOURCE@,xml:merged:/etc/gconf/gconf.xml.defaults,;t t
 s,@GCONF_SCHEMA_FILE_DIR@,$(sysconfdir)/gconf/schemas,;t t

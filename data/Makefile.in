@@ -59,10 +59,12 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(icondir)" "$(DESTDIR)$(schemasdir)"
+am__installdirs = "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icondir)" \
+	"$(DESTDIR)$(schemasdir)"
+desktopDATA_INSTALL = $(INSTALL_DATA)
 iconDATA_INSTALL = $(INSTALL_DATA)
 schemasDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(icon_DATA) $(schemas_DATA)
+DATA = $(desktop_DATA) $(icon_DATA) $(schemas_DATA)
 ETAGS = etags
 CTAGS = ctags
 DIST_SUBDIRS = $(SUBDIRS)
@@ -180,7 +182,6 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-WARN_CFLAGS = @WARN_CFLAGS@
 XGETTEXT = @XGETTEXT@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
@@ -228,6 +229,8 @@ slicelocaledir = @slicelocaledir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 SUBDIRS = active
+desktopdir = $(datadir)/applications
+desktop_DATA = avant-window-navigator.desktop
 icon_DATA = \
 	avant-window-navigator.svg	\
 	avant-window-navigator-24.png	\
@@ -236,8 +239,8 @@ icon_DATA = \
 icondir = $(pkgdatadir)
 schemasdir = @GCONF_SCHEMA_FILE_DIR@
 schemas_DATA = avant-window-navigator.schemas
-EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA)
-CLEANFILES = $(schemas_DATA) $(schemas_DATA).in
+EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA) $(desktop_DATA).in.in 
+CLEANFILES = $(schemas_DATA) $(schemas_DATA).in $(desktop_DATA) $(desktop_DATA).in
 all: all-recursive
 
 .SUFFIXES:
@@ -280,6 +283,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-desktopDATA: $(desktop_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(desktopdir)" || $(mkdir_p) "$(DESTDIR)$(desktopdir)"
+	@list='$(desktop_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(desktopDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(desktopdir)/$$f'"; \
+	  $(desktopDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(desktopdir)/$$f"; \
+	done
+
+uninstall-desktopDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(desktop_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(desktopdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(desktopdir)/$$f"; \
+	done
 install-iconDATA: $(icon_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(icondir)" || $(mkdir_p) "$(DESTDIR)$(icondir)"
@@ -494,7 +514,7 @@ check: check-recursive
 all-am: Makefile $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(icondir)" "$(DESTDIR)$(schemasdir)"; do \
+	for dir in "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icondir)" "$(DESTDIR)$(schemasdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-recursive
@@ -541,8 +561,8 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-data-local install-iconDATA \
-	install-schemasDATA
+install-data-am: install-data-local install-desktopDATA \
+	install-iconDATA install-schemasDATA
 
 install-exec-am:
 
@@ -568,8 +588,8 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-iconDATA uninstall-info-am \
-	uninstall-schemasDATA
+uninstall-am: uninstall-desktopDATA uninstall-iconDATA \
+	uninstall-info-am uninstall-schemasDATA
 
 uninstall-info: uninstall-info-recursive
 
@@ -578,16 +598,21 @@ uninstall-info: uninstall-info-recursive
 	ctags-recursive distclean distclean-generic distclean-libtool \
 	distclean-recursive distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
-	install-data-am install-data-local install-exec \
-	install-exec-am install-iconDATA install-info install-info-am \
-	install-man install-schemasDATA install-strip installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic maintainer-clean-recursive \
-	mostlyclean mostlyclean-generic mostlyclean-libtool \
-	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-iconDATA uninstall-info-am \
+	install-data-am install-data-local install-desktopDATA \
+	install-exec install-exec-am install-iconDATA install-info \
+	install-info-am install-man install-schemasDATA install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic \
+	maintainer-clean-recursive mostlyclean mostlyclean-generic \
+	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
+	tags tags-recursive uninstall uninstall-am \
+	uninstall-desktopDATA uninstall-iconDATA uninstall-info-am \
 	uninstall-schemasDATA
 
+@INTLTOOL_DESKTOP_RULE@
+
+$(desktop_DATA).in: $(desktop_DATA).in.in
+	sed -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" $< > $@
 @INTLTOOL_SCHEMAS_RULE@
 
 $(schemas_DATA).in: $(schemas_DATA).in.in
