@@ -1,4 +1,4 @@
-avant-window-navigator	0.1.0
+avant-window-navigator	0.1.1
 
 ./autogen.sh --prefix=/usr && make && make install
 

@@ -261,6 +261,49 @@ render_pixmap (cairo_t *cr, gint width, gint height)
 	
 }
 
+#if !GTK_CHECK_VERSION(2,9,0)
+/* this is piece by piece taken from gtk+ 2.9.0 (CVS-head with a patch applied
+regarding XShape's input-masks) so people without gtk+ >= 2.9.0 can compile and
+run input_shape_test.c */
+void do_shape_combine_mask (GdkWindow* window,
+							GdkBitmap* mask,
+							gint x,
+							gint y)
+{
+	Pixmap pixmap;
+	int ignore;
+	int maj;
+	int min;
+
+	if (!XShapeQueryExtension (GDK_WINDOW_XDISPLAY (window), &ignore, &ignore))
+		return;
+
+	if (!XShapeQueryVersion (GDK_WINDOW_XDISPLAY (window), &maj, &min))
+		return;
+
+	/* for shaped input we need at least XShape 1.1 */
+	if (maj != 1 && min < 1)
+		return;
+
+	if (mask)
+		pixmap = GDK_DRAWABLE_XID (mask);
+	else
+	{
+		x = 0;
+		y = 0;
+		pixmap = None;
+	}
+
+	XShapeCombineMask (GDK_WINDOW_XDISPLAY (window),
+					   GDK_DRAWABLE_XID (window),
+					   ShapeInput,
+					   x,
+					   y,
+					   pixmap,
+					   ShapeSet);
+}
+#endif
+
 static void 
 _update_input_shape (GtkWidget* window, int width, int height)
 {
@@ -276,8 +319,14 @@ _update_input_shape (GtkWidget* window, int width, int height)
 			render_pixmap (pCairoContext, width, height);
 			cairo_destroy (pCairoContext);
 
+
+#if !GTK_CHECK_VERSION(2,9,0)
+			do_shape_combine_mask (window->window, NULL, 0, 0);
+			do_shape_combine_mask (window->window, pShapeBitmap, 0, 0);
+#else
 			gtk_widget_input_shape_combine_mask (window, NULL, 0, 0);
 			gtk_widget_input_shape_combine_mask (window, pShapeBitmap, 0, 0);
+#endif
 		}
 		g_object_unref ((gpointer) pShapeBitmap);
 	}

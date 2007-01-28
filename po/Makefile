@@ -19,7 +19,7 @@
 
 GETTEXT_PACKAGE = avant-window-navigator
 PACKAGE = avant-window-navigator
-VERSION = 0.1.0
+VERSION = 0.1.1
 
 SHELL = /bin/sh
 
@@ -28,7 +28,7 @@ top_srcdir = ..
 top_builddir = ..
 
 
-prefix = /usr
+prefix = /usr/local
 exec_prefix = ${prefix}
 datadir = ${prefix}/share
 datarootdir = @datarootdir@

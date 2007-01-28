@@ -217,15 +217,11 @@ sharedstatedir = @sharedstatedir@
 slicelocaledir = @slicelocaledir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-glade_DATA = \
-	   window.glade
-
-gladedir = $(pkgdatadir)/
+glade_DATA = window.glade
+gladedir = $(pkgdatadir)
 desktopdir = $(datadir)/applications
 desktop_DATA = avant-preferences.desktop
-EXTRA_DIST = $(glade_DATA) \
-	avant-preferences.in.py $(desktop_DATA).in.in
-
+EXTRA_DIST = $(glade_DATA) avant-preferences.in.py $(desktop_DATA).in.in
 all: all-am
 
 .SUFFIXES:
