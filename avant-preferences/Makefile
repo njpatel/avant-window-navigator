@@ -224,7 +224,7 @@ gladedir = $(pkgdatadir)/
 desktopdir = $(datadir)/applications
 desktop_DATA = avant-preferences.desktop
 EXTRA_DIST = $(glade_DATA) \
-	avant-preferences.in.py
+	avant-preferences.in.py $(desktop_DATA).in.in
 
 all: all-am
 

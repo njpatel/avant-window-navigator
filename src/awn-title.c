@@ -189,6 +189,7 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 	y = (height/2)-(extents.height/2 + extents.y_bearing);
 	
 	x = x_pos - (extents.width/2)+ extents.x_bearing;
+	x += (settings->corner_radius/2);
 	
 	if (x <0 )
 		x = 0;

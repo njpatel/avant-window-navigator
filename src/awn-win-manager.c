@@ -229,16 +229,13 @@ on_state_changed (WnckWindow *window, WnckWindowState  old,
 	        space = wnck_window_get_workspace(window);
 	        g_list_foreach(apps, _refresh, (gpointer)space);
 	
-	} else if ( wnck_window_or_transient_needs_attention( window ) ) {
+	} 
+	
+	if ( wnck_window_or_transient_needs_attention( window ) ) {
 		
 		awn_app_set_needs_attention (app, TRUE);
 	} else {
-		if (old & WNCK_WINDOW_STATE_DEMANDS_ATTENTION ||
-		                old & WNCK_WINDOW_STATE_URGENT) {
-		        g_print("No more attention required\n");
-		        app->current_state = AWN_APP_STATE_NORMAL;
-		}
-		app->current_state = AWN_APP_STATE_NORMAL;
+		
 	}
 	
         

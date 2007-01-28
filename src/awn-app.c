@@ -214,14 +214,16 @@ urgent_effect (AwnApp *app)
 		gtk_alignment_set(GTK_ALIGNMENT(align), 0.5, app->current_scale, 0, 0);
 		
 		if ( app->current_step == max ) {
-			if (app->current_state == AWN_APP_STATE_NORMAL) {
+			if (wnck_window_or_transient_needs_attention( app->window )) {
+				app->current_step = 0;
+				app->effect_direction = AWN_APP_EFFECT_DIRECTION_UP;
+			} else {
 				gtk_alignment_set(GTK_ALIGNMENT(align), 0.5, 1.0, 0, 0);
 				app->effect_lock = FALSE;
 				return FALSE;
 			}
 			
-			app->current_step = 0;
-			app->effect_direction = AWN_APP_EFFECT_DIRECTION_UP;
+			
 		}
 	}
 	
@@ -232,15 +234,13 @@ urgent_effect (AwnApp *app)
 void 
 awn_app_set_needs_attention(AwnApp *app, gboolean needs_attention)
 {
+	if (app->current_state == AWN_APP_STATE_CLOSING)
+		return;
         if (app == NULL )
                 return;
-        if (wnck_window_needs_attention(app->window)) {
-                
-                if (app->current_step != AWN_APP_STATE_NEEDS_ATTENTION) {
-                	g_timeout_add(AWN_FRAME_RATE+20, (GSourceFunc)urgent_effect, (gpointer)app);
-                } 
-
-        }
+        if (wnck_window_or_transient_needs_attention( app->window ))
+        	g_timeout_add(AWN_FRAME_RATE+20, (GSourceFunc)urgent_effect, (gpointer)app);
+        
 }
 
 static void
@@ -339,7 +339,10 @@ mouse_over_effect (AwnApp *app)
 static gboolean 
 on_proximity_in_event (GtkWidget *eb, GdkEventCrossing *event, AwnApp *app)
 {
+	if (app->current_state == AWN_APP_STATE_CLOSING)
+		return TRUE;
 	g_return_val_if_fail (WNCK_IS_WINDOW (app->window), TRUE);
+	
 	if (!app->mouse_in && app->current_state != AWN_APP_STATE_MOUSE_HOVER) {
 		app->mouse_in = TRUE;
 		g_timeout_add(AWN_FRAME_RATE, (GSourceFunc)mouse_over_effect, (gpointer)app);
@@ -350,6 +353,8 @@ on_proximity_in_event (GtkWidget *eb, GdkEventCrossing *event, AwnApp *app)
 static gboolean 
 on_proximity_out_event (GtkWidget *eb, GdkEventCrossing *event, AwnApp *app)
 {
+	if (app->current_state == AWN_APP_STATE_CLOSING)
+		return TRUE;
 	if (app->mouse_in) {
 		app->mouse_in = FALSE;
 		
@@ -362,6 +367,8 @@ static gboolean
 on_drag_motion_event (GtkWidget *widget, GdkDragContext *context, gint x, gint y, guint t, AwnApp *app)
 {
         g_return_val_if_fail (WNCK_IS_WINDOW (app->window), FALSE);
+	if (app->current_state == AWN_APP_STATE_CLOSING)
+		return TRUE;
 	if ( wnck_window_is_active( app->window ) ) {
 		return FALSE;
 	}

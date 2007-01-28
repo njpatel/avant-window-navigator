@@ -60,7 +60,7 @@
 		<applyto>/apps/avant-window-navigator/bar/glass_step_1</applyto>
 		<owner>avant-window-navigator</owner>
 		<type>string</type>
-		<default>FFFFFF33</default>
+		<default>454545C8</default>
 		<locale name="C">
 			<short>Color of the first gradient step.</short>
 			<long>Color in hex as REDGREENBLUEALPHA i.e. FFFFFF33</long>
@@ -71,7 +71,7 @@
 		<applyto>/apps/avant-window-navigator/bar/glass_step_2</applyto>
 		<owner>avant-window-navigator</owner>
 		<type>string</type>
-		<default>00000011</default>
+		<default>010101BE</default>
 		<locale name="C">
 			<short>Color of the second gradient step.</short>
 			<long>Color in hex as REDGREENBLUEALPHA i.e. FFFFFF33</long>
@@ -82,7 +82,7 @@
 		<applyto>/apps/avant-window-navigator/bar/glass_histep_1</applyto>
 		<owner>avant-window-navigator</owner>
 		<type>string</type>
-		<default>FFFFFF22</default>
+		<default>FFFFFF0B</default>
 		<locale name="C">
 			<short>Color of the first hi-light step.</short>
 			<long>Color in hex as REDGREENBLUEALPHA i.e. FFFFFF33</long>
@@ -93,7 +93,7 @@
 		<applyto>/apps/avant-window-navigator/bar/glass_histep_2</applyto>
 		<owner>avant-window-navigator</owner>
 		<type>string</type>
-		<default>FFFFFF11</default>
+		<default>FFFFFF0A</default>
 		<locale name="C">
 			<short>Color of the second hi-light step.</short>
 			<long>Color in hex as REDGREENBLUEALPHA i.e. FFFFFF33</long>
@@ -104,7 +104,7 @@
 		<applyto>/apps/avant-window-navigator/bar/border_color</applyto>
 		<owner>avant-window-navigator</owner>
 		<type>string</type>
-		<default>FFFFFF22</default>
+		<default>000000CC</default>
 		<locale name="C">
 			<short>Color of the border frame.</short>
 			<long>Color in hex as REDGREENBLUEALPHA i.e. FFFFFF33</long>
@@ -115,7 +115,7 @@
 		<applyto>/apps/avant-window-navigator/bar/hilight_color</applyto>
 		<owner>avant-window-navigator</owner>
 		<type>string</type>
-		<default>00000011</default>
+		<default>FFFFFF11</default>
 		<locale name="C">
 			<short>Color of the internal hi-light frame.</short>
 			<long>Color in hex as REDGREENBLUEALPHA i.e. FFFFFF33</long>
@@ -148,7 +148,7 @@
 		<applyto>/apps/avant-window-navigator/title/text_color</applyto>
 		<owner>avant-window-navigator</owner>
 		<type>string</type>
-		<default>FFFFFF22</default>
+		<default>FFFFFFFF</default>
 		<locale name="C">
 			<short>Color of title text.</short>
 			<long>Color in hex as REDGREENBLUEALPHA i.e. FFFFFF33</long>
@@ -159,7 +159,7 @@
 		<applyto>/apps/avant-window-navigator/title/shadow_color</applyto>
 		<owner>avant-window-navigator</owner>
 		<type>string</type>
-		<default>00000011</default>
+		<default>1B3B12E1</default>
 		<locale name="C">
 			<short>Color of title text shadow.</short>
 			<long>Color in hex as REDGREENBLUEALPHA i.e. FFFFFF33</long>
@@ -192,7 +192,7 @@
 		<applyto>/apps/avant-window-navigator/title/font_size</applyto>
 		<owner>avant-window-navigator</owner>
 		<type>float</type>
-		<default>14.0</default>
+		<default>15.0</default>
 		<locale name="C">
 			<short>Size of font.</short>
 			<long>Size, in pixels, of font.</long>
