@@ -25,11 +25,11 @@
 
 #include "awn-window.h"
 
-#if !GTK_CHECK_VERSION(2,9,0)
+
 #include <X11/Xlib.h>
 #include <X11/extensions/shape.h>
 #include <gdk/gdkx.h>
-#endif
+
 
 G_DEFINE_TYPE (AwnWindow, awn_window, GTK_TYPE_WINDOW)
 
@@ -313,6 +313,7 @@ void do_shape_combine_mask (GdkWindow* window,
 static void 
 _update_input_shape (GtkWidget* window, int width, int height)
 {
+	Pixmap pixmap;
 	static GdkBitmap* pShapeBitmap = NULL;
 	static cairo_t* pCairoContext = NULL;
 

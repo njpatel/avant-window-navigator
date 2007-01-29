@@ -237,7 +237,7 @@ icon_DATA = \
 	avant-window-navigator-48.png
 
 icondir = $(pkgdatadir)
-schemasdir = $(sysconfdir)/gconf/schemas
+schemasdir = /etc/gconf/schemas
 schemas_DATA = avant-window-navigator.schemas
 EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA) $(desktop_DATA).in.in 
 CLEANFILES = $(schemas_DATA) $(schemas_DATA).in $(desktop_DATA) $(desktop_DATA).in

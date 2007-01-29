@@ -25,11 +25,10 @@
 
 #include "awn-bar.h"
 
-#if !GTK_CHECK_VERSION(2,9,0)
+
 #include <X11/Xlib.h>
 #include <X11/extensions/shape.h>
 #include <gdk/gdkx.h>
-#endif
 
 G_DEFINE_TYPE (AwnBar, awn_bar, GTK_TYPE_WINDOW)
 

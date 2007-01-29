@@ -69,7 +69,7 @@ AUTOHEADER = ${SHELL} /home/njp/svn/avant-window-navigator/missing --run autohea
 AUTOMAKE = ${SHELL} /home/njp/svn/avant-window-navigator/missing --run automake-1.9
 AWK = gawk
 AWN_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libwnck-1.0 -I/usr/include/gconf/2 -I/usr/include/orbit-2.0  
-AWN_LIBS = -pthread -L/lib -lwnck-1 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgconf-2 -lORBit-2 -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lrt -lglib-2.0  
+AWN_LIBS = -pthread -L/lib -lwnck-1 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgconf-2 -lORBit-2 -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lrt -lglib-2.0 -lX11  
 CATALOGS =  en_GB.gmo
 CATOBJEXT = .gmo
 CC = gcc
