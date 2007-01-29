@@ -271,10 +271,8 @@ render_pixmap (cairo_t *cr, gint width, gint height)
 /* this is piece by piece taken from gtk+ 2.9.0 (CVS-head with a patch applied
 regarding XShape's input-masks) so people without gtk+ >= 2.9.0 can compile and
 run input_shape_test.c */
-void do_shape_combine_mask (GdkWindow* window,
-							GdkBitmap* mask,
-							gint x,
-							gint y)
+static void 
+do_shape_combine_mask (GdkWindow* window, GdkBitmap* mask, gint x, gint y)
 {
 	Pixmap pixmap;
 	int ignore;
