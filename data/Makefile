@@ -81,7 +81,7 @@ AUTOHEADER = ${SHELL} /home/njp/svn/avant-window-navigator/missing --run autohea
 AUTOMAKE = ${SHELL} /home/njp/svn/avant-window-navigator/missing --run automake-1.9
 AWK = gawk
 AWN_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libwnck-1.0 -I/usr/include/gconf/2 -I/usr/include/orbit-2.0  
-AWN_LIBS = -pthread -L/lib -lwnck-1 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgconf-2 -lORBit-2 -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lglib-2.0  
+AWN_LIBS = -pthread -L/lib -lwnck-1 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgconf-2 -lORBit-2 -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lrt -lglib-2.0  
 CATALOGS =  en_GB.gmo
 CATOBJEXT = .gmo
 CC = gcc
@@ -189,7 +189,7 @@ ac_ct_CXX = g++
 ac_ct_F77 = f95
 ac_ct_RANLIB = ranlib
 ac_ct_STRIP = strip
-ac_pt_PKG_CONFIG = 
+ac_pt_PKG_CONFIG = /usr/bin/pkg-config
 am__fastdepCC_FALSE = #
 am__fastdepCC_TRUE = 
 am__fastdepCXX_FALSE = #
@@ -221,7 +221,7 @@ localstatedir = ${prefix}/var
 mandir = ${prefix}/man
 mkdir_p = mkdir -p --
 oldincludedir = /usr/include
-prefix = /usr/local
+prefix = /usr
 program_transform_name = s,x,x,
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
@@ -619,10 +619,8 @@ $(schemas_DATA).in: $(schemas_DATA).in.in
 	sed -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" $< > $@
 
 install-data-local:
-	if test -z "$(DESTDIR)" ; then \
-		for p in $(schemas_DATA) ; do \
-			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $$p; \
-		done \
+	if [ -z "$(DESTDIR)" ]; then \
+		GCONF_CONFIG_SOURCE="" $(GCONFTOOL) --makefile-install-rule $(builddir) $(schemas_DATA); \
 	fi
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

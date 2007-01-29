@@ -84,20 +84,13 @@ AC_ARG_ENABLE(glibtest, [  --disable-glibtest      do not try to compile and run
       esac
   done
 
-  AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+  PKG_PROG_PKG_CONFIG([0.7])
 
   no_glib=""
 
-  if test x$PKG_CONFIG != xno ; then
-    if $PKG_CONFIG --atleast-pkgconfig-version 0.7 ; then
-      :
-    else
-      echo *** pkg-config too old; version 0.7 or better required.
-      no_glib=yes
-      PKG_CONFIG=no
-    fi
-  else
+  if test "x$PKG_CONFIG" = x ; then
     no_glib=yes
+    PKG_CONFIG=no
   fi
 
   min_glib_version=ifelse([$1], ,2.0.0,$1)
@@ -370,7 +363,8 @@ AC_SUBST($1)dnl
 #-----------------
 glib_DEFUN([GLIB_WITH_NLS],
   dnl NLS is obligatory
-  [USE_NLS=yes
+  [AC_REQUIRE([AC_CANONICAL_HOST])dnl
+    USE_NLS=yes
     AC_SUBST(USE_NLS)
 
     gt_cv_have_gettext=no
@@ -645,8 +639,10 @@ glib_DEFUN([GLIB_DEFINE_LOCALEDIR],
 [glib_REQUIRE([GLIB_GNU_GETTEXT])dnl
 glib_save_prefix="$prefix"
 glib_save_exec_prefix="$exec_prefix"
+glib_save_datarootdir="$datarootdir"
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 test "x$exec_prefix" = xNONE && exec_prefix=$prefix
+datarootdir=`eval echo "${datarootdir}"`
 if test "x$CATOBJEXT" = "x.mo" ; then
   localedir=`eval echo "${libdir}/locale"`
 else
@@ -654,6 +650,7 @@ else
 fi
 prefix="$glib_save_prefix"
 exec_prefix="$glib_save_exec_prefix"
+datarootdir="$glib_save_datarootdir"
 AC_DEFINE_UNQUOTED($1, "$localedir",
   [Define the location where the catalogs will be installed])
 ])

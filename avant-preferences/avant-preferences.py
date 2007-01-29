@@ -73,7 +73,7 @@ TITLE_ITALIC		= "/apps/avant-window-navigator/title/italic" 			#bool
 TITLE_BOLD		= "/apps/avant-window-navigator/title/bold" 			#bool
 TITLE_FONT_SIZE		= "/apps/avant-window-navigator/title/font_size" 		#float
 
-DATA_DIR = "/usr/local/share/avant-window-navigator"
+DATA_DIR = "/usr/share/avant-window-navigator"
 
 
 def dec2hex(n):
