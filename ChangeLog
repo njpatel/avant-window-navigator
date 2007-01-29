@@ -1,5 +1,9 @@
 2007-01-29  Neil Jagdish Patel  <njp@Fedora>
 
+	* src/awn-app.c: (awn_app_new): removed gtk_drag_dest_set_track_motion() for gtk+ < 2.10
+
+2007-01-29  Neil Jagdish Patel  <njp@Fedora>
+
 	* src/awn-bar.c: (do_shape_combine_mask):made static
 	* src/awn-title.c: (do_shape_combine_mask), (_update_input_shape):made static, added support for gtk+ < 2.10
 	* src/awn-window.c: (do_shape_combine_mask):made static

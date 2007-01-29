@@ -66,7 +66,13 @@ awn_app_new (WnckWindow *window, AwnSettings *sets)
                            GTK_DEST_DEFAULT_ALL,
                            drop_types, n_drop_types,
                            GDK_ACTION_MOVE);
-	gtk_drag_dest_set_track_motion  (GTK_WIDGET (app->event_box),TRUE);
+	
+	
+#if !GTK_CHECK_VERSION(2,9,0)
+			/* TODO: equivalent of following function: */
+#else
+			gtk_drag_dest_set_track_motion  (GTK_WIDGET (app->event_box),TRUE);
+#endif
 	g_signal_connect (G_OBJECT (app->event_box), "button-press-event",
         		  G_CALLBACK (on_button_press_event), (gpointer)app->window);
         
