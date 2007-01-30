@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include "awn-x.h"
+
 #define  AWN_FRAME_RATE	25
 
 static AwnSettings *settings = NULL;
@@ -43,6 +45,7 @@ AwnApp*
 awn_app_new (WnckWindow *window, AwnSettings *sets)
 {
 	settings = sets;
+	GdkPixbuf *icon = NULL;
 	AwnApp *app = g_new0 (AwnApp, 1);
 	
 	app->window = window;
@@ -54,7 +57,7 @@ awn_app_new (WnckWindow *window, AwnSettings *sets)
 	gtk_event_box_set_visible_window (GTK_EVENT_BOX (app->event_box), FALSE);
 	app->image = gtk_image_new ();
 	
-	app->wnck_icon = gdk_pixbuf_copy (wnck_window_get_icon (app->window));
+	app->wnck_icon = gdk_pixbuf_copy (awn_x_get_icon (app->window, 48, 48));
 	app->current_icon = app->wnck_icon;
 	gtk_image_set_from_pixbuf(GTK_IMAGE (app->image), app->current_icon);
 	app->active_icon = NULL;
@@ -390,6 +393,8 @@ awn_app_close(AwnApp *app)
 	gtk_widget_destroy(app->alignment);
 	if (app->active_icon)
 		g_object_unref(G_OBJECT(app->active_icon));
+	if (app->wnck_icon)
+		g_object_unref(G_OBJECT(app->wnck_icon));
 	g_free(app);
 	app = NULL;
 }

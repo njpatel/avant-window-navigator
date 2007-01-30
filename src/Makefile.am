@@ -22,6 +22,8 @@ avant_window_navigator_SOURCES =			\
 	awn-title.c                     \
 	awn-window.h			\
 	awn-window.c	 		\
+	awn-x.h				\
+	awn-x.c				\
 	awn-utils.h
                                         						
 

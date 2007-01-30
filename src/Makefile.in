@@ -51,7 +51,7 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_avant_window_navigator_OBJECTS = main.$(OBJEXT) awn-gconf.$(OBJEXT) \
 	awn-bar.$(OBJEXT) awn-app.$(OBJEXT) awn-win-manager.$(OBJEXT) \
-	awn-title.$(OBJEXT) awn-window.$(OBJEXT)
+	awn-title.$(OBJEXT) awn-window.$(OBJEXT) awn-x.$(OBJEXT)
 avant_window_navigator_OBJECTS = $(am_avant_window_navigator_OBJECTS)
 am__DEPENDENCIES_1 =
 avant_window_navigator_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -252,6 +252,8 @@ avant_window_navigator_SOURCES = \
 	awn-title.c                     \
 	awn-window.h			\
 	awn-window.c	 		\
+	awn-x.h				\
+	awn-x.c				\
 	awn-utils.h
 
 avant_window_navigator_LDADD = \
@@ -334,6 +336,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/awn-title.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/awn-win-manager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/awn-window.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/awn-x.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 
 .c.o:
