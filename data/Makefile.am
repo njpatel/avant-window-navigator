@@ -15,18 +15,18 @@ icon_DATA =  \
 
 icondir = $(pkgdatadir)
 
-schemasdir   = /etc/gconf/schemas
-schemas_DATA = avant-window-navigator.schemas
+schemadir   = /etc/gconf/schemas
+schema_DATA = avant-window-navigator.schemas
 @INTLTOOL_SCHEMAS_RULE@
 
 
-$(schemas_DATA).in: $(schemas_DATA).in.in
+$(schema_DATA).in: $(schema_DATA).in.in
 	sed -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" $< > $@
 
-install-data-local:
-	if [ -z "$(DESTDIR)" ]; then \
-		GCONF_CONFIG_SOURCE="" $(GCONFTOOL) --makefile-install-rule $(builddir) $(schemas_DATA); \
-	fi
+if GCONF_SCHEMAS_INSTALL
+install-data-local: $(schema_DATA)
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA);
+endif
 
 EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA) $(desktop_DATA).in.in 
 
