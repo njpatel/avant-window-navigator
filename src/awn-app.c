@@ -179,7 +179,7 @@ on_icon_changed (WnckWindow *window, AwnApp *app)
         GdkPixbuf *old = NULL;
         
         old = app->wnck_icon;
-        app->wnck_icon = gdk_pixbuf_copy(wnck_window_get_icon(window));
+        app->wnck_icon = gdk_pixbuf_copy (awn_x_get_icon (app->window, 48, 48));
         app->current_icon = app->wnck_icon;
         gtk_image_set_from_pixbuf(GTK_IMAGE(app->image), app->current_icon);
         gdk_pixbuf_unref(old);

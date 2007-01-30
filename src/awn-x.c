@@ -64,7 +64,9 @@ awn_x_get_icon (WnckWindow *window, gint width, gint height)
                         64,
                         64) )
         	return icon;
-  	g_print("Getting icon from X failed for %s\n");
+  	g_print("**AWN-X** : Getting icon from X failed for %s\n",
+  		wnck_application_get_name(
+  			wnck_window_get_application(window)));
 	return wnck_window_get_icon (window);
 
 }
