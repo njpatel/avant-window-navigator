@@ -29,12 +29,15 @@
 #include "awn-app.h"
 #include "awn-title.h"
 
+#include "awn-task.h"
+
 static GList *apps		= NULL; /* I know, I know, globals */
 static AwnApp *active		= NULL;
 static GtkWidget *bar		= NULL;
 static GtkWidget *title		= NULL;
 static AwnSettings *settings	= NULL;
 static AwnApp *last_active 	= NULL;
+static GtkWidget *task		= NULL;
 
 static void awn_win_mgr_window_opened (WnckScreen *screen, WnckWindow *window, GtkWidget *hbox);
 static void awn_win_mgr_window_closed (WnckScreen *screen, WnckWindow *window, GtkWidget *hbox);

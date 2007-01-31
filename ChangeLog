@@ -1,3 +1,16 @@
+2007-01-31  Neil Jagdish Patel  <njp@Fedora>
+
+	Experimental support for GObject-based task icons, and initial support forsmart launchers and startup notification.
+
+	* src/Makefile.am:
+	* src/awn-task-manager.c: 
+	* src/awn-task-manager.h:
+	* src/awn-task.c:
+	* src/awn-task.h:
+	* src/awn-utils.h:
+	* src/awn-win-manager.c:
+	* src/main.c: added support for new window manager
+
 2007-01-30  Neil Jagdish Patel  <njp@Fedora>
 
 	* src/Makefile.am:

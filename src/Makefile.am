@@ -20,6 +20,10 @@ avant_window_navigator_SOURCES =			\
 	awn-win-manager.c    		\
 	awn-title.h			\
 	awn-title.c                     \
+	awn-task.h			\
+	awn-task.c			\
+	awn-task-manager.h		\
+	awn-task-manager.c		\
 	awn-window.h			\
 	awn-window.c	 		\
 	awn-x.h				\

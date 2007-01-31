@@ -29,6 +29,13 @@ typedef struct {
 
 } AwnColor; /* spelt incorrectly, in the interest of brevity ;) */
 
+typedef struct {
+	/*
+	GnomeDesktopItem *desktop_item
+	
+	*/
+	gint place_holder;	
+} AwnSmartLauncher;
 
 
 #endif

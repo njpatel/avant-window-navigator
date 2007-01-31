@@ -1,4 +1,7 @@
-avant-window-navigator	0.1.1
+avant-window-navigator	0.1.1-svn
+
+* You can test the new window manager like this : avant-window-navigator -x *
+* This is still new, and may not have some features *
 
 ./autogen.sh --prefix=/usr && make && make install
 

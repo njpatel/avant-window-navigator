@@ -27,6 +27,9 @@
 #include "awn-window.h"
 #include "awn-app.h"
 #include "awn-win-manager.h"
+#include "awn-task-manager.h"
+
+#include "awn-task.h"
 
 static gboolean
 expose (GtkWidget *widget, GdkEventExpose *event, GtkWindow *window)
@@ -41,7 +44,7 @@ expose (GtkWidget *widget, GdkEventExpose *event, GtkWindow *window)
 }
 
 int 
-main (int argc, char** argv)
+main (int argc, char* argv[])
 {
 	
 	AwnSettings* settings = awn_gconf_new();
@@ -63,7 +66,18 @@ main (int argc, char** argv)
 	
 	box = gtk_hbox_new(FALSE, 2);
 	
-	winman = awn_win_mgr_new(settings);
+	//winman = awn_win_mgr_new(settings);
+	if (argc == 2) {
+		if ( argv[1][0] == '-' ) {
+			if (argv[1][1] == 'x') {
+				g_print("Ohhh yeaaah!!!\n");
+				winman = awn_task_manager_new(settings);
+			}
+		}
+	}
+	
+	if (winman == NULL) 
+		winman = awn_win_mgr_new (settings);
 	
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new(" "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), winman, FALSE, TRUE, 0);	
