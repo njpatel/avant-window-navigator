@@ -231,8 +231,6 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 static gboolean 
 awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 {
-	g_print("Proximity In\n");
-	
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
@@ -257,8 +255,6 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 static gboolean 
 awn_task_proximity_out (GtkWidget *task, GdkEventCrossing *event)
 {
-	g_print("Proximity Out\n");
-	
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
