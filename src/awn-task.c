@@ -26,7 +26,13 @@
 
 G_DEFINE_TYPE (AwnTask, awn_task, GTK_TYPE_DRAWING_AREA);
 
-#define  AWN_FRAME_RATE	25
+#define  AWN_FRAME_RATE	15
+
+#define  AWN_TASK_EFFECT_DIR_DOWN		0
+#define  AWN_TASK_EFFECT_DIR_UP			1
+#define  AWN_TASK_EFFECT_DIR_LEFT		2
+#define  AWN_TASK_EFFECT_DIR_RIGHT		3
+
 
 /* FORWARD DECLERATIONS */
 
@@ -48,14 +54,6 @@ typedef enum {
 	AWN_TASK_EFFECT_CLOSING
 
 } AwnTaskEffect;
-
-typedef enum {
-	AWN_TASK_EFFECT_DIR_UP,
-	AWN_TASK_EFFECT_DIR_DOWN,
-	AWN_TASK_EFFECT_DIR_LEFT,
-	AWN_TASK_EFFECT_DIR_RIGHT
-
-} AwnTaskEffectDirection;
 
 typedef struct _AwnTaskPrivate AwnTaskPrivate;
 
@@ -81,13 +79,14 @@ struct _AwnTaskPrivate
 	/* EFFECT VARIABLES */
 	gboolean effect_lock;
 	AwnTaskEffect current_effect;
-	AwnTaskEffectDirection effect_direction;
+	gint effect_direction;
 	
 	gint x_offset;
 	gint y_offset;
 	gint width;
 	gint height;
-	gint rotate_degrees;
+	gfloat rotate_degrees;
+	gfloat alpha;
 };
 
 /* GLOBALS */
@@ -152,6 +151,12 @@ awn_task_init (AwnTask *task)
 	priv->effect_lock = FALSE;
 	priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 	priv->current_effect = AWN_TASK_EFFECT_NONE;
+	priv->x_offset = 0;
+	priv->y_offset = 0;
+	priv->width = 0;
+	priv->height = 0;
+	priv->rotate_degrees = 0.0;
+	priv->alpha = 1.0;
 }
 
 
@@ -174,14 +179,14 @@ _task_opening_effect (AwnTask *task)
 		priv->y_offset = -48;
 	}
 	
-	if (priv->effect_direction == AWN_TASK_EFFECT_DIR_UP) {
-		priv->y_offset +=2;
+	if (priv->effect_direction) {
+		priv->y_offset +=1;
 		
-		if (priv->y_offset == max) 
-			priv->effect_direction == AWN_TASK_EFFECT_DIR_DOWN;	
+		if (priv->y_offset >= max) 
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
 	
 	} else {
-		priv->y_offset-=2;
+		priv->y_offset-=1;
 		
 		if (priv->y_offset < 1) {
 			/* finished bouncing, back to normal */
@@ -192,9 +197,9 @@ _task_opening_effect (AwnTask *task)
 			
 		}
 	}
-
+	
 	gtk_widget_queue_draw(GTK_WIDGET(task));
-	g_print("%d\n", priv->y_offset);
+	
 	
 	if (priv->effect_lock == FALSE)
 		return FALSE;
@@ -206,8 +211,11 @@ _task_opening_effect (AwnTask *task)
 static void
 launch_opening_effect (AwnTask *task )
 {
+	g_print("Opening effect\n");
 	g_timeout_add(AWN_FRAME_RATE, (GSourceFunc)_task_opening_effect, (gpointer)task);
 }
+
+
 
 
 
@@ -232,7 +240,7 @@ draw (GtkWidget *task, cairo_t *cr)
 	/* active */
 	if (priv->is_active) {
 		cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
-		cairo_set_source_rgba(cr, 1, 1, 1, 0.4);
+		cairo_set_source_rgba(cr, 1, 1, 1, 0.2);
 		cairo_rectangle(cr, 0, 51, 60, 48);
 		cairo_fill(cr);
 	}
@@ -242,10 +250,11 @@ draw (GtkWidget *task, cairo_t *cr)
 		double x1, y1;
 		
 		x1 = (width-priv->icon_width)/2;
-		y1 = ((50-priv->icon_height)/2) + 50;
+		
+		y1 = ((50-priv->icon_height)/2) + 50 + (-1 * priv->y_offset);
 		
 		gdk_cairo_set_source_pixbuf (cr, priv->icon, x1, y1);
-		cairo_paint_with_alpha(cr, 1.0);
+		cairo_paint_with_alpha(cr, priv->alpha);
 	}
 }
 
@@ -305,17 +314,10 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 	
 	if (priv->title) {
 		gint i = (int)event->x_root;
-		gint x, y;
-		gdk_window_get_position (task->window, &x, &y);
-	
-		/* find middle of widget */
-		do
-	        	x+=60;
-		while (x<i)
-	        	;
-		x -=30;
-	
-		awn_title_show(AWN_TITLE (priv->title), awn_task_get_name(AWN_TASK(task)), x, 0);
+		gint x, y, x1;
+		gdk_window_get_origin(task->window, &x, &y);
+		
+		awn_title_show(AWN_TITLE (priv->title), awn_task_get_name(AWN_TASK(task)), x+30, 0);
 	
 	}
 	return TRUE;
@@ -390,7 +392,12 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
         
         /* if launcher, set a launch_sequence
         else if starter, stop the launch_sequence, disable starter flag*/
+        
+        if (wnck_window_is_skip_tasklist(window))
+        	return TRUE;
+        	
         launch_opening_effect(task);
+	return TRUE;
 }
 
 WnckWindow * 
@@ -527,26 +534,47 @@ _task_destroy (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
-	/* keep doing the animation until it finishs */
+	const gint max = 48;	
+	gfloat i;
+
 	if (priv->effect_lock) {
-		if (priv->current_effect == AWN_TASK_EFFECT_CLOSING)
-			;
-		else
+		if ( priv->current_effect != AWN_TASK_EFFECT_CLOSING)
 			return TRUE;
 	} else {
+		priv->effect_lock = TRUE;
 		priv->current_effect = AWN_TASK_EFFECT_CLOSING;
-		g_print("Closing\n");
+		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+		priv->y_offset = 0;
 	}
 	
-	priv->title = NULL;
-	gdk_pixbuf_unref (priv->icon);
+
+		
+	if (priv->y_offset >= max) {
+		
+		if (priv->width <=2) {
+			priv->width -=2;
+			gtk_widget_set_size_request(GTK_WIDGET(task), priv->width, 100);
+			return TRUE;
+		}
+		
+		priv->title = NULL;
+		gdk_pixbuf_unref (priv->icon);
+		
+		gtk_widget_hide (GTK_WIDGET(task));
+		gtk_object_destroy (GTK_OBJECT(task));
+		
+		task = NULL;
+		return FALSE;
 	
-	gtk_widget_hide (GTK_WIDGET(task));
-	gtk_object_destroy (GTK_OBJECT(task));
+	} else {
+		priv->y_offset +=1;
+		i = (float) priv->y_offset / max;
+		priv->alpha = 1.0 - i;
+		priv->width = 60;
+		gtk_widget_queue_draw(GTK_WIDGET(task));
+	}
+	return TRUE;
 	
-	task = NULL;
-	return FALSE;
 }
 
 void 

@@ -156,7 +156,7 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 	if (task == NULL) {
 		task = awn_task_new(priv->settings);
 		if (awn_task_set_window (AWN_TASK (task), window))
-			g_print("Created for %s\n", wnck_window_get_name(window));
+			;//g_print("Created for %s\n", wnck_window_get_name(window));
 		awn_task_set_title (AWN_TASK(task), priv->title_window);
 		priv->tasks = g_list_append(priv->tasks, (gpointer)task);
 		gtk_box_pack_start(GTK_BOX(task_manager), task, FALSE, FALSE, 0);
