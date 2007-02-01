@@ -162,23 +162,23 @@ _task_opening_effect (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	static gint max = 20;	
+	static gint max = 10;	
 
 	if (priv->effect_lock) {
-		if ( app->current_effect != AWN_TASK_EFFECT_OPENING)
+		if ( priv->current_effect != AWN_TASK_EFFECT_OPENING)
 			return TRUE;
 	} else {
 		priv->effect_lock = TRUE;
 		priv->current_effect = AWN_TASK_EFFECT_OPENING;
-		priv->effect_direction = AWN_APP_EFFECT_DIRECTION_UP;
+		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 		priv->y_offset = -48;
 	}
 	
-	if (priv->effect_direction == AWN_TASK_EFFECT_DIRECTION_UP) {
+	if (priv->effect_direction == AWN_TASK_EFFECT_DIR_UP) {
 		priv->y_offset +=2;
 		
 		if (priv->y_offset == max) 
-			priv->effect_direction == AWN_TASK_EFFECT_DIRECTION_DOWN;	
+			priv->effect_direction == AWN_TASK_EFFECT_DIR_DOWN;	
 	
 	} else {
 		priv->y_offset-=2;
@@ -187,14 +187,14 @@ _task_opening_effect (AwnTask *task)
 			/* finished bouncing, back to normal */
 			priv->effect_lock = FALSE;
 			priv->current_effect = AWN_TASK_EFFECT_NONE;
-			priv->effect_direction = AWN_APP_EFFECT_DIRECTION_UP;
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 			priv->y_offset = 0;
 			
 		}
 	}
 
 	gtk_widget_queue_draw(GTK_WIDGET(task));
-	
+	g_print("%d\n", priv->y_offset);
 	
 	if (priv->effect_lock == FALSE)
 		return FALSE;
@@ -390,6 +390,7 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
         
         /* if launcher, set a launch_sequence
         else if starter, stop the launch_sequence, disable starter flag*/
+        launch_opening_effect(task);
 }
 
 WnckWindow * 
