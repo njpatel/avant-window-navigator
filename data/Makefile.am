@@ -25,8 +25,9 @@ $(schema_DATA).in: $(schema_DATA).in.in
 
 if GCONF_SCHEMAS_INSTALL
 install-data-local: $(schema_DATA)
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --install-schema-file $(srcdir)/$(schema_DATA);
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA);
 endif
+
 
 EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA) $(desktop_DATA).in.in 
 

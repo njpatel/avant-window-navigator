@@ -49,6 +49,14 @@ typedef enum {
 
 } AwnTaskEffect;
 
+typedef enum {
+	AWN_TASK_EFFECT_DIR_UP,
+	AWN_TASK_EFFECT_DIR_DOWN,
+	AWN_TASK_EFFECT_DIR_LEFT,
+	AWN_TASK_EFFECT_DIR_RIGHT
+
+} AwnTaskEffectDirection;
+
 typedef struct _AwnTaskPrivate AwnTaskPrivate;
 
 struct _AwnTaskPrivate
@@ -73,9 +81,10 @@ struct _AwnTaskPrivate
 	/* EFFECT VARIABLES */
 	gboolean effect_lock;
 	AwnTaskEffect current_effect;
+	AwnTaskEffectDirection effect_direction;
 	
-	gint x;
-	gint y;
+	gint x_offset;
+	gint y_offset;
 	gint width;
 	gint height;
 	gint rotate_degrees;
@@ -141,8 +150,68 @@ awn_task_init (AwnTask *task)
 	priv->is_active = FALSE;
 	priv->needs_attention = FALSE;
 	priv->effect_lock = FALSE;
+	priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 	priv->current_effect = AWN_TASK_EFFECT_NONE;
 }
+
+
+/************* EFFECTS *****************/
+
+static gboolean
+_task_opening_effect (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	static gint max = 20;	
+
+	if (priv->effect_lock) {
+		if ( app->current_effect != AWN_TASK_EFFECT_OPENING)
+			return TRUE;
+	} else {
+		priv->effect_lock = TRUE;
+		priv->current_effect = AWN_TASK_EFFECT_OPENING;
+		priv->effect_direction = AWN_APP_EFFECT_DIRECTION_UP;
+		priv->y_offset = -48;
+	}
+	
+	if (priv->effect_direction == AWN_TASK_EFFECT_DIRECTION_UP) {
+		priv->y_offset +=2;
+		
+		if (priv->y_offset == max) 
+			priv->effect_direction == AWN_TASK_EFFECT_DIRECTION_DOWN;	
+	
+	} else {
+		priv->y_offset-=2;
+		
+		if (priv->y_offset < 1) {
+			/* finished bouncing, back to normal */
+			priv->effect_lock = FALSE;
+			priv->current_effect = AWN_TASK_EFFECT_NONE;
+			priv->effect_direction = AWN_APP_EFFECT_DIRECTION_UP;
+			priv->y_offset = 0;
+			
+		}
+	}
+
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+	
+	
+	if (priv->effect_lock == FALSE)
+		return FALSE;
+	
+	return TRUE;
+}
+
+
+static void
+launch_opening_effect (AwnTask *task )
+{
+	g_timeout_add(AWN_FRAME_RATE, (GSourceFunc)_task_opening_effect, (gpointer)task);
+}
+
+
+
+/******************************CALLBACKS**********************/
 
 static void
 draw (GtkWidget *task, cairo_t *cr)
