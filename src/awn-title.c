@@ -367,7 +367,7 @@ _position_window (GtkWidget *window)
 	sh = gdk_screen_get_height(screen);
 	
 	x = (int) ((sw - ww) / 2);
-	y = (int) (sh-85);
+	y = (int) (sh-90);
 	
 	gtk_window_move(GTK_WINDOW(window), x, y);
 	

@@ -71,6 +71,7 @@ struct _AwnTaskPrivate
 	gboolean is_active;
 	gboolean needs_attention;
 	gboolean is_closing;
+	gboolean hover;
 	
 	GdkPixbuf *icon;
 	gint icon_width;
@@ -143,6 +144,7 @@ awn_task_init (AwnTask *task)
 	priv->is_launcher = FALSE;
 	priv->is_starter = FALSE;
 	priv->is_closing = FALSE;
+	priv->hover = FALSE;
 	priv->window = NULL;
 	priv->title = NULL;
 	priv->icon = NULL;
@@ -211,12 +213,113 @@ _task_opening_effect (AwnTask *task)
 static void
 launch_opening_effect (AwnTask *task )
 {
-	g_print("Opening effect\n");
 	g_timeout_add(AWN_FRAME_RATE, (GSourceFunc)_task_opening_effect, (gpointer)task);
 }
 
 
+static gboolean
+_task_hover_effect (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	static gint max = 10;	
 
+	if (priv->effect_lock) {
+		if ( priv->current_effect != AWN_TASK_EFFECT_HOVER)
+			return TRUE;
+	} else {
+		priv->effect_lock = TRUE;
+		priv->current_effect = AWN_TASK_EFFECT_HOVER;
+		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+		priv->y_offset = 0;
+	}
+	
+	if (priv->effect_direction) {
+		priv->y_offset +=1;
+		
+		if (priv->y_offset >= max) 
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
+	
+	} else {
+		priv->y_offset-=1;
+		
+		if (priv->y_offset < 1) {
+			/* finished bouncing, back to normal */
+			if (priv->hover) 
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+			else {
+				priv->effect_lock = FALSE;
+				priv->current_effect = AWN_TASK_EFFECT_NONE;
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+				priv->y_offset = 0;
+			}
+		}
+	}
+	
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+	
+	
+	if (priv->effect_lock == FALSE)
+		return FALSE;
+	
+	return TRUE;
+}
+
+static gboolean
+_task_hover_effect2 (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	static float max = 1.0;
+	static float min = 0.1;
+		
+
+	if (priv->effect_lock) {
+		if ( priv->current_effect != AWN_TASK_EFFECT_HOVER)
+			return TRUE;
+	} else {
+		priv->effect_lock = TRUE;
+		priv->current_effect = AWN_TASK_EFFECT_HOVER;
+		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+		priv->alpha = 1.0;
+	}
+	
+	if (priv->effect_direction) {
+		priv->alpha -=0.05;
+		
+		if (priv->alpha <= 0.1) 
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
+	
+	} else {
+		priv->alpha+=0.05;
+		
+		if (priv->alpha >= 1.0) {
+			/* finished bouncing, back to normal */
+			if (priv->hover) 
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+			else {
+				priv->effect_lock = FALSE;
+				priv->current_effect = AWN_TASK_EFFECT_NONE;
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+				priv->alpha = 1.0;
+			}
+		}
+	}
+	
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+	
+	
+	if (priv->effect_lock == FALSE)
+		return FALSE;
+	
+	return TRUE;
+}
+
+static void
+launch_hover_effect (AwnTask *task )
+{
+	g_timeout_add(25, (GSourceFunc)_task_hover_effect, (gpointer)task);
+}
 
 
 /******************************CALLBACKS**********************/
@@ -315,10 +418,17 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 	if (priv->title) {
 		gint i = (int)event->x_root;
 		gint x, y, x1;
-		gdk_window_get_origin(task->window, &x, &y);
+		gdk_window_get_origin (task->window, &x, &y);
 		
-		awn_title_show(AWN_TITLE (priv->title), awn_task_get_name(AWN_TASK(task)), x+30, 0);
+		awn_title_show (AWN_TITLE (priv->title), awn_task_get_name(AWN_TASK(task)), x+30, 0);
 	
+	}
+	
+	if (priv->hover)
+		return TRUE;
+	else {
+		priv->hover = TRUE;
+		launch_hover_effect (AWN_TASK (task));
 	}
 	return TRUE;
 }
@@ -331,7 +441,7 @@ awn_task_proximity_out (GtkWidget *task, GdkEventCrossing *event)
 	
 	if (priv->title)
 		awn_title_show(AWN_TITLE (priv->title), " ", 20, 0);
-	
+	priv->hover = FALSE;
 	return TRUE;
 }
 
