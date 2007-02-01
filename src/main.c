@@ -65,7 +65,7 @@ main (int argc, char* argv[])
 			 G_CALLBACK(expose), bar);
 	
 	box = gtk_hbox_new(FALSE, 2);
-	
+		
 	//winman = awn_win_mgr_new(settings);
 	if (argc == 2) {
 		if ( argv[1][0] == '-' ) {
@@ -76,9 +76,10 @@ main (int argc, char* argv[])
 		}
 	}
 	
-	if (winman == NULL) 
+	if (winman == NULL) { 
 		winman = awn_win_mgr_new (settings);
-	
+		g_print("\n\nYou have chosen to use the old window manger code, start avant-window-navigator with '-x' to experience the new features\n\n");
+	}
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new(" "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), winman, FALSE, TRUE, 0);	
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new(" "), FALSE, FALSE, 0);

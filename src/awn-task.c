@@ -42,6 +42,7 @@ static gboolean awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 static gboolean awn_task_proximity_out (GtkWidget *task, GdkEventCrossing *event);
 static gboolean awn_task_drag_motion (GtkWidget *task, 
 		GdkDragContext *context, gint x, gint y, guint t);
+static void awn_task_create_menu(AwnTask *task, GtkMenu *menu);
 
 
 /* STRUCTS & ENUMS */
@@ -321,8 +322,61 @@ launch_hover_effect (AwnTask *task )
 	g_timeout_add(25, (GSourceFunc)_task_hover_effect, (gpointer)task);
 }
 
+static gboolean
+_task_attention_effect (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	static gint max = 20;	
 
-/******************************CALLBACKS**********************/
+	if (priv->effect_lock) {
+		if ( priv->current_effect != AWN_TASK_EFFECT_ATTENTION)
+			return TRUE;
+	} else {
+		priv->effect_lock = TRUE;
+		priv->current_effect = AWN_TASK_EFFECT_ATTENTION;
+		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+		priv->y_offset = 0;
+	}
+	
+	if (priv->effect_direction) {
+		priv->y_offset +=1;
+		
+		if (priv->y_offset >= max) 
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
+	
+	} else {
+		priv->y_offset-=1;
+		
+		if (priv->y_offset < 1) {
+			/* finished bouncing, back to normal */
+			if (priv->needs_attention) 
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+			else {
+				priv->effect_lock = FALSE;
+				priv->current_effect = AWN_TASK_EFFECT_NONE;
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+				priv->y_offset = 0;
+			}
+		}
+	}
+	
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+	
+	
+	if (priv->effect_lock == FALSE)
+		return FALSE;
+	
+	return TRUE;
+}
+
+static void
+launch_attention_effect (AwnTask *task )
+{
+	g_timeout_add(25, (GSourceFunc)_task_attention_effect, (gpointer)task);
+}
+
+/**********************  CALLBACKS  **********************/
 
 static void
 draw (GtkWidget *task, cairo_t *cr)
@@ -398,6 +452,7 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 		
 			case 3:
 				menu = wnck_create_window_action_menu(priv->window);
+				awn_task_create_menu(AWN_TASK(task), menu);
 				gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
 						       NULL, 3, event->time);
 				break;
@@ -471,6 +526,30 @@ _task_wnck_icon_changed (WnckWindow *window, AwnTask *task)
         gtk_widget_queue_draw(GTK_WIDGET(task));
 }
 
+static void
+_task_wnck_state_changed (WnckWindow *window, WnckWindowState  old, 
+                                WnckWindowState  new, AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	if (priv->window == NULL )
+		return;
+	
+	if (wnck_window_is_skip_tasklist(priv->window))
+		gtk_widget_hide (GTK_WIDGET(task));
+	else	
+		gtk_widget_show (GTK_WIDGET(task));
+	
+	if (wnck_window_needs_attention(priv->window)) {
+		if (!priv->needs_attention) {
+			launch_attention_effect(task);
+			priv->needs_attention = TRUE;
+		}
+	} else
+		priv->needs_attention = FALSE;
+}
+
 /**********************Gets & Sets **********************/
 
 gboolean 
@@ -499,6 +578,8 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
 	
 	g_signal_connect (G_OBJECT (priv->window), "icon_changed",
         		  G_CALLBACK (_task_wnck_icon_changed), (gpointer)task); 
+        g_signal_connect (G_OBJECT (priv->window), "state_changed",
+        		  G_CALLBACK (_task_wnck_state_changed), (gpointer)task);
         
         /* if launcher, set a launch_sequence
         else if starter, stop the launch_sequence, disable starter flag*/
@@ -555,8 +636,7 @@ awn_task_set_needs_attention (AwnTask *task, gboolean needs_attention)
 	
 	priv->needs_attention = needs_attention;
 	if (needs_attention)
-		;
-		//g_timeout_add(20, (GSourceFunc)_effect_needs_attention, (gpointer)task)
+		launch_opening_effect(task);
 }	
 
 const char* 
@@ -594,6 +674,42 @@ awn_task_get_settings (AwnTask *task)
 	return priv->settings;
 }
 
+
+/********************* MISC FUNCTIONS *******************/
+
+static void
+_task_show_prefs (GtkMenuItem *item, AwnTask *task)
+{
+	g_print("Preferences for %s\n", awn_task_get_name(task));
+	/*
+		TODO : Provide an interface to change the icon of the current
+		       application to one of the users choice. Save it.
+	*/
+}
+
+static void 
+awn_task_create_menu(AwnTask *task, GtkMenu *menu)
+{
+	AwnTaskPrivate *priv;
+	GtkWidget *item;
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	item = NULL;
+	
+	if (priv->window != NULL) {
+		item = gtk_separator_menu_item_new ();
+		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show(item);
+		
+		item = gtk_image_menu_item_new_from_stock ("gtk-preferences", 
+							   NULL);
+		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show(item);
+		g_signal_connect (G_OBJECT(item), "activate",
+				  G_CALLBACK(_task_show_prefs), (gpointer)task);
+	}
+}
+
 /********************* awn_task_new * *******************/
 
 GtkWidget *
@@ -626,6 +742,8 @@ awn_task_new_from_window (AwnSettings *settings, WnckWindow *window)
 		
 	g_signal_connect (G_OBJECT (priv->window), "icon_changed",
         		  G_CALLBACK (_task_wnck_icon_changed), (gpointer)task);
+        
+
 }
 
 GtkWidget *
@@ -694,7 +812,7 @@ awn_task_close (AwnTask *task)
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
 	priv->window = NULL;
-	
+	priv->needs_attention = FALSE;
 	if (priv->is_launcher)
 		return;
 

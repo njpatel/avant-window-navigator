@@ -1,5 +1,11 @@
 2007-02-01  Neil Jagdish Patel  <njp@Fedora>
 
+	* README:
+	* src/awn-task.c: Added needs-attention effects
+	* src/main.c: Prints message detailing how to use new code.
+
+2007-02-01  Neil Jagdish Patel  <njp@Fedora>
+
 	* src/awn-task.c: Added mouse-hover effects
 	* src/awn-title.c: (_position_window): Raise window by 5px.
 
