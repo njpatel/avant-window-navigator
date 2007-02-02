@@ -19,16 +19,12 @@ schemadir   = /etc/gconf/schemas
 schema_DATA = avant-window-navigator.schemas
 @INTLTOOL_SCHEMAS_RULE@
 
-
-$(schema_DATA).in: $(schema_DATA).in.in
-	sed -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" $< > $@
-
 if GCONF_SCHEMAS_INSTALL
 install-data-local: $(schema_DATA)
 	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA);
 endif
 
 
-EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA) $(desktop_DATA).in.in 
+EXTRA_DIST = $(schemas_DATA).in.in $(icon_DATA) $(desktop_DATA)
 
-CLEANFILES = $(schemas_DATA) $(schemas_DATA).in $(desktop_DATA) $(desktop_DATA).in
+CLEANFILES = $(schemas_DATA) $(schemas_DATA).in

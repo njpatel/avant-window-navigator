@@ -148,7 +148,7 @@
 		<applyto>/apps/avant-window-navigator/app/active_png</applyto>
 		<owner>avant-window-navigator</owner>
 		<type>string</type>
-		<default>@PKGDATADIR@/active/glow4.png</default>
+		<default>/usr/share/avant-window-navigator/active/glow4.png</default>
 		<locale name="C">
 			<short>PNG file to use for active windows.</short>
 			<long>PNG file to use for active windows.</long>
