@@ -352,6 +352,27 @@ _on_configure (GtkWidget* pWidget, GdkEventConfigure* pEvent, gpointer userData)
 	return FALSE;
 }
 
+static gboolean is_positioning = FALSE;
+static gint x_pos = 0;
+static gint y_pos = 0;
+static current_pos = 0;
+
+
+
+static gboolean
+_position_func (GtkWidget *window)
+{
+	if (x_pos == current_pos) {
+		is_positioning = FALSE;
+		return FALSE;
+	} else if (x_pos > current_pos) {
+		current_pos++;
+	} else {
+		current_pos--;
+	}
+	gtk_window_move(GTK_WINDOW(window), current_pos, y_pos);
+}
+
 static void
 _position_window (GtkWidget *window)
 {
@@ -365,10 +386,12 @@ _position_window (GtkWidget *window)
 	sw = gdk_screen_get_width(screen);
 	sh = gdk_screen_get_height(screen);
 	
-	x = (int) ((sw - ww) / 2);
-	y = (int) (sh-wh);
+	x_pos = (int) ((sw - ww) / 2);
+	y_pos = (int) (sh-wh);
 	
-	gtk_window_move(GTK_WINDOW(window), x, y);
+	if (!is_positioning)
+		g_timeout_add(20, (GSourceFunc)_position_func, (gpointer)window);
+	//gtk_window_move(GTK_WINDOW(window), x, y);
 }
 
 
