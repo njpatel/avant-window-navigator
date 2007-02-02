@@ -176,9 +176,8 @@ _task_destroy (AwnTask *task, gpointer xid)
 	window_id = GPOINTER_TO_UINT(xid);
 	task_id = awn_task_get_xid(task);
 	
-	if (window_id == task_id) {
+	if (window_id == task_id)
 		awn_task_close(task);
-	}
 }
 
 static void 
@@ -248,6 +247,9 @@ _task_refresh (AwnTask *task, WnckWorkspace *space)
 {
 	WnckWindow *window;
 	AwnSettings *settings;
+	
+	if (task == NULL)
+		return;
 	
 	g_return_if_fail(AWN_IS_TASK (task));
 	

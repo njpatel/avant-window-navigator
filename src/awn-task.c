@@ -398,7 +398,7 @@ draw (GtkWidget *task, cairo_t *cr)
 	if (priv->is_active) {
 		cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
 		cairo_set_source_rgba(cr, 1, 1, 1, 0.2);
-		cairo_rectangle(cr, 0, 51, 60, 48);
+		cairo_rectangle(cr, 0, 50, 60, 50);
 		cairo_fill(cr);
 	}
 	
@@ -482,6 +482,8 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 	if (priv->hover)
 		return TRUE;
 	else {
+		if (priv->needs_attention)
+			return TRUE;
 		priv->hover = TRUE;
 		launch_hover_effect (AWN_TASK (task));
 	}
@@ -779,12 +781,14 @@ _task_destroy (AwnTask *task)
 		
 	if (priv->y_offset >= max) {
 		
+		/* This was an idea for smoothing out the effect of the bar resizing, but its very jerky.
+		   Instead, this will be moved into the window positioning code!
 		if (priv->width <=2) {
 			priv->width -=2;
 			gtk_widget_set_size_request(GTK_WIDGET(task), priv->width, 100);
 			return TRUE;
 		}
-		
+		*/
 		priv->title = NULL;
 		gdk_pixbuf_unref (priv->icon);
 		
