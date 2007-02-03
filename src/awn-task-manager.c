@@ -232,19 +232,23 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 	_refresh_box (task_manager);
 }
 
+typedef struct {
+	gulong xid;
+	GList *list;
+} AwnDestroyTerm;
 
 static void
-_task_destroy (AwnTask *task, gpointer xid) 
+_task_destroy (AwnTask *task, AwnDestroyTerm *term) 
 {
 	guint window_id, task_id;
 	
 	g_return_if_fail(AWN_IS_TASK(task));
 	
-	window_id = GPOINTER_TO_UINT(xid);
+	//window_id = GPOINTER_TO_UINT(xid);
 	task_id = awn_task_get_xid(task);
 	
-	if (window_id == task_id)
-		awn_task_close(task);
+	if (term->xid == task_id)
+		awn_task_close(task, term->list);
 }
 
 static void 
@@ -254,13 +258,17 @@ _task_manager_window_closed (WnckScreen *screen, WnckWindow *window,
 	g_return_if_fail (WNCK_IS_WINDOW (window));
 	
 	AwnTaskManagerPrivate *priv;
+	AwnDestroyTerm term;
 	guint xid;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
 	xid = wnck_window_get_xid (window);
-	g_list_foreach (priv->launchers, _task_destroy, GUINT_TO_POINTER(xid));
-	g_list_foreach (priv->tasks, _task_destroy, GUINT_TO_POINTER(xid));
+	term.xid = xid;
+	term.list = priv->launchers;
+	g_list_foreach (priv->launchers, _task_destroy, (gpointer)&term);
+	term.list = priv->tasks;
+	g_list_foreach (priv->tasks, _task_destroy, (gpointer)&term);
 	
 	_refresh_box(task_manager);
 }
@@ -321,10 +329,7 @@ _task_refresh (AwnTask *task, WnckWorkspace *space)
 	g_return_if_fail(AWN_IS_TASK (task));
 	
 	settings = awn_task_get_settings(task);
-	window = awn_task_get_window (task);
-	
-	if (!window)
-		return;
+	window = awn_task_get_window(task);
 	
 	if (!space)
 		return;

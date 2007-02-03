@@ -62,7 +62,7 @@ GtkWidget *awn_task_new_from_window (AwnSettings *settings, WnckWindow *window);
 GtkWidget *awn_task_new_from_launcher(AwnSettings *settings, AwnSmartLauncher *launcher);
 GtkWidget *awn_task_new_from_startup_notify(AwnSettings *settings);
 
-void awn_task_close (AwnTask *task);
+void awn_task_close (AwnTask *task, GList *remove_from);
 
 gboolean awn_task_get_is_launcher (AwnTask *task);
 

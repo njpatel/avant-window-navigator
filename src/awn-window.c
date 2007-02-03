@@ -97,7 +97,7 @@ awn_window_new( AwnSettings *set )
         
         _update_input_shape (GTK_WIDGET(this), AWN_WINDOW_DEFAULT_WIDTH, AWN_WINDOW_DEFAULT_HEIGHT);
         
-      	g_timeout_add(2000, (GSourceFunc)_position_timeout, NULL);
+      	g_timeout_add(5000, (GSourceFunc)_position_timeout, NULL);
         return GTK_WIDGET(this);
 }
 
