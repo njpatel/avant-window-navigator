@@ -82,6 +82,7 @@ void awn_task_set_is_active (AwnTask *task, gboolean is_active);
 void awn_task_set_needs_attention (AwnTask *task, gboolean needs_attention);
 
 const char* awn_task_get_name (AwnTask *task);
+const char* awn_task_get_application(AwnTask *task);
 
 void awn_task_set_title (AwnTask *task, AwnTitle *title);
 

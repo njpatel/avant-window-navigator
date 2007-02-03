@@ -65,6 +65,8 @@ struct _AwnTaskPrivate
 	GnomeDesktopItem *item;
 	int pid;
 	
+	char *application;
+	
 	gboolean is_launcher;
 	AwnSmartLauncher launcher;
 	gboolean is_starter;
@@ -117,7 +119,7 @@ awn_task_class_init (AwnTaskClass *class)
 	widget_class->button_press_event = awn_task_button_press;
 	widget_class->enter_notify_event = awn_task_proximity_in;
 	widget_class->leave_notify_event = awn_task_proximity_out;
-	//widget_class->drag_motion_event = awn_task_drag_motion;
+	widget_class->drag_motion = awn_task_drag_motion;
 
 	g_type_class_add_private (obj_class, sizeof (AwnTaskPrivate));
 }
@@ -147,6 +149,7 @@ awn_task_init (AwnTask *task)
 	
 	priv->item = FALSE;
 	priv->pid = -1;
+	priv->application = NULL;
 	priv->is_launcher = FALSE;
 	priv->is_starter = FALSE;
 	priv->is_closing = FALSE;
@@ -605,8 +608,24 @@ static gboolean
 awn_task_drag_motion (GtkWidget *task, 
 		GdkDragContext *context, gint x, gint y, guint t)
 {
-	g_print("Drag Motion Event\n");
-	return TRUE;
+        AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	if (priv->is_closing)
+		return TRUE;
+	
+	if (priv->is_launcher)
+		return FALSE;
+	if (priv->window) {
+		
+		if ( wnck_window_is_active( priv->window ) )
+			return FALSE;
+		else
+			wnck_window_activate( priv->window, 
+						gtk_get_current_event_time() );
+	}
+	
+	return FALSE;
 }
 
 static void 
@@ -885,6 +904,48 @@ awn_task_get_name (AwnTask *task)
 	else
 		name =  "No name";
 	return name;
+}
+
+const char* 
+awn_task_get_application(AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	WnckApplication *wnck_app;
+	char *app;
+	GString *str;
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	app = NULL;
+	
+	if (priv->application)
+		return priv->application;
+	
+	if (priv->is_launcher) {
+		
+		str = g_string_new(gnome_desktop_item_get_string (priv->item, 
+					GNOME_DESKTOP_ITEM_EXEC));
+		int i = 0;
+		for (i=0; i < str->len; i++) {
+			if ( str->str[i] == ' ')
+				break;
+		}
+		
+		if (i)
+			str = g_string_truncate (str,i);
+		priv->application = g_strdup(str->str);
+		app = g_string_free (str, TRUE);
+		
+	} else if (priv->window) {
+		wnck_app = wnck_window_get_application(priv->window);
+		str = g_string_new (wnck_application_get_name(wnck_app));
+		str = g_string_ascii_down (str);
+		priv->application = g_strdup(str->str);
+		app = g_string_free (str, TRUE);
+	
+	} else
+		priv->application = NULL;
+	
+	return priv->application;
 }
 
 void 

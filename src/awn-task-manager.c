@@ -142,6 +142,7 @@ _task_manager_load_launchers(AwnTaskManager *task_manager)
 typedef struct {
 	AwnTask *task;
 	int pid;
+	WnckWindow *window;
 	
 } AwnLauncherTerm;
 
@@ -150,11 +151,26 @@ _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 {
 	int pid = awn_task_get_pid(task);
 	
-	//g_print("%d == %d\n", pid, term->pid);
 	if (term->pid == pid) {
 		term->task = task;
-	} else
-		return;
+	} else {
+		WnckApplication *wnck_app;
+		char *app_name;
+		GString *str;
+		
+		app_name = wnck_application_get_name(
+        			    wnck_window_get_application(term->window));
+        	
+        	wnck_app = wnck_window_get_application(term->window);
+		str = g_string_new (wnck_application_get_name(wnck_app));
+		str = g_string_ascii_down (str);
+		
+		if ( strcmp (awn_task_get_application(task), str->str) == 0 ) {
+			term->task = task;
+		} 
+		g_string_free (str, TRUE);	
+		
+	}
 }
 
 GtkWidget *
@@ -169,6 +185,7 @@ _task_manager_window_has_launcher (AwnTaskManager *task_manager,
 	
 	term.task = NULL;
 	term.pid = wnck_window_get_pid(window);
+	term.window = window;
 	
 	if (term.pid == 0) {
 		WnckApplication *app = wnck_window_get_application(window);
