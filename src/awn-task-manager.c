@@ -30,7 +30,9 @@
 #include "awn-task-manager.h"
 
 #include "awn-title.h"
+
 #include "awn-task.h"
+
 
 #define AWN_TASK_MANAGER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), AWN_TYPE_TASK_MANAGER, AwnTaskManagerPrivate))
 
@@ -45,6 +47,18 @@ static void _task_manager_window_activate (WnckScreen *screen,
 						AwnTaskManager *task_manager);
 static void _task_manager_workspace_changed (WnckScreen *screen, 
 						AwnTaskManager *task_manager);
+
+static void _task_manager_drag_data_recieved (GtkWidget        *widget,
+                                              GdkDragContext   *drag_context,
+                                              gint              x,
+                                              gint              y,
+                                              GtkSelectionData *data,
+                                              guint             info,
+                                              guint             time,
+                                              AwnTaskManager    *task_manager);
+
+
+
 static void _refresh_box(AwnTaskManager *task_manager);
 static void _task_manager_load_launchers(AwnTaskManager *task_manager);
 
@@ -112,9 +126,13 @@ _load_launchers_func (const char *uri, AwnTaskManager *task_manager)
 	if (item == NULL)
 		return;
 	
-	task = awn_task_new(priv->settings);
+	task = awn_task_new(task_manager, priv->settings);
 	awn_task_set_title (AWN_TASK(task), priv->title_window);
 	if (awn_task_set_launcher (AWN_TASK (task), item)) {
+		
+		g_signal_connect (G_OBJECT(task), "drag-data-received",
+				  G_CALLBACK(_task_manager_drag_data_recieved), (gpointer)task_manager);
+		
 		priv->launchers = g_list_append(priv->launchers, (gpointer)task);
 		gtk_box_pack_start(GTK_BOX(task_manager), task, FALSE, FALSE, 0);
 	
@@ -149,11 +167,17 @@ typedef struct {
 static void
 _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 {
+	g_return_if_fail (AWN_IS_TASK(task));
+	
 	int pid = awn_task_get_pid(task);
 	
+	/* try pid */
 	if (term->pid == pid) {
 		term->task = task;
-	} else {
+	} 
+	
+	/* try app name, works for 80% of sane applications */
+	if (term->task == NULL) {
 		WnckApplication *wnck_app;
 		char *app_name;
 		GString *str;
@@ -171,6 +195,25 @@ _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 		g_string_free (str, TRUE);	
 		
 	}
+	/* try window name, kind of last resort :/ */
+	if (term->task == NULL) {
+		GString *str1 = g_string_new (awn_task_get_name (task));
+		str1 = g_string_ascii_down (str1);
+		
+		GString *str2 = g_string_new (wnck_window_get_name (term->window));
+		str2 = g_string_ascii_down (str2);
+		
+		if ( str2->str[str2->len-1] == ' ')
+			 str2 = g_string_truncate (str2, str2->len -1);
+		
+		if ( strcmp (str1->str, str2->str) == 0 ) {
+			term->task = task;
+		} 
+			
+		g_string_free (str1, TRUE);	
+		g_string_free (str2, TRUE);	
+	}
+	
 }
 
 GtkWidget *
@@ -238,12 +281,15 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 	
 	/* if not launcher & no starter, create new task */
 	if (task == NULL) {
-		task = awn_task_new(priv->settings);
+		task = awn_task_new(task_manager, priv->settings);
 		if (awn_task_set_window (AWN_TASK (task), window))
 			;//g_print("Created for %s\n", wnck_window_get_name(window));
 		awn_task_set_title (AWN_TASK(task), priv->title_window);
 		priv->tasks = g_list_append(priv->tasks, (gpointer)task);
 		gtk_box_pack_start(GTK_BOX(task_manager), task, FALSE, FALSE, 0);
+		
+		g_signal_connect (G_OBJECT(task), "drag-data-received",
+				  G_CALLBACK(_task_manager_drag_data_recieved), (gpointer)task_manager);
 	}
 	
 	_refresh_box (task_manager);
@@ -265,7 +311,7 @@ _task_destroy (AwnTask *task, AwnDestroyTerm *term)
 	task_id = awn_task_get_xid(task);
 	
 	if (term->xid == task_id)
-		awn_task_close(task, term->list);
+		awn_task_close(task);
 }
 
 static void 
@@ -334,16 +380,133 @@ _task_manager_workspace_changed (WnckScreen *screen,
 	g_print("\n***AWN-TASK-MANAGER*** - Workspace Changed\n");
 }
 
+/********************************* D&D code *****************************/
+
+enum {
+        TARGET_STRING
+};
+
+/* datatype (string), restrictions on DnD (GtkTargetFlags), datatype (int) */
+static GtkTargetEntry target_list[] = {
+	{ "text/plain", 0, TARGET_STRING },
+};
+
+static void 
+_task_manager_drag_data_recieved (GtkWidget *widget, GdkDragContext *context, 
+				  gint x, gint y, GtkSelectionData *selection_data, 
+				  guint target_type, guint time,
+                                              AwnTaskManager *task_manager)
+{
+        glong   *_idata;
+        gchar   *_sdata;
+        
+        gboolean dnd_success = FALSE;
+        gboolean delete_selection_data = FALSE;
+        
+        const gchar *name = gtk_widget_get_name (widget);
+        g_print ("%s: drag_data_received_handl\n", name);
+        
+        
+        /* Deal with what we are given from source */
+        if((selection_data != NULL) && (selection_data-> length >= 0))
+        {
+                /* Check that we got the format we can use */
+               	g_print (" Receiving ");
+                _sdata = (gchar*)selection_data-> data;
+                g_print ("string: %s", _sdata);
+                dnd_success = TRUE;
+               
+        }
+
+	AwnTaskManagerPrivate *priv;
+	GtkWidget *task = NULL;
+	GnomeDesktopItem *item= NULL;
+	GError *err = NULL;
+	GString *uri;
+	AwnSettings *settings;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	uri = g_string_new(_sdata);
+	uri = g_string_erase(uri, 0, 7);
+	
+	int i = 0;
+	int res = 0;
+	for (i =0; i < uri->len; i++) {
+		if (uri->str[i] == 'p')
+		res = i;
+	}
+	if (res)
+		uri = g_string_truncate(uri, res+1);
+	
+	g_print("Desktop file: %s\n", uri->str);
+	item = gnome_desktop_item_new_from_file (uri->str,                             
+				GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS, &err);
+	
+	if (err)
+		g_print("Error : %s", err->message);
+	if (item == NULL)
+		return;
+	
+	task = awn_task_new(task_manager, priv->settings);
+	awn_task_set_title (AWN_TASK(task), priv->title_window);
+	if (awn_task_set_launcher (AWN_TASK (task), item)) {
+		
+		g_signal_connect (G_OBJECT(task), "drag-data-received",
+				  G_CALLBACK(_task_manager_drag_data_recieved), (gpointer)task_manager);
+		
+		priv->launchers = g_list_append(priv->launchers, (gpointer)task);
+		gtk_box_pack_start(GTK_BOX(task_manager), task, FALSE, FALSE, 0);
+		gtk_widget_show(task);
+		_refresh_box (task_manager);
+		g_print("LOADED : %s\n", _sdata);
+		
+		/******* Add to Gconf *********/
+		settings = priv->settings;
+		settings->launchers = g_slist_append(settings->launchers, g_strdup(uri->str));
+		
+		GConfClient *client = gconf_client_get_default();
+		gconf_client_set_list(client,
+					"/apps/avant-window-navigator/window_manager/launchers",
+					GCONF_VALUE_STRING,settings->launchers,NULL);
+		
+	} else {
+		gtk_widget_destroy(task);
+		gnome_desktop_item_unref(item);
+		g_print("FAILED : %s\n", _sdata);
+	}
+	
+	g_string_free(uri, TRUE);
+       	_refresh_box(task_manager);
+        gtk_drag_finish (context, dnd_success, delete_selection_data, time);
+}
+
+/*****************  END OF D&D *************************************/
+
+static int
+_task_fails (AwnTask *task)
+{
+	
+	return 0;
+}
+
+
 static void
-_task_refresh (AwnTask *task, WnckWorkspace *space)
+_task_refresh (AwnTask *task, AwnTaskManager *task_manager)
 {
 	WnckWindow *window;
 	AwnSettings *settings;
+	AwnTaskManagerPrivate *priv;
+	WnckWorkspace *space;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	space = wnck_screen_get_active_workspace(priv->screen);
+	
+	g_return_if_fail(AWN_IS_TASK (task));
 	
 	if (task == NULL)
 		return;
-	
-	g_return_if_fail(AWN_IS_TASK (task));
 	
 	settings = awn_task_get_settings(task);
 	window = awn_task_get_window(task);
@@ -384,10 +547,27 @@ _refresh_box(AwnTaskManager *task_manager)
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
 	space = wnck_screen_get_active_workspace(priv->screen);
-	g_list_foreach(priv->launchers, _task_refresh, (gpointer)space);
-	g_list_foreach(priv->tasks, _task_refresh, (gpointer)space);
+	g_list_foreach(priv->launchers, _task_refresh, (gpointer)task_manager);
+	g_list_foreach(priv->tasks, _task_refresh, (gpointer)task_manager);
 }
 
+void
+awn_task_manager_remove_launcher (AwnTaskManager *task_manager, gpointer  task)
+{
+	AwnTaskManagerPrivate *priv;
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	priv->launchers = g_list_remove(priv->launchers, task);
+}
+
+void
+awn_task_manager_remove_task (AwnTaskManager *task_manager, gpointer task)
+{
+	AwnTaskManagerPrivate *priv;
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	priv->tasks = g_list_remove(priv->tasks, (gpointer)task);
+}
 
 /********************* awn_task_manager_new * *******************/
 

@@ -31,6 +31,7 @@
 #include "awn-gconf.h"
 #include "awn-utils.h" 
 #include "awn-title.h"
+#include "awn-task-manager.h"
 
 G_BEGIN_DECLS
 
@@ -57,12 +58,9 @@ struct _AwnTaskClass
 
 };
 
-GtkWidget *awn_task_new (AwnSettings *settings);
-GtkWidget *awn_task_new_from_window (AwnSettings *settings, WnckWindow *window);
-GtkWidget *awn_task_new_from_launcher(AwnSettings *settings, AwnSmartLauncher *launcher);
-GtkWidget *awn_task_new_from_startup_notify(AwnSettings *settings);
+GtkWidget *awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings);
 
-void awn_task_close (AwnTask *task, GList *remove_from);
+void awn_task_close (AwnTask *task);
 
 gboolean awn_task_get_is_launcher (AwnTask *task);
 

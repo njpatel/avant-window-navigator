@@ -25,6 +25,7 @@
 
 #include "awn-gconf.h"
 
+
 G_BEGIN_DECLS
 
 #define AWN_TYPE_TASK_MANAGER		(awn_task_manager_get_type ())
@@ -51,6 +52,10 @@ struct _AwnTaskManagerClass
 };
 
 GtkWidget *awn_task_manager_new (AwnSettings *settings);
+
+void awn_task_manager_remove_launcher (AwnTaskManager *task_manager, gpointer task);
+
+void awn_task_manager_remove_task     (AwnTaskManager *task_manager, gpointer task);
 
 G_END_DECLS
 

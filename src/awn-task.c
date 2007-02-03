@@ -19,6 +19,7 @@
 */
 
 #include <gtk/gtk.h>
+#include <string.h>
 
 #include "awn-task.h"
 
@@ -60,6 +61,7 @@ typedef struct _AwnTaskPrivate AwnTaskPrivate;
 
 struct _AwnTaskPrivate
 {
+	AwnTaskManager *task_manager;
 	AwnSettings *settings;
 	
 	GnomeDesktopItem *item;
@@ -95,7 +97,6 @@ struct _AwnTaskPrivate
 	double rotate_degrees;
 	gfloat alpha;
 	
-	GList *remove_from;
 };
 
 /* GLOBALS */
@@ -134,15 +135,15 @@ awn_task_init (AwnTask *task)
 	gtk_drag_dest_set (GTK_WIDGET (task),
                            GTK_DEST_DEFAULT_ALL,
                            drop_types, n_drop_types,
-                           GDK_ACTION_MOVE);
+                           GDK_ACTION_MOVE | GDK_ACTION_COPY);
 	
 	
 #if !GTK_CHECK_VERSION(2,9,0)
 			/* TODO: equivalent of following function: */
 #else
-			gtk_drag_dest_set_track_motion  (GTK_WIDGET (task),TRUE);
+			//gtk_drag_dest_set_track_motion  (GTK_WIDGET (task),TRUE);
 #endif
-
+	gtk_drag_dest_add_uri_targets (GTK_WIDGET (task));
 	/* set all priv variables */
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
@@ -253,9 +254,10 @@ _task_launched_effect (AwnTask *task)
 	} else {
 		priv->y_offset-=1;
 		
-		if (priv->y_offset < 1) 
+		if (priv->y_offset < 1) {
 			priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;	
-		count++;
+			count++;
+		}
 		if (priv->y_offset < 1 && (priv->window != NULL)) {
 			/* finished bouncing, back to normal */
 			priv->effect_lock = FALSE;
@@ -293,8 +295,12 @@ static gboolean
 _task_hover_effect (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
+
+	g_return_val_if_fail (AWN_IS_TASK(task), 0);
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	static gint max = 10;	
+	
 
 	if (priv->effect_lock) {
 		if ( priv->current_effect != AWN_TASK_EFFECT_HOVER)
@@ -448,6 +454,53 @@ launch_attention_effect (AwnTask *task )
 	g_timeout_add(25, (GSourceFunc)_task_attention_effect, (gpointer)task);
 }
 
+static gboolean
+_task_destroy (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	const gint max = 48;	
+	gfloat i;
+
+	if (priv->effect_lock) {
+		if ( priv->current_effect != AWN_TASK_EFFECT_CLOSING)
+			return TRUE;
+	} else {
+		priv->effect_lock = TRUE;
+		priv->current_effect = AWN_TASK_EFFECT_CLOSING;
+		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+		priv->y_offset = 0;
+	}
+	
+
+	//g_print("%d, %f\n",priv->y_offset, priv->alpha);	
+	if (priv->y_offset >= max) {
+		if (priv->is_launcher)
+			awn_task_manager_remove_launcher(priv->task_manager, task);
+		else
+			awn_task_manager_remove_task(priv->task_manager, task);
+		
+		priv->title = NULL;
+		g_free(priv->application);
+		gdk_pixbuf_unref (priv->icon);
+		gtk_widget_hide (GTK_WIDGET(task));
+		gtk_object_destroy (GTK_OBJECT(task));
+		task = NULL;
+		return FALSE;
+	
+	} else {
+		
+		priv->y_offset +=1;
+		i = (float) priv->y_offset / max;
+		priv->alpha = 1.0 - i;
+		gtk_widget_queue_draw(GTK_WIDGET(task));
+	}
+	
+	return TRUE;
+	
+}
+
+
 /**********************  CALLBACKS  **********************/
 
 static void
@@ -512,6 +565,46 @@ awn_task_expose (GtkWidget *task, GdkEventExpose *event)
 	return FALSE;
 }
 
+extern char **environ;
+
+/* Cut and paste from gdkspawn-x11.c */
+static gchar **
+my_gdk_spawn_make_environment_for_screen (GdkScreen  *screen,
+					  gchar     **envp)
+{
+  gchar **retval = NULL;
+  gchar  *display_name;
+  gint    display_index = -1;
+  gint    i, env_len;
+
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+  if (envp == NULL)
+    envp = environ;
+
+  for (env_len = 0; envp[env_len]; env_len++)
+    if (strncmp (envp[env_len], "DISPLAY", strlen ("DISPLAY")) == 0)
+      display_index = env_len;
+
+  retval = g_new (char *, env_len + 1);
+  retval[env_len] = NULL;
+
+  display_name = gdk_screen_make_display_name (screen);
+
+  for (i = 0; i < env_len; i++)
+    if (i == display_index)
+      retval[i] = g_strconcat ("DISPLAY=", display_name, NULL);
+    else
+      retval[i] = g_strdup (envp[i]);
+
+  g_assert (i == env_len);
+
+  g_free (display_name);
+
+  return retval;
+}
+
+
 static gboolean
 awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 {
@@ -542,11 +635,14 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 				return FALSE;
 		}
 	} else if (priv->is_launcher) {
-		
+		GdkScreen *screen = gdk_screen_get_default();
+		char **envp;
+		envp = my_gdk_spawn_make_environment_for_screen (screen, NULL);
+				
 		switch (event->button) {
 			case 1:
-				priv->pid = gnome_desktop_item_launch (priv->item, 
-							   NULL, 0, NULL);
+				priv->pid = gnome_desktop_item_launch_with_env (priv->item, 
+							   NULL, 0, envp, NULL);
 				launch_launched_effect(task);			   
 				break;
 		
@@ -612,10 +708,8 @@ awn_task_drag_motion (GtkWidget *task,
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
 	if (priv->is_closing)
-		return TRUE;
-	
-	if (priv->is_launcher)
 		return FALSE;
+	
 	if (priv->window) {
 		
 		if ( wnck_window_is_active( priv->window ) )
@@ -865,10 +959,9 @@ awn_task_set_is_active (AwnTask *task, gboolean is_active)
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
-	if (is_active == priv->is_active)
+	if (priv->window == NULL)
 		return;
-	
-	priv->is_active = is_active;
+	priv->is_active = wnck_window_is_active(priv->window);
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 }
 
@@ -978,6 +1071,58 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 	*/
 }
 
+typedef struct {
+	const char *uri;
+	AwnSettings *settings;
+
+} AwnListTerm;
+
+static void
+_slist_foreach (char *uri, AwnListTerm *term)
+{
+	AwnSettings *settings = term->settings;
+	
+	if ( strcmp (uri, term->uri) == 0 ) {
+		//g_print ("URI : %s\n", uri);
+		settings->launchers = g_slist_remove(settings->launchers, uri);
+		//g_slist_foreach(settings->launchers, (GFunc)_slist_print, (gpointer)term);		
+	}
+}
+
+static void
+_task_remove_launcher (GtkMenuItem *item, AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	AwnSettings *settings;
+	AwnListTerm term;
+	GString *uri;
+	GSList *res;
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	settings = priv->settings;
+
+	priv->is_closing = TRUE;
+	priv->hover = FALSE;
+	uri = g_string_new (gnome_desktop_item_get_location (priv->item));
+	uri = g_string_erase(uri, 0, 7);
+	
+	g_print ("Remove : %s\n", uri->str);
+	term.uri = uri->str;
+	term.settings = settings;
+	g_slist_foreach(settings->launchers, (GFunc)_slist_foreach, (gpointer)&term);
+	
+	GConfClient *client = gconf_client_get_default();
+		gconf_client_set_list(client,
+					"/apps/avant-window-navigator/window_manager/launchers",
+					GCONF_VALUE_STRING,settings->launchers,NULL);
+					
+	priv->window = NULL;
+	priv->needs_attention = FALSE;
+	/* start closing effect */
+	priv->is_closing = TRUE;
+	g_timeout_add(AWN_FRAME_RATE, (GSourceFunc)_task_destroy, (gpointer)task);
+}
+
 static void 
 awn_task_create_menu(AwnTask *task, GtkMenu *menu)
 {
@@ -1006,7 +1151,7 @@ awn_task_create_menu(AwnTask *task, GtkMenu *menu)
 		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
 		gtk_widget_show(item);
 		g_signal_connect (G_OBJECT(item), "activate",
-				  G_CALLBACK(_task_show_prefs), (gpointer)task);
+				  G_CALLBACK(_task_remove_launcher), (gpointer)task);
 	} else {
 		;
 	}
@@ -1015,93 +1160,20 @@ awn_task_create_menu(AwnTask *task, GtkMenu *menu)
 /********************* awn_task_new * *******************/
 
 GtkWidget *
-awn_task_new (AwnSettings *settings)
+awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings)
 {
 	GtkWidget *task;
 	AwnTaskPrivate *priv;
 	task = g_object_new (AWN_TYPE_TASK, NULL);
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
+	priv->task_manager = task_manager;
 	priv->settings = settings;
 	return task;
 }
 
-GtkWidget *
-awn_task_new_from_window (AwnSettings *settings, WnckWindow *window)
-{
-	GtkWidget *task;
-	AwnTaskPrivate *priv;
-	
-	g_return_val_if_fail(WNCK_IS_WINDOW(window), 0);
-	
-	task = awn_task_new(settings);
-	priv = AWN_TASK_GET_PRIVATE (AWN_TASK(task));
-	
-	priv->window = window;
-	priv->icon = gdk_pixbuf_copy (awn_x_get_icon (priv->window, 48, 48) );
-	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
-	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
-		
-	g_signal_connect (G_OBJECT (priv->window), "icon_changed",
-        		  G_CALLBACK (_task_wnck_icon_changed), (gpointer)task);
-        
-
-}
-
-GtkWidget *
-awn_task_new_from_launcher(AwnSettings *settings, AwnSmartLauncher *launcher)
-{
-
-}
-
-GtkWidget *awn_task_new_from_startup_notify(AwnSettings *settings)
-{
-
-}
-
-static gboolean
-_task_destroy (AwnTask *task)
-{
-	AwnTaskPrivate *priv;
-	priv = AWN_TASK_GET_PRIVATE (task);
-	const gint max = 48;	
-	gfloat i;
-
-	if (priv->effect_lock) {
-		if ( priv->current_effect != AWN_TASK_EFFECT_CLOSING)
-			return TRUE;
-	} else {
-		priv->effect_lock = TRUE;
-		priv->current_effect = AWN_TASK_EFFECT_CLOSING;
-		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
-		priv->y_offset = 0;
-	}
-	
-
-	//g_print("%d, %f\n",priv->y_offset, priv->alpha);	
-	if (priv->y_offset >= max) {
-		priv->remove_from = g_list_remove(priv->remove_from, (gpointer)task);
-		priv->title = NULL;
-		gdk_pixbuf_unref (priv->icon);
-		gtk_widget_hide (GTK_WIDGET(task));
-		gtk_object_destroy (GTK_OBJECT(task));
-		task = NULL;
-		return FALSE;
-	
-	} else {
-		
-		priv->y_offset +=1;
-		i = (float) priv->y_offset / max;
-		priv->alpha = 1.0 - i;
-		gtk_widget_queue_draw(GTK_WIDGET(task));
-	}
-	
-	return TRUE;
-	
-}
-
 void 
-awn_task_close (AwnTask *task, GList *remove_from)
+awn_task_close (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
@@ -1114,7 +1186,6 @@ awn_task_close (AwnTask *task, GList *remove_from)
 	}
 	/* start closing effect */
 	priv->is_closing = TRUE;
-	priv->remove_from = remove_from;
 	g_timeout_add(AWN_FRAME_RATE, (GSourceFunc)_task_destroy, (gpointer)task);
 }
 
