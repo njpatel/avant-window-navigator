@@ -1,5 +1,29 @@
 2007-02-02  Neil Jagdish Patel  <njp@Fedora>
 
+	Smart launcher support added
+
+	* configure.in: now needs gnome-desktop and gnome-vfs to compile.
+	* data/avant-window-navigator.schemas:
+	* src/awn-gconf.c: (awn_gconf_new), (awn_load_bool),
+	(awn_load_string), (awn_load_float), (awn_load_color),
+	(_print_launchers), (awn_load_string_list):
+	* src/awn-gconf.h:
+	* src/awn-task-manager.c: (awn_task_manager_init),
+	(_load_launchers_func), (_task_manager_load_launchers),
+	(_find_launcher), (_task_manager_window_has_launcher),
+	(_task_manager_window_opened), (_task_refresh), (_refresh_box),
+	(awn_task_manager_new):
+	* src/awn-task.c: (awn_task_init), (_task_attention_effect),
+	(draw), (awn_task_button_press), (icon_loader_get_icon),
+	(awn_task_set_launcher), (awn_task_is_launcher),
+	(awn_task_get_pid), (awn_task_get_name), (awn_task_create_menu):
+	* src/awn-task.h:
+	* src/awn-window.c: (_position_timeout), (awn_window_new),
+	(_position_window):
+	* src/main.c: (main):
+
+2007-02-02  Neil Jagdish Patel  <njp@Fedora>
+
 	reviewed by: <delete if not using a buddy>
 
 	* src/awn-window.c: Smooth out repositioning.

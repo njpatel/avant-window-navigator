@@ -32,7 +32,7 @@ G_DEFINE_TYPE (AwnTask, awn_task, GTK_TYPE_DRAWING_AREA);
 #define  AWN_TASK_EFFECT_DIR_UP			1
 #define  AWN_TASK_EFFECT_DIR_LEFT		2
 #define  AWN_TASK_EFFECT_DIR_RIGHT		3
-
+#define  M_PI 					3.14159265358979323846
 
 /* FORWARD DECLERATIONS */
 
@@ -62,6 +62,9 @@ struct _AwnTaskPrivate
 {
 	AwnSettings *settings;
 	
+	GnomeDesktopItem *item;
+	int pid;
+	
 	gboolean is_launcher;
 	AwnSmartLauncher launcher;
 	gboolean is_starter;
@@ -87,7 +90,7 @@ struct _AwnTaskPrivate
 	gint y_offset;
 	gint width;
 	gint height;
-	gfloat rotate_degrees;
+	double rotate_degrees;
 	gfloat alpha;
 };
 
@@ -142,6 +145,8 @@ awn_task_init (AwnTask *task)
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
+	priv->item = FALSE;
+	priv->pid = -1;
 	priv->is_launcher = FALSE;
 	priv->is_starter = FALSE;
 	priv->is_closing = FALSE;
@@ -337,6 +342,7 @@ _task_attention_effect (AwnTask *task)
 		priv->current_effect = AWN_TASK_EFFECT_ATTENTION;
 		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 		priv->y_offset = 0;
+		priv->rotate_degrees = 0.0;
 	}
 	
 	if (priv->effect_direction) {
@@ -347,7 +353,6 @@ _task_attention_effect (AwnTask *task)
 	
 	} else {
 		priv->y_offset-=1;
-		
 		if (priv->y_offset < 1) {
 			/* finished bouncing, back to normal */
 			if (priv->needs_attention) 
@@ -357,10 +362,11 @@ _task_attention_effect (AwnTask *task)
 				priv->current_effect = AWN_TASK_EFFECT_NONE;
 				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 				priv->y_offset = 0;
+				priv->rotate_degrees = 0.0;
 			}
 		}
 	}
-	
+		
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 	
 	
@@ -393,7 +399,6 @@ draw (GtkWidget *task, cairo_t *cr)
 	cairo_set_source_rgba (cr, 1, 0, 0, 0.0);
 	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 	cairo_paint (cr);
-	
 	/* active */
 	if (priv->is_active) {
 		cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
@@ -407,11 +412,34 @@ draw (GtkWidget *task, cairo_t *cr)
 		double x1, y1;
 		
 		x1 = (width-priv->icon_width)/2;
-		
 		y1 = ((50-priv->icon_height)/2) + 50 + (-1 * priv->y_offset);
+		
 		
 		gdk_cairo_set_source_pixbuf (cr, priv->icon, x1, y1);
 		cairo_paint_with_alpha(cr, priv->alpha);
+	}
+	
+	if (priv->is_launcher && (priv->window == NULL)) {
+		
+		
+		double x1, y1;
+		x1 = width/2.0;
+		cairo_set_source_rgba(cr, 0, 0, 0, 0.6);
+		cairo_move_to(cr, x1-5, 99);
+		cairo_line_to(cr, x1, 94);
+		cairo_line_to(cr, x1+5, 99);
+		cairo_close_path (cr);
+		cairo_fill(cr);
+		
+		/*
+		double x1, y1;
+		cairo_set_source_rgba(cr, 0, 0, 0, 0.6);
+		cairo_move_to(cr, width-2, 52);
+		cairo_line_to(cr, width-10, 52);
+		cairo_line_to(cr, width-2, 60);
+		cairo_close_path (cr);
+		cairo_fill(cr);
+		*/
 	}
 }
 
@@ -459,6 +487,26 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 			default:
 				return FALSE;
 		}
+	} else if (priv->is_launcher) {
+		
+		switch (event->button) {
+			case 1:
+				priv->pid = gnome_desktop_item_launch (priv->item, 
+							   NULL, 0, NULL);
+				//g_print("New Pid = %d\n", priv->pid);			   
+				break;
+		
+			case 3:
+				menu = gtk_menu_new();
+				awn_task_create_menu(AWN_TASK(task), menu);
+				gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
+						       NULL, 3, event->time);
+				break;
+			default:
+				return FALSE;
+		}
+	} else {
+		;
 	}
 	 
 	return FALSE;
@@ -593,6 +641,120 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
 	return TRUE;
 }
 
+/******************************************************************************
+	This function takes a icon name, and searchs through know directories 
+	for th icon. 
+	
+	TODO: There _has_ to be a better way than this, may something I am 
+	missing?
+*/
+
+GdkPixbuf * 
+icon_loader_get_icon( const char *name )
+{
+        GdkPixbuf *icon = NULL;
+        GtkIconTheme *theme = gtk_icon_theme_get_default();
+        
+        if (!name)
+                return NULL;
+        
+        GError *error = NULL;
+          
+        /* first we try gtkicontheme */
+        icon = gtk_icon_theme_load_icon( theme, name, 48, 0, &error);
+          
+        if (error) {
+                /* lets try and load directly from file */
+                error = NULL;
+                GString *str;
+                
+                if ( strstr(name, "/") != NULL )
+                        str = g_string_new(name);
+                else {
+                        str = g_string_new("/usr/share/pixmaps/");
+                        g_string_append(str, name);
+                }
+                
+                icon = gdk_pixbuf_new_from_file_at_scale(str->str, 
+                                                         48,
+                                                         48,
+                                                         TRUE, &error);
+                g_string_free(str, TRUE);
+        }
+        
+        if (icon == NULL) {
+                /* lets try and load directly from file */
+                error = NULL;
+                GString *str;
+                
+                if ( strstr(name, "/") != NULL )
+                        str = g_string_new(name);
+                else {
+                        str = g_string_new("/usr/local/share/pixmaps/");
+                        g_string_append(str, name);
+                }
+                
+                icon = gdk_pixbuf_new_from_file_at_scale(str->str, 
+                                                         48,
+                                                         48,
+                                                         TRUE, &error);
+                g_string_free(str, TRUE);
+        }
+        
+        if (icon == NULL) {
+                error = NULL;
+                GString *str;
+                
+                str = g_string_new("/usr/share/");
+                g_string_append(str, name);
+                g_string_erase(str, (str->len - 4), -1 );
+                g_string_append(str, "/");
+		g_string_append(str, "pixmaps/");
+		g_string_append(str, name);
+		
+		icon = gdk_pixbuf_new_from_file_at_scale
+       		                             (str->str,
+                                             48,
+                                             48,
+                                             TRUE,
+                                             &error);
+                g_string_free(str, TRUE);
+        }
+        
+        return icon;
+}
+
+gboolean 
+awn_task_set_launcher (AwnTask *task, GnomeDesktopItem *item)
+{
+	AwnTaskPrivate *priv;
+	const char *icon_name;
+	GtkIconTheme *theme = gtk_icon_theme_get_default();
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+
+	priv->is_launcher = TRUE;
+	icon_name = gnome_desktop_item_get_icon (item, priv->settings->icon_theme );
+	if (!icon_name)
+		return FALSE;
+	priv->item = item;
+	priv->icon = gdk_pixbuf_copy (icon_loader_get_icon(icon_name));
+        
+	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
+	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
+	launch_opening_effect(task);
+	
+	return TRUE;
+}
+
+gboolean 
+awn_task_is_launcher (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	return priv->is_launcher;
+}
+
 WnckWindow * 
 awn_task_get_window (AwnTask *task)
 {
@@ -614,6 +776,13 @@ awn_task_get_xid (AwnTask *task)
 	return wnck_window_get_xid(priv->window);
 }
 
+gint 
+awn_task_get_pid (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	return priv->pid;
+}
 void 
 awn_task_set_is_active (AwnTask *task, gboolean is_active)
 {
@@ -649,11 +818,13 @@ awn_task_get_name (AwnTask *task)
 	
 	const char *name = NULL;
 		
-	/* if (priv->is_launcher)
+	
+	if (priv->window)
+		name =  wnck_window_get_name(priv->window);
+	
+	else if (priv->is_launcher)
 		name = gnome_desktop_item_get_localestring (priv->item, 
 						       GNOME_DESKTOP_ITEM_NAME);
-	else */if (priv->window)
-		name =  wnck_window_get_name(priv->window);
 	else
 		name =  "No name";
 	return name;
@@ -709,6 +880,17 @@ awn_task_create_menu(AwnTask *task, GtkMenu *menu)
 		gtk_widget_show(item);
 		g_signal_connect (G_OBJECT(item), "activate",
 				  G_CALLBACK(_task_show_prefs), (gpointer)task);
+	} else if (priv->is_launcher) {
+		
+		
+		item = gtk_image_menu_item_new_from_stock ("gtk-remove", 
+							   NULL);
+		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show(item);
+		g_signal_connect (G_OBJECT(item), "activate",
+				  G_CALLBACK(_task_show_prefs), (gpointer)task);
+	} else {
+		;
 	}
 }
 

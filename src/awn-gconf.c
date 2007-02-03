@@ -38,6 +38,7 @@
 
 #define WINMAN_PATH		"/apps/avant-window-navigator/window_manager"
 #define WINMAN_SHOW_ALL_WINS	"/apps/avant-window-navigator/window_manager/show_all_windows" /*bool*/
+#define WINMAN_LAUNCHERS	"/apps/avant-window-navigator/window_manager/launchers" /*str list*/
 
 #define APP_PATH		"/apps/avant-window-navigator/app"
 #define APP_ACTIVE_PNG		"/apps/avant-window-navigator/app/active_png" /*bool*/
@@ -59,6 +60,7 @@ static void awn_load_bool(GConfClient *client, const gchar* key, gboolean *data)
 static void awn_load_string(GConfClient *client, const gchar* key, gchar **data);
 static void awn_load_float(GConfClient *client, const gchar* key, gfloat *data);
 static void awn_load_color(GConfClient *client, const gchar* key, AwnColor *color);
+static void awn_load_string_list(GConfClient *client, const gchar* key, GSList **slist);
 
 static void awn_notify_bool (GConfClient *client, guint cid, GConfEntry *entry, gboolean* data);
 static void awn_notify_string (GConfClient *client, guint cid, GConfEntry *entry, gchar** data);
@@ -76,6 +78,7 @@ awn_gconf_new()
 	settings = s;
 	client = gconf_client_get_default();
 	
+	s->icon_theme = gtk_icon_theme_get_default();
 	
 	/* Bar settings first */
 	gconf_client_add_dir(client, BAR_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
@@ -97,6 +100,7 @@ awn_gconf_new()
 	/* Window Manager settings */
 	gconf_client_add_dir(client, WINMAN_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
 	awn_load_bool(client, WINMAN_SHOW_ALL_WINS, &s->show_all_windows);
+	s->launchers = gconf_client_get_list ( client, WINMAN_LAUNCHERS, GCONF_VALUE_STRING, NULL);
 	
 	/* App settings */
 	gconf_client_add_dir(client, APP_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
@@ -169,7 +173,6 @@ awn_load_bool(GConfClient *client, const gchar* key, gboolean *data)
 {
 	*data = gconf_client_get_bool(client, key, NULL);
 	gconf_client_notify_add (client, key, awn_notify_bool, data, NULL, NULL);
-	awn_update_window ();
 }
 
 static void
@@ -177,7 +180,6 @@ awn_load_string(GConfClient *client, const gchar* key, gchar **data)
 {
 	*data = gconf_client_get_string(client, key, NULL);
 	gconf_client_notify_add (client, key, awn_notify_string, data, NULL, NULL);
-	awn_update_window ();
 }
 
 static void
@@ -185,7 +187,6 @@ awn_load_float(GConfClient *client, const gchar* key, gfloat *data)
 {
 	*data = gconf_client_get_float(client, key, NULL);
 	gconf_client_notify_add (client, key, awn_notify_float, data, NULL, NULL);
-	awn_update_window ();
 }
 
 static void
@@ -200,13 +201,20 @@ awn_load_color(GConfClient *client, const gchar* key, AwnColor *color)
 	color->alpha = colors[3];
 	
 	gconf_client_notify_add (client, key, awn_notify_color, color, NULL, NULL);
-	awn_update_window ();
 }
 
-void 
-awn_gconf_set_window_to_update(GtkWidget *window)
+static void
+_print_launchers (const char * uri, gpointer null)
 {
-	update_window = window;
+	g_print("%s\n", uri);
+}
+
+static void
+awn_load_string_list(GConfClient *client, const gchar* key, GSList **slist)
+{
+	*slist = gconf_client_get_list ( client, key, GCONF_VALUE_STRING, NULL);
+	
+	g_slist_foreach (*slist, (GFunc)_print_launchers, NULL);
 }
 
 static int 

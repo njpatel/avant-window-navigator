@@ -32,7 +32,10 @@
 
 
 typedef struct {
-
+	
+	/* Misc globals */
+	GtkIconTheme *icon_theme;
+	
 	/* Bar appearance settings */
 	gboolean rounded_corners;
 	gfloat corner_radius;
@@ -50,6 +53,7 @@ typedef struct {
 	
 	/* Window Manager Settings */
 	gboolean show_all_windows;
+	GSList *launchers;
 	
 	/* App settings */
 	gchar *active_png;

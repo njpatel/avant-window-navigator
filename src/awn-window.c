@@ -37,6 +37,11 @@ G_DEFINE_TYPE (AwnWindow, awn_window, GTK_TYPE_WINDOW)
 #define AWN_WINDOW_DEFAULT_HEIGHT		100
 
 static AwnSettings *settings		= NULL;
+static gboolean stop_position = TRUE;
+static gboolean is_positioning = FALSE;
+static gint x_pos = 0;
+static gint y_pos = 0;
+static current_pos = 0;
 
 static void awn_window_destroy (GtkObject *object);
 static void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
@@ -66,6 +71,12 @@ awn_window_init( AwnWindow *window )
 
 }
 
+static void
+_position_timeout (gpointer null)
+{
+	stop_position = FALSE;
+}
+
 GtkWidget *
 awn_window_new( AwnSettings *set )
 {
@@ -74,6 +85,7 @@ awn_window_new( AwnSettings *set )
         			    "type", GTK_WINDOW_TOPLEVEL,
         			    "type-hint", GDK_WINDOW_TYPE_HINT_DOCK,
         			    NULL);
+        
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);
         gtk_window_resize (GTK_WIDGET(this), AWN_WINDOW_DEFAULT_WIDTH, AWN_WINDOW_DEFAULT_HEIGHT);
@@ -85,8 +97,7 @@ awn_window_new( AwnSettings *set )
         
         _update_input_shape (GTK_WIDGET(this), AWN_WINDOW_DEFAULT_WIDTH, AWN_WINDOW_DEFAULT_HEIGHT);
         
-               
-        
+      	g_timeout_add(2000, (GSourceFunc)_position_timeout, NULL);
         return GTK_WIDGET(this);
 }
 
@@ -352,10 +363,7 @@ _on_configure (GtkWidget* pWidget, GdkEventConfigure* pEvent, gpointer userData)
 	return FALSE;
 }
 
-static gboolean is_positioning = FALSE;
-static gint x_pos = 0;
-static gint y_pos = 0;
-static current_pos = 0;
+
 
 
 
@@ -381,6 +389,7 @@ _position_window (GtkWidget *window)
 	gint sw, sh;
 	gint x, y;
 	
+	
 	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
 	screen = gtk_window_get_screen(GTK_WINDOW(window));
 	sw = gdk_screen_get_width(screen);
@@ -389,6 +398,11 @@ _position_window (GtkWidget *window)
 	x_pos = (int) ((sw - ww) / 2);
 	y_pos = (int) (sh-wh);
 	
+	if (stop_position) {
+		current_pos = x_pos;
+		gtk_window_move(GTK_WINDOW(window), x_pos, y_pos);
+		return;
+	}
 	if (!is_positioning)
 		g_timeout_add(20, (GSourceFunc)_position_func, (gpointer)window);
 	//gtk_window_move(GTK_WINDOW(window), x, y);

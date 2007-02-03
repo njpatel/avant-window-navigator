@@ -22,6 +22,8 @@
 #define __AWN_TASK_H__
 
 #include <gtk/gtk.h>
+#include <libgnome/gnome-desktop-item.h>
+
 
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE 1
 #include <libwnck/libwnck.h>
@@ -69,7 +71,11 @@ void awn_task_set_title_(AwnTitle *title);
 gboolean awn_task_set_window (AwnTask *task, WnckWindow *window);
 WnckWindow * awn_task_get_window (AwnTask *task);
 
+gboolean awn_task_set_launcher (AwnTask *task, GnomeDesktopItem *item);
+gboolean awn_task_is_launcher (AwnTask *task);
+
 gulong awn_task_get_xid (AwnTask *task);
+gint awn_task_get_pid (AwnTask *task);
 
 void awn_task_set_is_active (AwnTask *task, gboolean is_active);
 

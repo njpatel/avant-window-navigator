@@ -209,5 +209,17 @@
 			<long>Size, in pixels, of font.</long>
 		 </locale>
 	</schema>
+	<schema>
+        	<key>/schemas/apps/avant-window-navigator/window_manager/launchers</key>
+        	<applyto>/apps/avant-window-navigator/window_manager/launchers</applyto>
+        	<owner>avant-window-navigator</owner>
+        	<type>list</type>
+        	<list_type>string</list_type>
+        	<default>[]</default>
+        	<locale name="C">
+			<short>List of launchers</short>
+			<long>A list of .desktop file URIS to load.</long>
+       		</locale>
+      </schema>
 </schemalist>
 </gconfschemafile>

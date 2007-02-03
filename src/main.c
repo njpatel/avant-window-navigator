@@ -19,6 +19,7 @@
 */
 
 #include <gtk/gtk.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 #include "config.h"
 
@@ -55,6 +56,7 @@ main (int argc, char* argv[])
 	GtkWidget *lab = NULL;
 	
 	gtk_init (&argc, &argv);
+	gnome_vfs_init ();
 	
 	bar = awn_bar_new(settings);
 	

@@ -38,7 +38,7 @@ AM_PATH_GLIB_2_0(2.8.0,,,gobject)
 
 COMMON_MODULES="glib-2.0 gobject-2.0 gtk+-2.0 gdk-2.0"
 
-PKG_CHECK_MODULES(AWN, [ $COMMON_MODULES libwnck-1.0 gconf-2.0 x11 xproto])
+PKG_CHECK_MODULES(AWN, [ $COMMON_MODULES libwnck-1.0 gnome-desktop-2.0 libgnome-2.0 gnome-vfs-2.0 gconf-2.0 x11 xproto])
 AC_SUBST(AWN_CFLAGS)
 AC_SUBST(AWN_LIBS)
 

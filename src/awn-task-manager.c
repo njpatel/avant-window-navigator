@@ -23,6 +23,8 @@
 
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE 1
 #include <libwnck/libwnck.h>
+#include <libgnome/gnome-desktop-item.h>
+
 
 #include "config.h"
 #include "awn-task-manager.h"
@@ -44,6 +46,7 @@ static void _task_manager_window_activate (WnckScreen *screen,
 static void _task_manager_workspace_changed (WnckScreen *screen, 
 						AwnTaskManager *task_manager);
 static void _refresh_box(AwnTaskManager *task_manager);
+static void _task_manager_load_launchers(AwnTaskManager *task_manager);
 
 
 /* STRUCTS & ENUMS */
@@ -91,32 +94,94 @@ awn_task_manager_init (AwnTaskManager *task_manager)
 	priv->title_window = NULL;
 	priv->launchers = NULL;
 	priv->tasks = NULL;
+}
+
+/***************************************************************/
+
+static void
+_load_launchers_func (const char *uri, AwnTaskManager *task_manager)
+{	
+	AwnTaskManagerPrivate *priv;
+	GtkWidget *task = NULL;
+	GnomeDesktopItem *item= NULL;
 	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
+	item = gnome_desktop_item_new_from_file (uri,                             
+				GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS, NULL);
+	if (item == NULL)
+		return;
 	
-	/* LIBWNCK SIGNALS */
-	g_signal_connect (G_OBJECT(priv->screen), "window_opened",
-	                  G_CALLBACK (_task_manager_window_opened), 
-	                  (gpointer)task_manager);
+	task = awn_task_new(priv->settings);
+	awn_task_set_title (AWN_TASK(task), priv->title_window);
+	if (awn_task_set_launcher (AWN_TASK (task), item)) {
+		priv->launchers = g_list_append(priv->launchers, (gpointer)task);
+		gtk_box_pack_start(GTK_BOX(task_manager), task, FALSE, FALSE, 0);
 	
-	g_signal_connect (G_OBJECT(priv->screen), "window_closed",
-	                  G_CALLBACK(_task_manager_window_closed), 
-	                  (gpointer)task_manager);
+		_refresh_box (task_manager);
+		g_print("LOADED : %s\n", uri);
+	} else {
+		gtk_widget_destroy(task);
+		gnome_desktop_item_unref(item);
+		g_print("FAILED : %s\n", uri);
+	}
+}
+
+static void
+_task_manager_load_launchers(AwnTaskManager *task_manager)
+{
+	AwnTaskManagerPrivate *priv;
+	GtkWidget *task = NULL;
 	
-	g_signal_connect (G_OBJECT(priv->screen), "active_window_changed",
-	                  G_CALLBACK(_task_manager_window_activate), 
-	                  (gpointer)task_manager);	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	g_slist_foreach (priv->settings->launchers, (GFunc)_load_launchers_func,
+								 task_manager);
+}
+
+typedef struct {
+	AwnTask *task;
+	int pid;
+	
+} AwnLauncherTerm;
+
+static void
+_find_launcher (AwnTask *task, AwnLauncherTerm *term)
+{
+	int pid = awn_task_get_pid(task);
+	
+	//g_print("%d == %d\n", pid, term->pid);
+	if (term->pid == pid) {
+		term->task = task;
+	} else
+		return;
 }
 
 GtkWidget *
-_task_manager_window_has_launcher (WnckWindow *window)
+_task_manager_window_has_launcher (AwnTaskManager *task_manager, 
+							   WnckWindow *window)
 {
-	/*
-	Go through each launcher
-		if laucher's exec == window's application name
-		or launcher's name == window's application name
-		return launcher;
-	*/
+	AwnTaskManagerPrivate *priv;
+	GtkWidget *task = NULL;
+	AwnLauncherTerm term;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	term.task = NULL;
+	term.pid = wnck_window_get_pid(window);
+	
+	if (term.pid == 0) {
+		WnckApplication *app = wnck_window_get_application(window);
+		term.pid = wnck_application_get_pid(app);
+	}
+	//g_print("New window Pid = %d\n", term.pid);
+	
+	g_list_foreach(priv->launchers, (GFunc)_find_launcher, (gpointer)&term);
+	
+	task = term.task;
+	
+	if (task != NULL)
+		return term.task;	
 	return NULL;
 }
 
@@ -141,9 +206,11 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
 	/* first check if it has a launcher */
-	task = _task_manager_window_has_launcher(window);
-	if (task != NULL)
+	task = _task_manager_window_has_launcher(task_manager, window);
+	if (task != NULL) {
+		//g_print("\n\n\nFound launcher for %s\n\n\n", wnck_window_get_name(window));
 		awn_task_set_window (AWN_TASK (task), window);
+	}
 	
 	/* check startup notification */
 	if (task == NULL) {
@@ -261,7 +328,12 @@ _task_refresh (AwnTask *task, WnckWorkspace *space)
 	
 	if (!space)
 		return;
-		
+	
+	if (awn_task_is_launcher (task)) {
+		gtk_widget_show (GTK_WIDGET (task));
+		return;
+	}	
+	
 	if ( wnck_window_is_skip_tasklist (window)) {
 		gtk_widget_hide (GTK_WIDGET (task));
 		return;
@@ -287,6 +359,7 @@ _refresh_box(AwnTaskManager *task_manager)
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
 	space = wnck_screen_get_active_workspace(priv->screen);
+	g_list_foreach(priv->launchers, _task_refresh, (gpointer)space);
 	g_list_foreach(priv->tasks, _task_refresh, (gpointer)space);
 }
 
@@ -311,6 +384,21 @@ awn_task_manager_new (AwnSettings *settings)
 	awn_title_show(priv->title_window, " ", 0, 0);
 	gtk_widget_show(priv->title_window);
 	
+	
+	_task_manager_load_launchers(task_manager);
+	
+	/* LIBWNCK SIGNALS */
+	g_signal_connect (G_OBJECT(priv->screen), "window_opened",
+	                  G_CALLBACK (_task_manager_window_opened), 
+	                  (gpointer)task_manager);
+	
+	g_signal_connect (G_OBJECT(priv->screen), "window_closed",
+	                  G_CALLBACK(_task_manager_window_closed), 
+	                  (gpointer)task_manager);
+	
+	g_signal_connect (G_OBJECT(priv->screen), "active_window_changed",
+	                  G_CALLBACK(_task_manager_window_activate), 
+	                  (gpointer)task_manager);	
 	return task_manager;
 }
 
