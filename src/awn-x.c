@@ -46,6 +46,16 @@ _wnck_read_icons (Window         xwindow,
                   int            ideal_mini_width,
                   int            ideal_mini_height);
 
+static gboolean
+_wnck_read_icons_ (Window         xwindow,
+                  GtkWidget *icon_cache,
+                  GdkPixbuf    **iconp,
+                  int            ideal_width,
+                  int            ideal_height,
+                  GdkPixbuf    **mini_iconp,
+                  int            ideal_mini_width,
+                  int            ideal_mini_height);
+
 GdkPixbuf * 
 awn_x_get_icon (WnckWindow *window, gint width, gint height)
 {
@@ -56,7 +66,7 @@ awn_x_get_icon (WnckWindow *window, gint width, gint height)
   	mini_icon = NULL;
   	
   	
-  	if ( _wnck_read_icons (wnck_window_get_xid(window),
+  	if ( _wnck_read_icons_ (wnck_window_get_xid(window),
                         NULL,
                         &icon,
                         width, width,
@@ -72,6 +82,19 @@ awn_x_get_icon (WnckWindow *window, gint width, gint height)
   			wnck_window_get_application(window)));
 	return wnck_window_get_icon (window);
 
+}
+
+static void
+_wnck_error_trap_push (void)
+{
+  gdk_error_trap_push ();
+}
+
+static int
+_wnck_error_trap_pop (void)
+{
+  XSync (gdk_display, False);
+  return gdk_error_trap_pop ();
 }
 
 static void
@@ -459,3 +482,390 @@ _wnck_read_icons (Window         xwindow,
 
 }
 
+/**************************************************************************/
+static void
+get_pixmap_geometry (Pixmap       pixmap,
+                     int         *w,
+                     int         *h,
+                     int         *d)
+{
+  Window root_ignored;
+  int x_ignored, y_ignored;
+  guint width, height;
+  guint border_width_ignored;
+  guint depth;
+
+  if (w)
+    *w = 1;
+  if (h)
+    *h = 1;
+  if (d)
+    *d = 1;
+  
+  XGetGeometry (gdk_display,
+                pixmap, &root_ignored, &x_ignored, &y_ignored,
+                &width, &height, &border_width_ignored, &depth);
+
+  if (w)
+    *w = width;
+  if (h)
+    *h = height;
+  if (d)
+    *d = depth;
+}
+
+static GdkPixbuf*
+apply_mask (GdkPixbuf *pixbuf,
+            GdkPixbuf *mask)
+{
+  int w, h;
+  int i, j;
+  GdkPixbuf *with_alpha;
+  guchar *src;
+  guchar *dest;
+  int src_stride;
+  int dest_stride;
+  
+  w = MIN (gdk_pixbuf_get_width (mask), gdk_pixbuf_get_width (pixbuf));
+  h = MIN (gdk_pixbuf_get_height (mask), gdk_pixbuf_get_height (pixbuf));
+  
+  with_alpha = gdk_pixbuf_add_alpha (pixbuf, FALSE, 0, 0, 0);
+
+  dest = gdk_pixbuf_get_pixels (with_alpha);
+  src = gdk_pixbuf_get_pixels (mask);
+
+  dest_stride = gdk_pixbuf_get_rowstride (with_alpha);
+  src_stride = gdk_pixbuf_get_rowstride (mask);
+  
+  i = 0;
+  while (i < h)
+    {
+      j = 0;
+      while (j < w)
+        {
+          guchar *s = src + i * src_stride + j * 3;
+          guchar *d = dest + i * dest_stride + j * 4;
+          
+          /* s[0] == s[1] == s[2], they are 255 if the bit was set, 0
+           * otherwise
+           */
+          if (s[0] == 0)
+            d[3] = 0;   /* transparent */
+          else
+            d[3] = 255; /* opaque */
+          
+          ++j;
+        }
+      
+      ++i;
+    }
+
+  return with_alpha;
+}
+
+static GdkColormap*
+get_cmap (GdkPixmap *pixmap)
+{
+  GdkColormap *cmap;
+
+  cmap = gdk_drawable_get_colormap (pixmap);
+  if (cmap)
+    g_object_ref (G_OBJECT (cmap));
+
+  if (cmap == NULL)
+    {
+      if (gdk_drawable_get_depth (pixmap) == 1)
+        {
+          /* try null cmap */
+          cmap = NULL;
+        }
+      else
+        {
+          /* Try system cmap */
+          GdkScreen *screen = gdk_drawable_get_screen (GDK_DRAWABLE (pixmap));
+          cmap = gdk_screen_get_system_colormap (screen);
+          g_object_ref (G_OBJECT (cmap));
+        }
+    }
+
+  /* Be sure we aren't going to blow up due to visual mismatch */
+  if (cmap &&
+      (gdk_colormap_get_visual (cmap)->depth !=
+       gdk_drawable_get_depth (pixmap)))
+    cmap = NULL;
+  
+  return cmap;
+}
+
+GdkPixbuf*
+_wnck_gdk_pixbuf_get_from_pixmap (GdkPixbuf   *dest,
+                                  Pixmap       xpixmap,
+                                  int          src_x,
+                                  int          src_y,
+                                  int          dest_x,
+                                  int          dest_y,
+                                  int          width,
+                                  int          height)
+{
+  GdkDrawable *drawable;
+  GdkPixbuf *retval;
+  GdkColormap *cmap;
+  
+  retval = NULL;
+  cmap = NULL;
+  
+  drawable = gdk_xid_table_lookup (xpixmap);
+
+  if (drawable)
+    g_object_ref (G_OBJECT (drawable));
+  else
+    drawable = gdk_pixmap_foreign_new (xpixmap);
+
+  if (drawable)
+    {
+			cmap = get_cmap (drawable);
+
+			/* GDK is supposed to do this but doesn't in GTK 2.0.2,
+			 * fixed in 2.0.3
+			 */
+			if (width < 0)
+				gdk_drawable_get_size (drawable, &width, NULL);
+			if (height < 0)
+				gdk_drawable_get_size (drawable, NULL, &height);
+			
+			retval = gdk_pixbuf_get_from_drawable (dest,
+																						 drawable,
+																						 cmap,
+																						 src_x, src_y,
+																						 dest_x, dest_y,
+																						 width, height);
+    }
+
+  if (cmap)
+    g_object_unref (G_OBJECT (cmap));
+  if (drawable)
+    g_object_unref (G_OBJECT (drawable));
+
+  return retval;
+}
+
+static gboolean
+try_pixmap_and_mask (Pixmap      src_pixmap,
+                     Pixmap      src_mask,
+                     GdkPixbuf **iconp,
+                     int         ideal_width,
+                     int         ideal_height,
+                     GdkPixbuf **mini_iconp,
+                     int         ideal_mini_width,
+                     int         ideal_mini_height)
+{
+  GdkPixbuf *unscaled = NULL;
+  GdkPixbuf *mask = NULL;
+  int w, h;
+
+  if (src_pixmap == None)
+    return FALSE;
+      
+  _wnck_error_trap_push ();
+
+  get_pixmap_geometry (src_pixmap, &w, &h, NULL);
+      
+  unscaled = _wnck_gdk_pixbuf_get_from_pixmap (NULL,
+                                               src_pixmap,
+                                               0, 0, 0, 0,
+                                               w, h);
+
+  if (unscaled && src_mask != None)
+    {
+      get_pixmap_geometry (src_mask, &w, &h, NULL);
+      mask = _wnck_gdk_pixbuf_get_from_pixmap (NULL,
+                                               src_mask,
+                                               0, 0, 0, 0,
+                                               w, h);
+    }
+  
+  _wnck_error_trap_pop ();
+
+  if (mask)
+    {
+      GdkPixbuf *masked;
+      
+      masked = apply_mask (unscaled, mask);
+      g_object_unref (G_OBJECT (unscaled));
+      unscaled = masked;
+
+      g_object_unref (G_OBJECT (mask));
+      mask = NULL;
+    }
+  
+  if (unscaled)
+    {
+      *iconp =
+        gdk_pixbuf_scale_simple (unscaled,
+                                 ideal_width > 0 ? ideal_width :
+                                 gdk_pixbuf_get_width (unscaled),
+                                 ideal_height > 0 ? ideal_height :
+                                 gdk_pixbuf_get_height (unscaled),
+                                 GDK_INTERP_BILINEAR);
+      *mini_iconp =
+        gdk_pixbuf_scale_simple (unscaled,
+                                 ideal_mini_width > 0 ? ideal_mini_width :
+                                 gdk_pixbuf_get_width (unscaled),
+                                 ideal_mini_height > 0 ? ideal_mini_height :
+                                 gdk_pixbuf_get_height (unscaled),
+                                 GDK_INTERP_BILINEAR);      
+      
+      g_object_unref (G_OBJECT (unscaled));
+      return TRUE;
+    }
+  else
+    return FALSE;
+}
+
+static void
+get_kwm_win_icon (Window  xwindow,
+                  Pixmap *pixmap,
+                  Pixmap *mask)
+{
+  Atom type;
+  int format;
+  gulong nitems;
+  gulong bytes_after;
+  Pixmap *icons;
+  int err, result;
+
+  *pixmap = None;
+  *mask = None;
+  
+  _wnck_error_trap_push ();
+  icons = NULL;
+  result = XGetWindowProperty (gdk_display, xwindow,
+			       _wnck_atom_get ("KWM_WIN_ICON"),
+			       0, G_MAXLONG,
+			       False,
+			       _wnck_atom_get ("KWM_WIN_ICON"),
+			       &type, &format, &nitems,
+			       &bytes_after, (void*)&icons);  
+
+  err = _wnck_error_trap_pop ();
+  if (err != Success ||
+      result != Success)
+    return;
+  
+  if (type != _wnck_atom_get ("KWM_WIN_ICON"))
+    {
+      XFree (icons);
+      return;
+    }
+  
+  *pixmap = icons[0];
+  *mask = icons[1];
+  
+  XFree (icons);
+
+  return;
+}
+
+typedef enum
+{
+  /* These MUST be in ascending order of preference;
+   * i.e. if we get _NET_WM_ICON and already have
+   * WM_HINTS, we prefer _NET_WM_ICON
+   */
+  USING_NO_ICON,
+  USING_FALLBACK_ICON,
+  USING_KWM_WIN_ICON,
+  USING_WM_HINTS,
+  USING_NET_WM_ICON
+} IconOrigin;
+
+static gboolean
+_wnck_read_icons_ (Window         xwindow,
+                  GtkWidget *icon_cache,
+                  GdkPixbuf    **iconp,
+                  int            ideal_width,
+                  int            ideal_height,
+                  GdkPixbuf    **mini_iconp,
+                  int            ideal_mini_width,
+                  int            ideal_mini_height)
+{
+  guchar *pixdata;     
+  int w, h;
+  guchar *mini_pixdata;
+  int mini_w, mini_h;
+  Pixmap pixmap;
+  Pixmap mask;
+  XWMHints *hints;
+
+  /* Return value is whether the icon changed */
+  
+  *iconp = NULL;
+  *mini_iconp = NULL;
+  
+  pixdata = NULL;
+
+  /* Our algorithm here assumes that we can't have for example origin
+   * < USING_NET_WM_ICON and icon_cache->net_wm_icon_dirty == FALSE
+   * unless we have tried to read NET_WM_ICON.
+   *
+   * Put another way, if an icon origin is not dirty, then we have
+   * tried to read it at the current size. If it is dirty, then
+   * we haven't done that since the last change.
+   */
+   
+   if (read_rgb_icon (xwindow,
+                         ideal_width, ideal_height,
+                         ideal_mini_width, ideal_mini_height,
+                         &w, &h, &pixdata,
+                         &mini_w, &mini_h, &mini_pixdata))
+        {
+          *iconp = scaled_from_pixdata (pixdata, w, h, ideal_width, ideal_height);
+          
+          *mini_iconp = scaled_from_pixdata (mini_pixdata, mini_w, mini_h,
+                                             ideal_mini_width, ideal_mini_height);
+
+          return TRUE;
+        }
+   
+
+  _wnck_error_trap_push ();
+      hints = XGetWMHints (gdk_display, xwindow);
+      _wnck_error_trap_pop ();
+      pixmap = None;
+      mask = None;
+      if (hints)
+        {
+          if (hints->flags & IconPixmapHint)
+            pixmap = hints->icon_pixmap;
+          if (hints->flags & IconMaskHint)
+            mask = hints->icon_mask;
+
+          XFree (hints);
+          hints = NULL;
+        }
+
+      /* We won't update if pixmap is unchanged;
+       * avoids a get_from_drawable() on every geometry
+       * hints change
+       */
+      if (try_pixmap_and_mask (pixmap, mask,
+                                   iconp, ideal_width, ideal_height,
+                                   mini_iconp, ideal_mini_width, ideal_mini_height))
+            {
+              return TRUE;
+            }
+    
+  get_kwm_win_icon (xwindow, &pixmap, &mask);
+
+  if (try_pixmap_and_mask (pixmap, mask,
+                                   iconp, ideal_width, ideal_height,
+                                   mini_iconp, ideal_mini_width, ideal_mini_height))
+            {
+              return TRUE;
+            }
+      
+
+
+  /* found nothing new */
+  return FALSE;
+}
