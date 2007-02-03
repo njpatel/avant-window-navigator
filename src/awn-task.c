@@ -228,7 +228,9 @@ _task_launched_effect (AwnTask *task)
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
 	static gint max = 14;	
-
+	
+	static count = 0;
+	
 	if (priv->effect_lock) {
 		if ( priv->current_effect != AWN_TASK_EFFECT_OPENING)
 			return TRUE;
@@ -250,14 +252,21 @@ _task_launched_effect (AwnTask *task)
 		
 		if (priv->y_offset < 1) 
 			priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;	
-		
+		count++;
 		if (priv->y_offset < 1 && (priv->window != NULL)) {
 			/* finished bouncing, back to normal */
 			priv->effect_lock = FALSE;
 			priv->current_effect = AWN_TASK_EFFECT_NONE;
 			priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 			priv->y_offset = 0;
-			
+			count = 0;
+		}
+		if ( count > 10 ) {
+			priv->effect_lock = FALSE;
+			priv->current_effect = AWN_TASK_EFFECT_NONE;
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+			priv->y_offset = 0;
+			count = 0;
 		}
 	}
 	
@@ -472,9 +481,7 @@ draw (GtkWidget *task, cairo_t *cr)
 		gdk_cairo_set_source_pixbuf (cr, priv->icon, x1, y1);
 		cairo_paint_with_alpha(cr, priv->alpha);
 	}
-	
 	if (priv->is_launcher && (priv->window == NULL)) {
-		
 		
 		double x1, y1;
 		x1 = width/2.0;
@@ -484,16 +491,6 @@ draw (GtkWidget *task, cairo_t *cr)
 		cairo_line_to(cr, x1+5, 100);
 		cairo_close_path (cr);
 		cairo_fill(cr);
-		
-		/*
-		double x1, y1;
-		cairo_set_source_rgba(cr, 0, 0, 0, 0.6);
-		cairo_move_to(cr, width-2, 52);
-		cairo_line_to(cr, width-10, 52);
-		cairo_line_to(cr, width-2, 60);
-		cairo_close_path (cr);
-		cairo_fill(cr);
-		*/
 	}
 }
 
@@ -680,10 +677,11 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
 		priv->icon = gdk_pixbuf_copy (awn_x_get_icon (priv->window, 48, 48) );
 		priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
-		g_signal_connect (G_OBJECT (priv->window), "icon_changed",
+	
+	}
+	g_signal_connect (G_OBJECT (priv->window), "icon_changed",
         		  G_CALLBACK (_task_wnck_icon_changed), (gpointer)task); 
         
-	}
 	g_signal_connect (G_OBJECT (priv->window), "state_changed",
         		  G_CALLBACK (_task_wnck_state_changed), (gpointer)task);
         
@@ -1019,33 +1017,24 @@ _task_destroy (AwnTask *task)
 	}
 	
 
-		
+	//g_print("%d, %f\n",priv->y_offset, priv->alpha);	
 	if (priv->y_offset >= max) {
-		
-		/* This was an idea for smoothing out the effect of the bar resizing, but its very jerky.
-		   Instead, this will be moved into the window positioning code!
-		if (priv->width <=2) {
-			priv->width -=2;
-			gtk_widget_set_size_request(GTK_WIDGET(task), priv->width, 100);
-			return TRUE;
-		}
-		*/
 		priv->remove_from = g_list_remove(priv->remove_from, (gpointer)task);
 		priv->title = NULL;
 		gdk_pixbuf_unref (priv->icon);
-		
 		gtk_widget_hide (GTK_WIDGET(task));
 		gtk_object_destroy (GTK_OBJECT(task));
 		task = NULL;
 		return FALSE;
 	
 	} else {
+		
 		priv->y_offset +=1;
 		i = (float) priv->y_offset / max;
 		priv->alpha = 1.0 - i;
-		priv->width = 60;
 		gtk_widget_queue_draw(GTK_WIDGET(task));
 	}
+	
 	return TRUE;
 	
 }

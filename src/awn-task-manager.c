@@ -334,6 +334,9 @@ _task_refresh (AwnTask *task, WnckWorkspace *space)
 	if (!space)
 		return;
 	
+	if (!window)
+		return;
+	
 	if (awn_task_is_launcher (task)) {
 		gtk_widget_show (GTK_WIDGET (task));
 		return;
