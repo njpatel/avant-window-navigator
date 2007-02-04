@@ -270,8 +270,10 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 	task = _task_manager_window_has_launcher(task_manager, window);
 	if (task != NULL) {
 		//g_print("\n\n\nFound launcher for %s\n\n\n", wnck_window_get_name(window));
-		awn_task_set_window (AWN_TASK (task), window);
-		awn_task_refresh_icon_geometry(task);
+		if (awn_task_set_window (AWN_TASK (task), window))
+			awn_task_refresh_icon_geometry(task);
+		else
+			task = NULL;
 	}
 	
 	/* check startup notification */

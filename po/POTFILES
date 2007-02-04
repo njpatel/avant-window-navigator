@@ -1,2 +1,3 @@
 	../avant-preferences/window.glade \
-	../avant-preferences/avant-preferences.py
+	../avant-preferences/avant-preferences.py \
+	../data/avant-window-navigator.schemas.in

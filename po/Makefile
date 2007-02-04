@@ -63,7 +63,8 @@ EXTRA_DISTFILES = POTFILES.skip Makevars LINGUAS
 
 POTFILES = \
 	../avant-preferences/window.glade \
-	../avant-preferences/avant-preferences.py
+	../avant-preferences/avant-preferences.py \
+	../data/avant-window-navigator.schemas.in
 
 CATALOGS=$(shell if test -n "$(PO_LINGUAS)"; then LINGUAS="$(PO_LINGUAS)"; else LINGUAS="$(ALL_LINGUAS)"; fi; for lang in $$LINGUAS; do printf "$$lang.gmo "; done)
 
