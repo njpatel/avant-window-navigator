@@ -553,14 +553,23 @@ draw (GtkWidget *task, cairo_t *cr)
 static gboolean
 awn_task_expose (GtkWidget *task, GdkEventExpose *event)
 {
+	AwnTaskPrivate *priv;
 	cairo_t *cr;
-
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
 	/* get a cairo_t */
 	cr = gdk_cairo_create (task->window);
 
 	draw (task, cr);
 
 	cairo_destroy (cr);
+	
+	gint x, y, width, height;
+	gdk_window_get_origin (task->window, &x, &y);
+		
+	awn_x_set_icon_geometry  (awn_task_get_xid(AWN_TASK(task)),
+				       x, y, 60, 50);
 
 	return FALSE;
 }

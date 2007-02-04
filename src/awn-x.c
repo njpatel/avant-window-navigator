@@ -84,6 +84,8 @@ awn_x_get_icon (WnckWindow *window, gint width, gint height)
 
 }
 
+
+
 static void
 _wnck_error_trap_push (void)
 {
@@ -868,4 +870,30 @@ _wnck_read_icons_ (Window         xwindow,
 
   /* found nothing new */
   return FALSE;
+}
+
+
+void
+awn_x_set_icon_geometry  (Window xwindow,
+			  int    x,
+			  int    y,
+			  int    width,
+			  int    height)
+{
+  gulong data[4];
+
+  data[0] = x;
+  data[1] = y;
+  data[2] = width;
+  data[3] = height;
+  
+  _wnck_error_trap_push ();
+
+  XChangeProperty (gdk_display,
+		   xwindow,
+		   _wnck_atom_get ("_NET_WM_ICON_GEOMETRY"),
+		   XA_CARDINAL, 32, PropModeReplace,
+		   (guchar *)&data, 4);
+
+  _wnck_error_trap_pop ();
 }

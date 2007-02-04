@@ -335,6 +335,9 @@ _on_expose (GtkWidget *widget, GdkEventExpose *expose, AwnTitle *title)
 	_position_window(GTK_WIDGET(widget));
 	oWidth = width;
 	oHeight = height;
+	
+	void awn_x_set_icon_geometry  (Window xwindow, int x, int y, int width, int height);
+	
 	return FALSE;
 }
 

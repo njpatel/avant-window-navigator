@@ -69,9 +69,16 @@ main (int argc, char* argv[])
 			 G_CALLBACK(expose), bar);
 	
 	box = gtk_hbox_new(FALSE, 2);
+	
+	if ( argc >= 2) {
+		if (argv[1][1] == 'o') {
+			task_manager = awn_win_mgr_new(settings);
+		}
+	}
 		
 	//winman = awn_win_mgr_new(settings);
-	task_manager = awn_task_manager_new(settings);
+	if (!task_manager)
+		task_manager = awn_task_manager_new(settings);
 	
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new(" "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), task_manager, FALSE, TRUE, 0);	
