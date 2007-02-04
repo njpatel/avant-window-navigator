@@ -137,6 +137,7 @@ _load_launchers_func (const char *uri, AwnTaskManager *task_manager)
 		gtk_box_pack_start(GTK_BOX(task_manager), task, FALSE, FALSE, 0);
 	
 		_refresh_box (task_manager);
+		awn_task_refresh_icon_geometry(task);
 		g_print("LOADED : %s\n", uri);
 	} else {
 		gtk_widget_destroy(task);
@@ -270,6 +271,7 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 	if (task != NULL) {
 		//g_print("\n\n\nFound launcher for %s\n\n\n", wnck_window_get_name(window));
 		awn_task_set_window (AWN_TASK (task), window);
+		awn_task_refresh_icon_geometry(task);
 	}
 	
 	/* check startup notification */
@@ -290,9 +292,10 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 		
 		g_signal_connect (G_OBJECT(task), "drag-data-received",
 				  G_CALLBACK(_task_manager_drag_data_recieved), (gpointer)task_manager);
+		_refresh_box (task_manager);
 	}
 	
-	_refresh_box (task_manager);
+	
 }
 
 typedef struct {
