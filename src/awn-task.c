@@ -555,7 +555,6 @@ awn_task_expose (GtkWidget *task, GdkEventExpose *event)
 {
 	AwnTaskPrivate *priv;
 	cairo_t *cr;
-	
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
 	/* get a cairo_t */
@@ -565,12 +564,6 @@ awn_task_expose (GtkWidget *task, GdkEventExpose *event)
 
 	cairo_destroy (cr);
 	
-	gint x, y, width, height;
-	gdk_window_get_origin (task->window, &x, &y);
-		
-	awn_x_set_icon_geometry  (awn_task_get_xid(AWN_TASK(task)),
-				       x, y, 60, 50);
-
 	return FALSE;
 }
 
@@ -1066,6 +1059,29 @@ awn_task_get_settings (AwnTask *task)
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
 	return priv->settings;
+}
+
+void
+awn_task_refresh_icon_geometry (AwnTask *task)
+{
+	static gint old_x = 0;
+	static gint old_y = 0;
+	gint x, y, width, height;
+	gdk_window_get_origin (GTK_WIDGET(task)->window, &x, &y);
+	
+	if ( (x != old_x) || (y != old_y) ) {
+		gint res = 0;
+		
+		if (x > old_x)
+			res = x - old_x;
+		else
+			res = old_x - x;
+		if (res > 10)
+			awn_x_set_icon_geometry  (awn_task_get_xid(AWN_TASK(task)), x, y, 60, 50);
+		old_x = x;
+		old_y = y;
+	}
+
 }
 
 

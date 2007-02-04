@@ -86,6 +86,8 @@ void awn_task_set_title (AwnTask *task, AwnTitle *title);
 
 AwnSettings* awn_task_get_settings (AwnTask *task);
 
+void awn_task_refresh_icon_geometry (AwnTask *task);
+
 G_END_DECLS
 
 #endif

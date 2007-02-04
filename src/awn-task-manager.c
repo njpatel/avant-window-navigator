@@ -519,6 +519,7 @@ _task_refresh (AwnTask *task, AwnTaskManager *task_manager)
 	
 	if (awn_task_is_launcher (task)) {
 		gtk_widget_show (GTK_WIDGET (task));
+		awn_task_refresh_icon_geometry(task);
 		return;
 	}	
 	
@@ -528,13 +529,15 @@ _task_refresh (AwnTask *task, AwnTaskManager *task_manager)
 	}
 	
 	if (settings->show_all_windows) {
-		gtk_widget_show_all (GTK_WIDGET (task));
+		gtk_widget_show (GTK_WIDGET (task));
+		awn_task_refresh_icon_geometry(task);
 		return;
 	}
 	
-	if (wnck_window_is_in_viewport (window, space))
+	if (wnck_window_is_in_viewport (window, space)) {
 		gtk_widget_show_all (GTK_WIDGET (task));
-	else
+		awn_task_refresh_icon_geometry(task);
+	} else
 		gtk_widget_hide (GTK_WIDGET (task));
 }
 
