@@ -690,9 +690,10 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 		return TRUE;
 	else {
 		if (priv->needs_attention)
-			return TRUE;
+			return FALSE;
 		priv->hover = TRUE;
-		launch_hover_effect (AWN_TASK (task));
+		if (priv->current_effect != AWN_TASK_EFFECT_HOVER)
+			launch_hover_effect (AWN_TASK (task));
 	}
 	return TRUE;
 }
