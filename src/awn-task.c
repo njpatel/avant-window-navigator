@@ -516,8 +516,12 @@ draw (GtkWidget *task, cairo_t *cr)
 	
 	/* task back */
 	cairo_set_source_rgba (cr, 1, 0, 0, 0.0);
-	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint (cr);
+	cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
+	cairo_rectangle(cr, -1, -1, width+1, height+1);
+	cairo_fill (cr);
+	
+	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+	
 	/* active */
 	if (priv->window && wnck_window_is_active(priv->window)) {
 		
