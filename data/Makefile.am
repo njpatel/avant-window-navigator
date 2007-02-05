@@ -15,17 +15,6 @@ icon_DATA =  \
 
 icondir = $(pkgdatadir)
 
-schemasdir   = /etc/gconf/schemas
-schemas_in_files = avant-window-navigator.schemas.in
-schemas_DATA     = $(schemas_in_files:.schemas.in=.schemas)
-@INTLTOOL_SCHEMAS_RULE@
+EXTRA_DIST = $(icon_DATA) $(desktop_DATA)
 
-if GCONF_SCHEMAS_INSTALL
-install-data-local: $(schema_DATA)
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schemas_DATA);
-endif
-
-
-EXTRA_DIST = $(schemas_in_files) $(icon_DATA) $(desktop_DATA)
-
-CLEANFILES = $(schemas_DATA) $(schemas_DATA)
+CLEANFILES = $(desktop_DATA) $(desktop_DATA).in
