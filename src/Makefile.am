@@ -31,7 +31,17 @@ avant_window_navigator_SOURCES =			\
 	awn-utils.h			\
 	xutils.h			\
 	xutils.c			
-                                        						
+
+icon_test_SOURCES=		\
+	icon-test.c             \
+	xutils.h		\
+	xutils.c                           	
+						
+icon_test_LDADD =			\
+	$(AWN_LIBS)
+
+noinst_PROGRAMS=		\
+	icon-test		
 
 avant_window_navigator_LDADD =			\
 	$(AWN_LIBS)						

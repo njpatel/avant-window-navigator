@@ -1,6 +1,8 @@
-
+#define WNCK_I_KNOW_THIS_IS_UNSTABLE 1
 #include <libwnck/libwnck.h>
 #include <gtk/gtk.h>
+#include <string.h>
+
 
 #include "xutils.h"
 
@@ -66,7 +68,7 @@ main (int argc, char **argv)
   
   if (argc > 1 ) {
   
-  	if ( strcmp (argv[1], "--use-wnck")) {
+  	if ( strcmp (argv[1], "--use-wnck") == 0) {
   		use_wnck = TRUE;
   		g_print ("Using libwnck to fetch window icons\n");
   	}
@@ -143,7 +145,7 @@ active_window_changed_callback    (WnckScreen    *screen,
 {
   WnckWindow *window;
   
-  g_print ("Active window changed\n");
+  //g_print ("Active window changed\n");
 
   window = wnck_screen_get_active_window (screen);
 
@@ -155,14 +157,14 @@ static void
 active_workspace_changed_callback (WnckScreen    *screen,
                                    gpointer       data)
 {
-  g_print ("Active workspace changed\n");
+  //g_print ("Active workspace changed\n");
 }
 
 static void
 window_stacking_changed_callback  (WnckScreen    *screen,
                                    gpointer       data)
 {
-  g_print ("Stacking changed\n");
+  //g_print ("Stacking changed\n");
 }
 
 static void
@@ -170,11 +172,11 @@ window_opened_callback            (WnckScreen    *screen,
                                    WnckWindow    *window,
                                    gpointer       data)
 {
-  g_print ("Window '%s' opened (pid = %d session_id = %s)\n",
-           wnck_window_get_name (window),
-           wnck_window_get_pid (window),
-           wnck_window_get_session_id (window) ?
-           wnck_window_get_session_id (window) : "none");
+  //g_print ("Window '%s' opened (pid = %d session_id = %s)\n",
+  //         wnck_window_get_name (window),
+  //         wnck_window_get_pid (window),
+  //         wnck_window_get_session_id (window) ?
+  //         wnck_window_get_session_id (window) : "none");
   
   g_signal_connect (G_OBJECT (window), "name_changed",
                     G_CALLBACK (window_name_changed_callback),
@@ -200,8 +202,8 @@ window_closed_callback            (WnckScreen    *screen,
                                    WnckWindow    *window,
                                    gpointer       data)
 {
-  g_print ("Window '%s' closed\n",
-           wnck_window_get_name (window));
+  //g_print ("Window '%s' closed\n",
+           //wnck_window_get_name (window));
 
   queue_refill_model ();
 }
@@ -211,7 +213,7 @@ workspace_created_callback        (WnckScreen    *screen,
                                    WnckWorkspace *space,
                                    gpointer       data)
 {
-  g_print ("Workspace created\n");
+  //g_print ("Workspace created\n");
 }
 
 static void
@@ -219,14 +221,14 @@ workspace_destroyed_callback      (WnckScreen    *screen,
                                    WnckWorkspace *space,
                                    gpointer       data)
 {
-  g_print ("Workspace destroyed\n");
+  //g_print ("Workspace destroyed\n");
 }
 
 static void
 application_opened_callback (WnckScreen      *screen,
                              WnckApplication *app)
 {
-  g_print ("Application opened\n");
+  //g_print ("Application opened\n");
   queue_refill_model ();
 }
 
@@ -234,7 +236,7 @@ static void
 application_closed_callback (WnckScreen      *screen,
                              WnckApplication *app)
 {
-  g_print ("Application closed\n");
+  //g_print ("Application closed\n");
   queue_refill_model ();
 }
 
@@ -242,16 +244,16 @@ static void
 showing_desktop_changed_callback (WnckScreen *screen,
                                   gpointer    data)
 {
-  g_print ("Showing desktop now = %d\n",
-           wnck_screen_get_showing_desktop (screen));
+  //g_print ("Showing desktop now = %d\n",
+           //wnck_screen_get_showing_desktop (screen));
 }
 
 static void
 window_name_changed_callback (WnckWindow    *window,
                               gpointer       data)
 {
-  g_print ("Name changed on window '%s'\n",
-           wnck_window_get_name (window));
+  //g_print ("Name changed on window '%s'\n",
+           //wnck_window_get_name (window));
 
   update_window (global_tree_model, window);
 }
@@ -262,32 +264,32 @@ window_state_changed_callback (WnckWindow     *window,
                                WnckWindowState new,
                                gpointer        data)
 {
-  g_print ("State changed on window '%s'\n",
-           wnck_window_get_name (window));
+  //g_print ("State changed on window '%s'\n",
+  //         wnck_window_get_name (window));
 
   if (changed & WNCK_WINDOW_STATE_MINIMIZED)
-    g_print (" minimized = %d\n", wnck_window_is_minimized (window));
+    ;//g_print (" minimized = %d\n", wnck_window_is_minimized (window));
 
   if (changed & WNCK_WINDOW_STATE_MAXIMIZED_HORIZONTALLY)
-    g_print (" maximized horiz = %d\n", wnck_window_is_maximized_horizontally (window));
+    ;//g_print (" maximized horiz = %d\n", wnck_window_is_maximized_horizontally (window));
 
   if (changed & WNCK_WINDOW_STATE_MAXIMIZED_VERTICALLY)
-    g_print (" maximized vert = %d\n", wnck_window_is_maximized_vertically (window));
+    ;//g_print (" maximized vert = %d\n", wnck_window_is_maximized_vertically (window));
 
   if (changed & WNCK_WINDOW_STATE_SHADED)
-    g_print (" shaded = %d\n", wnck_window_is_shaded (window));
+    ;//g_print (" shaded = %d\n", wnck_window_is_shaded (window));
 
   if (changed & WNCK_WINDOW_STATE_SKIP_PAGER)
-    g_print (" skip pager = %d\n", wnck_window_is_skip_pager (window));
+    ;//g_print (" skip pager = %d\n", wnck_window_is_skip_pager (window));
 
   if (changed & WNCK_WINDOW_STATE_SKIP_TASKLIST)
-    g_print (" skip tasklist = %d\n", wnck_window_is_skip_tasklist (window));
+    ;//g_print (" skip tasklist = %d\n", wnck_window_is_skip_tasklist (window));
 
   if (changed & WNCK_WINDOW_STATE_STICKY)
-    g_print (" sticky = %d\n", wnck_window_is_sticky (window));
+    ;//g_print (" sticky = %d\n", wnck_window_is_sticky (window));
 
   if (changed & WNCK_WINDOW_STATE_FULLSCREEN)
-    g_print (" fullscreen = %d\n", wnck_window_is_fullscreen (window));
+    ;//g_print (" fullscreen = %d\n", wnck_window_is_fullscreen (window));
 
   g_assert ( ((new & WNCK_WINDOW_STATE_MINIMIZED) != 0) ==
              wnck_window_is_minimized (window) );
@@ -344,8 +346,6 @@ window_geometry_changed_callback  (WnckWindow      *window,
 
   wnck_window_get_geometry (window, &x, &y, &width, &height);
   
-  g_print ("Geometry changed on window '%s': %d,%d  %d x %d\n",
-           wnck_window_get_name (window), x, y, width, height);
 }
 
 static GtkTreeModel*
@@ -462,7 +462,7 @@ static GdkPixbuf *
 _fetch_icon (WnckWindow *window) 
 {
 	if (use_wnck)
-		return wnck_window_get_mini_icon (window);
+		return wnck_window_get_icon (window);
 	
 	GdkPixbuf *icon;
   	GdkPixbuf *mini_icon;
@@ -474,7 +474,7 @@ _fetch_icon (WnckWindow *window)
   	if ( _wnck_read_icons_ (wnck_window_get_xid(window),
                         NULL,
                         &icon,
-                        width, width,
+                        48, 48,
                         &mini_icon,
                         24,
                         24) ) {
@@ -482,9 +482,9 @@ _fetch_icon (WnckWindow *window)
         	if (icon)
         		return icon;
   	}
-  	g_print("Unable to get icon for :%s, reverting to libwnck\n"
+  	g_print("Unable to get icon for :%s, reverting to libwnck\n",
   		wnck_application_get_name(wnck_window_get_application(window)));
-  	return wnck_window_get_mini_icon (window);
+  	return wnck_window_get_icon (window);
 }
 
 static void
@@ -501,7 +501,7 @@ icon_set_func (GtkTreeViewColumn *tree_column,
     return;
   
   g_object_set (GTK_CELL_RENDERER (cell),
-                "pixbuf", wnck_window_get_mini_icon (window),
+                "pixbuf", _fetch_icon(window),
                 NULL);
 }
 
