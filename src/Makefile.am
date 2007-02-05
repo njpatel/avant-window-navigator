@@ -28,7 +28,9 @@ avant_window_navigator_SOURCES =			\
 	awn-window.c	 		\
 	awn-x.h				\
 	awn-x.c				\
-	awn-utils.h
+	awn-utils.h			\
+	xutils.h			\
+	xutils.c			
                                         						
 
 avant_window_navigator_LDADD =			\

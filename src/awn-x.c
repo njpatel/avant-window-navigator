@@ -31,20 +31,13 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 
+#include "xutils.h"
+
 /*	TODO:
 	This is a cut-and-paste job at the moment, I still need to bring over 
 	the error checking from wnck. However, I have been using it, and haven't
 	yet had a problem.
-*/
-static gboolean
-_wnck_read_icons (Window         xwindow,
-                  GtkWidget *icon_cache,
-                  GdkPixbuf    **iconp,
-                  int            ideal_width,
-                  int            ideal_height,
-                  GdkPixbuf    **mini_iconp,
-                  int            ideal_mini_width,
-                  int            ideal_mini_height);
+
 
 static gboolean
 _wnck_read_icons_ (Window         xwindow,
@@ -55,7 +48,7 @@ _wnck_read_icons_ (Window         xwindow,
                   GdkPixbuf    **mini_iconp,
                   int            ideal_mini_width,
                   int            ideal_mini_height);
-
+*/
 GdkPixbuf * 
 awn_x_get_icon (WnckWindow *window, gint width, gint height)
 {
@@ -85,6 +78,7 @@ awn_x_get_icon (WnckWindow *window, gint width, gint height)
 }
 
 
+/*
 
 static void
 _wnck_error_trap_push (void)
@@ -219,13 +213,13 @@ find_largest_sizes (gulong *data,
       replace = FALSE;
       
       if (nitems < 3)
-        return FALSE; /* no space for w, h */
+        return FALSE; 
       
       w = data[0];
       h = data[1];
       
       if (nitems < ((w * h) + 2))
-        return FALSE; /* not enough data */
+        return FALSE; 
 
       *width = MAX (w, *width);
       *height = MAX (h, *height);
@@ -275,13 +269,13 @@ find_best_size (gulong  *data,
       replace = FALSE;
       
       if (nitems < 3)
-        return FALSE; /* no space for w, h */
+        return FALSE; 
       
       w = data[0];
       h = data[1];
       
       if (nitems < ((w * h) + 2))
-        break; /* not enough data */
+        break; 
 
       if (best_start == NULL)
         {
@@ -289,22 +283,20 @@ find_best_size (gulong  *data,
         }
       else
         {
-          /* work with averages */
+          
           const int ideal_size = (ideal_width + ideal_height) / 2;
           int best_size = (best_w + best_h) / 2;
           int this_size = (w + h) / 2;
           
-          /* larger than desired is always better than smaller */
+          
           if (best_size < ideal_size &&
               this_size >= ideal_size)
             replace = TRUE;
-          /* if we have too small, pick anything bigger */
+          
           else if (best_size < ideal_size &&
                    this_size > best_size)
             replace = TRUE;
-          /* if we have too large, pick anything smaller
-           * but still >= the ideal
-           */
+          
           else if (best_size > ideal_size &&
                    this_size >= ideal_size &&
                    this_size < best_size)
@@ -342,7 +334,7 @@ argbdata_to_pixdata (gulong *argb_data, int len, guchar **pixdata)
   *pixdata = g_new (guchar, len * 4);
   p = *pixdata;
 
-  /* One could speed this up a lot. */
+  
   i = 0;
   while (i < len)
     {
@@ -442,7 +434,7 @@ read_rgb_icon (Window         xwindow,
   return TRUE;
 }
 
-/**************************************************************************/
+
 static void
 get_pixmap_geometry (Pixmap       pixmap,
                      int         *w,
@@ -506,13 +498,11 @@ apply_mask (GdkPixbuf *pixbuf,
           guchar *s = src + i * src_stride + j * 3;
           guchar *d = dest + i * dest_stride + j * 4;
           
-          /* s[0] == s[1] == s[2], they are 255 if the bit was set, 0
-           * otherwise
-           */
+
           if (s[0] == 0)
-            d[3] = 0;   /* transparent */
+            d[3] = 0;   
           else
-            d[3] = 255; /* opaque */
+            d[3] = 255;
           
           ++j;
         }
@@ -536,19 +526,19 @@ get_cmap (GdkPixmap *pixmap)
     {
       if (gdk_drawable_get_depth (pixmap) == 1)
         {
-          /* try null cmap */
+          
           cmap = NULL;
         }
       else
         {
-          /* Try system cmap */
+     
           GdkScreen *screen = gdk_drawable_get_screen (GDK_DRAWABLE (pixmap));
           cmap = gdk_screen_get_system_colormap (screen);
           g_object_ref (G_OBJECT (cmap));
         }
     }
 
-  /* Be sure we aren't going to blow up due to visual mismatch */
+ 
   if (cmap &&
       (gdk_colormap_get_visual (cmap)->depth !=
        gdk_drawable_get_depth (pixmap)))
@@ -585,9 +575,7 @@ _wnck_gdk_pixbuf_get_from_pixmap (GdkPixbuf   *dest,
     {
 			cmap = get_cmap (drawable);
 
-			/* GDK is supposed to do this but doesn't in GTK 2.0.2,
-			 * fixed in 2.0.3
-			 */
+			
 			if (width < 0)
 				gdk_drawable_get_size (drawable, &width, NULL);
 			if (height < 0)
@@ -728,10 +716,7 @@ get_kwm_win_icon (Window  xwindow,
 
 typedef enum
 {
-  /* These MUST be in ascending order of preference;
-   * i.e. if we get _NET_WM_ICON and already have
-   * WM_HINTS, we prefer _NET_WM_ICON
-   */
+
   USING_NO_ICON,
   USING_FALLBACK_ICON,
   USING_KWM_WIN_ICON,
@@ -757,21 +742,14 @@ _wnck_read_icons_ (Window         xwindow,
   Pixmap mask;
   XWMHints *hints;
 
-  /* Return value is whether the icon changed */
+ 
   
   *iconp = NULL;
   *mini_iconp = NULL;
   
   pixdata = NULL;
 
-  /* Our algorithm here assumes that we can't have for example origin
-   * < USING_NET_WM_ICON and icon_cache->net_wm_icon_dirty == FALSE
-   * unless we have tried to read NET_WM_ICON.
-   *
-   * Put another way, if an icon origin is not dirty, then we have
-   * tried to read it at the current size. If it is dirty, then
-   * we haven't done that since the last change.
-   */
+
    
    if (read_rgb_icon (xwindow,
                          ideal_width, ideal_height,
@@ -804,10 +782,7 @@ _wnck_read_icons_ (Window         xwindow,
           hints = NULL;
         }
 
-      /* We won't update if pixmap is unchanged;
-       * avoids a get_from_drawable() on every geometry
-       * hints change
-       */
+
       if (try_pixmap_and_mask (pixmap, mask,
                                    iconp, ideal_width, ideal_height,
                                    mini_iconp, ideal_mini_width, ideal_mini_height))
@@ -826,11 +801,10 @@ _wnck_read_icons_ (Window         xwindow,
       
 
 
-  /* found nothing new */
   return FALSE;
 }
 
-
+*/
 void
 awn_x_set_icon_geometry  (Window xwindow,
 			  int    x,
