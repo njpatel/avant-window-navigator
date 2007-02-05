@@ -341,40 +341,10 @@ _task_manager_window_closed (WnckScreen *screen, WnckWindow *window,
 	_refresh_box(task_manager);
 }
 
-static void
-_task_activate (AwnTask *task, gpointer xid) 
-{
-	guint window_id, task_id;
-	
-	g_return_if_fail(AWN_IS_TASK(task));
-	
-	window_id = GPOINTER_TO_UINT(xid);
-	task_id = awn_task_get_xid(task);
-	
-	if (window_id == task_id)
-		awn_task_set_is_active(task, TRUE);
-	else
-		awn_task_set_is_active(task, FALSE);
-}
-
 static void 
 _task_manager_window_activate (WnckScreen *screen,
 						AwnTaskManager *task_manager)
 {
-	AwnTaskManagerPrivate *priv;
-	WnckWindow *window;
-	guint xid;
-	
-	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);	
-	
-	window = wnck_screen_get_active_window(screen);
-	if (!window)
-		return;
-	
-	xid = wnck_window_get_xid(window);
-	g_list_foreach (priv->launchers, _task_activate, GUINT_TO_POINTER(xid));
-	g_list_foreach (priv->tasks, _task_activate, GUINT_TO_POINTER(xid));
-	
 	_refresh_box(task_manager);
 }
 
@@ -516,6 +486,7 @@ _task_refresh (AwnTask *task, AwnTaskManager *task_manager)
 	settings = awn_task_get_settings(task);
 	window = awn_task_get_window(task);
 	
+		
 	if (!space)
 		return;
 	
@@ -525,6 +496,7 @@ _task_refresh (AwnTask *task, AwnTaskManager *task_manager)
 	if (awn_task_is_launcher (task)) {
 		gtk_widget_show (GTK_WIDGET (task));
 		awn_task_refresh_icon_geometry(task);
+		gtk_widget_queue_draw(GTK_WIDGET(task));
 		return;
 	}	
 	
@@ -536,12 +508,14 @@ _task_refresh (AwnTask *task, AwnTaskManager *task_manager)
 	if (settings->show_all_windows) {
 		gtk_widget_show (GTK_WIDGET (task));
 		awn_task_refresh_icon_geometry(task);
+		gtk_widget_queue_draw(GTK_WIDGET(task));
 		return;
 	}
 	
 	if (wnck_window_is_in_viewport (window, space)) {
 		gtk_widget_show_all (GTK_WIDGET (task));
 		awn_task_refresh_icon_geometry(task);
+		gtk_widget_queue_draw(GTK_WIDGET(task));
 	} else
 		gtk_widget_hide (GTK_WIDGET (task));
 }

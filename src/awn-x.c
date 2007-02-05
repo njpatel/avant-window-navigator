@@ -390,6 +390,7 @@ read_rgb_icon (Window         xwindow,
   gulong *best_mini;
   int mini_w, mini_h;
   
+  _wnck_error_trap_push ();
   type = None;
   data = NULL;
   result = XGetWindowProperty (gdk_display,
@@ -399,6 +400,12 @@ read_rgb_icon (Window         xwindow,
 			       False, XA_CARDINAL, &type, &format, &nitems,
 			       &bytes_after, (void*)&data);
   
+  err = _wnck_error_trap_pop ();
+  
+  if (err != Success ||
+      result != Success)
+    return FALSE;
+
   if (type != XA_CARDINAL)
     {
       XFree (data);
@@ -433,55 +440,6 @@ read_rgb_icon (Window         xwindow,
   XFree (data);
   
   return TRUE;
-}
-
-
-static gboolean
-_wnck_read_icons (Window         xwindow,
-                  GtkWidget *icon_cache,
-                  GdkPixbuf    **iconp,
-                  int            ideal_width,
-                  int            ideal_height,
-                  GdkPixbuf    **mini_iconp,
-                  int            ideal_mini_width,
-                  int            ideal_mini_height)
-{
-  guchar *pixdata;     
-  int w, h;
-  guchar *mini_pixdata;
-  int mini_w, mini_h;
-  Pixmap pixmap;
-  Pixmap mask;
-  XWMHints *hints;
-
-  *iconp = NULL;
-  *mini_iconp = NULL;
-  
-  pixdata = NULL;
-
-  /* Our algorithm here assumes that we can't have for example origin
-   * < USING_NET_WM_ICON and icon_cache->net_wm_icon_dirty == FALSE
-   * unless we have tried to read NET_WM_ICON.
-   *
-   * Put another way, if an icon origin is not dirty, then we have
-   * tried to read it at the current size. If it is dirty, then
-   * we haven't done that since the last change.
-   */
-   
-   if (read_rgb_icon (xwindow,
-                         ideal_width, ideal_height,
-                         ideal_mini_width, ideal_mini_height,
-                         &w, &h, &pixdata,
-                         &mini_w, &mini_h, &mini_pixdata))
-        {
-          *iconp = scaled_from_pixdata (pixdata, w, h, ideal_width, ideal_height);
-          
-          *mini_iconp = scaled_from_pixdata (mini_pixdata, mini_w, mini_h,
-                                             ideal_mini_width, ideal_mini_height);
-
-          return TRUE;
-        }
-
 }
 
 /**************************************************************************/
