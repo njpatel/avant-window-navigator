@@ -56,11 +56,11 @@ static GConfClient *client 		= NULL;
 static GtkWidget *update_window		= NULL;
 
 /* prototypes */
-static void awn_load_bool(GConfClient *client, const gchar* key, gboolean *data);
-static void awn_load_string(GConfClient *client, const gchar* key, gchar **data);
-static void awn_load_float(GConfClient *client, const gchar* key, gfloat *data);
-static void awn_load_color(GConfClient *client, const gchar* key, AwnColor *color);
-static void awn_load_string_list(GConfClient *client, const gchar* key, GSList **slist);
+static void awn_load_bool(GConfClient *client, const gchar* key, gboolean *data, gboolean def);
+static void awn_load_string(GConfClient *client, const gchar* key, gchar **data, const char *def);
+static void awn_load_float(GConfClient *client, const gchar* key, gfloat *data, float def);
+static void awn_load_color(GConfClient *client, const gchar* key, AwnColor *color, const char * def);
+static void awn_load_string_list(GConfClient *client, const gchar* key, GSList **data, GSList *def);
 
 static void awn_notify_bool (GConfClient *client, guint cid, GConfEntry *entry, gboolean* data);
 static void awn_notify_string (GConfClient *client, guint cid, GConfEntry *entry, gchar** data);
@@ -83,36 +83,46 @@ awn_gconf_new()
 	/* Bar settings first */
 	gconf_client_add_dir(client, BAR_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
 	
-	awn_load_bool(client, BAR_ROUNDED_CORNERS, &s->rounded_corners);
-	awn_load_float(client, BAR_CORNER_RADIUS, &s->corner_radius);	
-	awn_load_bool(client, BAR_RENDER_PATTERN, &s->render_pattern);	
-	awn_load_string(client, BAR_PATTERN_URI, &s->pattern_uri);
-	awn_load_float(client, BAR_PATTERN_ALPHA, &s->pattern_alpha);
+	awn_load_bool(client, BAR_ROUNDED_CORNERS, &s->rounded_corners, TRUE);
+	awn_load_float(client, BAR_CORNER_RADIUS, &s->corner_radius, 10.0);	
+	awn_load_bool(client, BAR_RENDER_PATTERN, &s->render_pattern, FALSE);	
+	awn_load_string(client, BAR_PATTERN_URI, &s->pattern_uri, "/usr/share/nautilus/patterns/terracotta.png");
+	awn_load_float(client, BAR_PATTERN_ALPHA, &s->pattern_alpha, 1.0);
 	
-	awn_load_color(client, BAR_GLASS_STEP_1, &s->g_step_1);
-	awn_load_color(client, BAR_GLASS_STEP_2, &s->g_step_2);
-	awn_load_color(client, BAR_GLASS_HISTEP_1, &s->g_histep_1);
-	awn_load_color(client, BAR_GLASS_HISTEP_2, &s->g_histep_2);
+	awn_load_color(client, BAR_GLASS_STEP_1, &s->g_step_1, "454545C8");
+	awn_load_color(client, BAR_GLASS_STEP_2, &s->g_step_2, "010101BE");
+	awn_load_color(client, BAR_GLASS_HISTEP_1, &s->g_histep_1, "FFFFFF0B");
+	awn_load_color(client, BAR_GLASS_HISTEP_2, &s->g_histep_2, "FFFFFF0A");
 	
-	awn_load_color(client, BAR_BORDER_COLOR, &s->border_color);
-	awn_load_color(client, BAR_HILIGHT_COLOR, &s->hilight_color);
+	awn_load_color(client, BAR_BORDER_COLOR, &s->border_color, "000000CC");
+	awn_load_color(client, BAR_HILIGHT_COLOR, &s->hilight_color, "FFFFFF11");
 	
 	/* Window Manager settings */
 	gconf_client_add_dir(client, WINMAN_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	awn_load_bool(client, WINMAN_SHOW_ALL_WINS, &s->show_all_windows);
-	s->launchers = gconf_client_get_list ( client, WINMAN_LAUNCHERS, GCONF_VALUE_STRING, NULL);
-	
+	awn_load_bool(client, WINMAN_SHOW_ALL_WINS, &s->show_all_windows, TRUE);
+	//s->launchers = gconf_client_get_list ( client, WINMAN_LAUNCHERS, GCONF_VALUE_STRING, NULL);
+	awn_load_string_list(client, WINMAN_LAUNCHERS, &s->launchers, NULL);
 	/* App settings */
 	gconf_client_add_dir(client, APP_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	awn_load_string(client, APP_ACTIVE_PNG, &s->active_png);
+	awn_load_string(client, APP_ACTIVE_PNG, &s->active_png, 
+			"/usr/share/avant-window-navigator/active/glow4.png");
 	
 	/* Title settings */
 	gconf_client_add_dir(client, TITLE_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	awn_load_color(client, TITLE_TEXT_COLOR, &s->text_color);
-	awn_load_color(client, TITLE_SHADOW_COLOR, &s->shadow_color);
-	awn_load_bool(client, TITLE_ITALIC, &s->italic);
-	awn_load_bool(client, TITLE_BOLD, &s->bold);
-	awn_load_float(client, TITLE_FONT_SIZE, &s->font_size);	
+	awn_load_color(client, TITLE_TEXT_COLOR, &s->text_color, "FFFFFFFF");
+	awn_load_color(client, TITLE_SHADOW_COLOR, &s->shadow_color, "1B3B12E1");
+	awn_load_bool(client, TITLE_ITALIC, &s->italic, FALSE);
+	awn_load_bool(client, TITLE_BOLD, &s->bold, FALSE);
+	awn_load_float(client, TITLE_FONT_SIZE, &s->font_size, 15.0);
+	
+	
+	gconf_client_add_dir(client, "/apps/test4", GCONF_CLIENT_PRELOAD_NONE, NULL);
+	awn_load_bool(client, "/apps/test4/bool", &s->btest, FALSE);
+	awn_load_float(client, "/apps/test4/float", &s->ftest, 15.0);
+	awn_load_string(client, "/apps/test4/string", &s->stest, "hello");
+	awn_load_color(client, "/apps/test4/color", &s->ctest, "454545C8");
+	awn_load_string_list(client, "/apps/test4/slist", &s->ltest, NULL);
+	
 	return s;
 }
 
@@ -129,6 +139,9 @@ awn_notify_bool (GConfClient *client, guint cid, GConfEntry *entry, gboolean* da
 	
 	value = gconf_entry_get_value(entry);
 	*data = gconf_value_get_bool(value);
+	
+	//if (*data)
+	//	g_print("%s is true\n", gconf_entry_get_key(entry));
 }
 
 static void 
@@ -139,6 +152,7 @@ awn_notify_string (GConfClient *client, guint cid, GConfEntry *entry, gchar** da
 	value = gconf_entry_get_value(entry);
 	*data = gconf_value_get_string(value);
 	
+	//g_print("%s is %s\n", gconf_entry_get_key(entry), *data);
 }
 
 static void 
@@ -148,7 +162,7 @@ awn_notify_float (GConfClient *client, guint cid, GConfEntry *entry, gfloat* dat
 	
 	value = gconf_entry_get_value(entry);
 	*data = gconf_value_get_float(value);
-	
+	//g_print("%s is %f\n", gconf_entry_get_key(entry), *data);
 }
 
 static void 
@@ -164,57 +178,99 @@ awn_notify_color (GConfClient *client, guint cid, GConfEntry *entry, AwnColor* c
 	color->green = colors[1];
 	color->blue = colors[2];
 	color->alpha = colors[3];
-	
 }
 
 
 static void
-awn_load_bool(GConfClient *client, const gchar* key, gboolean *data)
+awn_load_bool(GConfClient *client, const gchar* key, gboolean *data, gboolean def)
 {
-	*data = gconf_client_get_bool(client, key, NULL);
+	GConfValue *value = NULL;
+	
+	value = gconf_client_get(client, key, NULL);
+	if (value) {
+		*data = gconf_client_get_bool(client, key, NULL);
+	} else {
+		g_print("%s unset, setting now\n", key);
+		gconf_client_set_bool (client, key, def, NULL);
+		*data = def;
+	}
 	gconf_client_notify_add (client, key, awn_notify_bool, data, NULL, NULL);
 }
 
 static void
-awn_load_string(GConfClient *client, const gchar* key, gchar **data)
+awn_load_string(GConfClient *client, const gchar* key, gchar **data, const char *def)
 {
-	*data = gconf_client_get_string(client, key, NULL);
+	GConfValue *value = NULL;
+	
+	value = gconf_client_get(client, key, NULL);
+	if (value) {
+		*data = gconf_client_get_string(client, key, NULL);
+	} else {
+		g_print("%s unset, setting now\n", key);
+		gconf_client_set_string (client, key, def, NULL);
+		*data = g_strdup(def);
+	}
+	
 	gconf_client_notify_add (client, key, awn_notify_string, data, NULL, NULL);
 }
 
 static void
-awn_load_float(GConfClient *client, const gchar* key, gfloat *data)
+awn_load_float(GConfClient *client, const gchar* key, gfloat *data, float def)
 {
-	*data = gconf_client_get_float(client, key, NULL);
+	GConfValue *value = NULL;
+	
+	value = gconf_client_get(client, key, NULL);
+	if (value) {
+		*data = gconf_client_get_float(client, key, NULL);
+	} else {
+		g_print("%s unset, setting now\n", key);
+		gconf_client_set_float (client, key, def, NULL);
+		*data = def;
+	}
+	
 	gconf_client_notify_add (client, key, awn_notify_float, data, NULL, NULL);
 }
 
 static void
-awn_load_color(GConfClient *client, const gchar* key, AwnColor *color)
+awn_load_color(GConfClient *client, const gchar* key, AwnColor *color, const char * def)
 {
 	float colors[4];
+	GConfValue *value = NULL;
 	
-	hex2float (gconf_client_get_string(client, key, NULL), colors);
-	color->red = colors[0];
-	color->green = colors[1];
-	color->blue = colors[2];
-	color->alpha = colors[3];
-	
+	value = gconf_client_get(client, key, NULL);
+	if (value) {
+		hex2float (gconf_client_get_string(client, key, NULL), colors);
+		color->red = colors[0];
+		color->green = colors[1];
+		color->blue = colors[2];
+		color->alpha = colors[3];
+	} else {
+		g_print("%s unset, setting now\n", key);
+		gconf_client_set_string (client, key, def, NULL);
+		hex2float (def, colors);
+		color->red = colors[0];
+		color->green = colors[1];
+		color->blue = colors[2];
+		color->alpha = colors[3];
+	}
+		
 	gconf_client_notify_add (client, key, awn_notify_color, color, NULL, NULL);
 }
 
 static void
-_print_launchers (const char * uri, gpointer null)
+awn_load_string_list(GConfClient *client, const gchar* key, GSList **data, GSList *def)
 {
-	g_print("%s\n", uri);
-}
-
-static void
-awn_load_string_list(GConfClient *client, const gchar* key, GSList **slist)
-{
-	*slist = gconf_client_get_list ( client, key, GCONF_VALUE_STRING, NULL);
+	GConfValue *value = NULL;
+	GSList *slist = def;
 	
-	g_slist_foreach (*slist, (GFunc)_print_launchers, NULL);
+	value = gconf_client_get(client, key, NULL);
+	if (value) {
+		*data = gconf_client_get_list ( client, key, GCONF_VALUE_STRING, NULL);
+	} else {
+		g_print("%s unset, setting now\n", key);
+		gconf_client_set_list (client, key, GCONF_VALUE_STRING, NULL, NULL);
+		*data = NULL;
+	}
 }
 
 static int 

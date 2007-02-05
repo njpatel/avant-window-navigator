@@ -66,6 +66,12 @@ typedef struct {
 	gfloat font_size;
 	
 	
+	gboolean btest;
+	float ftest;
+	char* stest;
+	AwnColor ctest;
+	GSList *ltest;
+		
 } AwnSettings;
 
 AwnSettings* awn_gconf_new(void);

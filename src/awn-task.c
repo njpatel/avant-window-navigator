@@ -393,10 +393,64 @@ _task_hover_effect2 (AwnTask *task)
 	return TRUE;
 }
 
+static gboolean
+_task_hover_effect3 (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+
+	g_return_val_if_fail (AWN_IS_TASK(task), 0);
+
+	priv = AWN_TASK_GET_PRIVATE (task);
+	static gint max = 10;	
+	
+
+	if (priv->effect_lock) {
+		if ( priv->current_effect != AWN_TASK_EFFECT_HOVER)
+			return TRUE;
+	} else {
+		priv->effect_lock = TRUE;
+		priv->current_effect = AWN_TASK_EFFECT_HOVER;
+		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+		priv->y_offset = 0;
+	}
+	
+	if (priv->effect_direction) {
+		priv->y_offset +=1;
+		
+		if (priv->hover)
+			continue;
+		if (priv->y_offset >= max ) 
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
+	
+	} else {
+		priv->y_offset-=1;
+		
+		if (priv->y_offset < 1) {
+			/* finished bouncing, back to normal */
+			if (priv->hover) 
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+			else {
+				priv->effect_lock = FALSE;
+				priv->current_effect = AWN_TASK_EFFECT_NONE;
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+				priv->y_offset = 0;
+			}
+		}
+	}
+	
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+	
+	
+	if (priv->effect_lock == FALSE)
+		return FALSE;
+	
+	return TRUE;
+}
+
 static void
 launch_hover_effect (AwnTask *task )
 {
-	g_timeout_add(25, (GSourceFunc)_task_hover_effect, (gpointer)task);
+	g_timeout_add(25, (GSourceFunc)_task_hover_effect3, (gpointer)task);
 }
 
 static gboolean
