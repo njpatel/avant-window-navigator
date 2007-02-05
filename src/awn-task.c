@@ -1065,9 +1065,14 @@ awn_task_get_settings (AwnTask *task)
 void
 awn_task_refresh_icon_geometry (AwnTask *task)
 {
+	AwnTaskPrivate *priv;
 	static gint old_x = 0;
 	static gint old_y = 0;
 	gint x, y, width, height;
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	if (priv->window == NULL)
+		return;
 	gdk_window_get_origin (GTK_WIDGET(task)->window, &x, &y);
 	
 	if ( (x != old_x) || (y != old_y) ) {
@@ -1077,8 +1082,10 @@ awn_task_refresh_icon_geometry (AwnTask *task)
 			res = x - old_x;
 		else
 			res = old_x - x;
-		if (res > 10)
-			awn_x_set_icon_geometry  (awn_task_get_xid(AWN_TASK(task)), x, y, 60, 50);
+		if (res > 10) {
+			//awn_x_set_icon_geometry  (awn_task_get_xid(AWN_TASK(task)), x, y, 60, 50);
+			wnck_window_set_icon_geometry (priv->window, x, y, 60, 50);
+		}
 		old_x = x;
 		old_y = y;
 	}
