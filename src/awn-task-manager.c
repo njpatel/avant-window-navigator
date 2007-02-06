@@ -363,7 +363,7 @@ enum {
 
 /* datatype (string), restrictions on DnD (GtkTargetFlags), datatype (int) */
 static GtkTargetEntry target_list[] = {
-	{ "text/plain", 0, TARGET_STRING },
+	{ "STRING", 0, 0 },
 };
 
 static void 
@@ -449,6 +449,7 @@ _task_manager_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 		gtk_widget_destroy(task);
 		gnome_desktop_item_unref(item);
 		g_print("FAILED : %s\n", _sdata);
+		
 	}
 	
 	g_string_free(uri, TRUE);

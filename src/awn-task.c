@@ -106,7 +106,7 @@ struct _AwnTaskPrivate
 /* GLOBALS */
 
 static const GtkTargetEntry drop_types[] = {
-	{ "text/uri-list", 0, 0 }
+	{ "STRING", 0, 0 }
 };
 static const gint n_drop_types = G_N_ELEMENTS (drop_types);
 
@@ -137,7 +137,7 @@ awn_task_init (AwnTask *task)
 	gtk_widget_set_size_request(GTK_WIDGET(task), 60, 100);
 	
 	gtk_drag_dest_set (GTK_WIDGET (task),
-                           GTK_DEST_DEFAULT_ALL,
+                           GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_DROP,
                            drop_types, n_drop_types,
                            GDK_ACTION_MOVE | GDK_ACTION_COPY);
 	
@@ -640,45 +640,135 @@ awn_task_expose (GtkWidget *task, GdkEventExpose *event)
 	return FALSE;
 }
 
-extern char **environ;
+typedef enum {
+	AWN_ARG_TYPE_NONE,
+	AWN_ARG_TYPE_URI,
+	AWN_ARG_TYPE_FILE
 
-/* Cut and paste from gdkspawn-x11.c */
-static gchar **
-my_gdk_spawn_make_environment_for_screen (GdkScreen  *screen,
-					  gchar     **envp)
+} AwnArgType;
+
+static gboolean
+_make_args (GString *arg, AwnArgType type)
 {
-  gchar **retval = NULL;
-  gchar  *display_name;
-  gint    display_index = -1;
-  gint    i, env_len;
+	/* me form a proper argument string depending on the arg type */
+	arg = g_string_truncate (arg, arg->len-2);
+	if (type == AWN_ARG_TYPE_URI) {
+		
+		switch (arg->str[0]) {
+			
+			case 'f':
+				return TRUE;
+			case '/':
+				arg = g_string_prepend (arg, "file://");
+				return TRUE;
+			default:
+				return FALSE;
+		}
+	} else {
+		switch (arg->str[0]) {
+			
+			case '/':
+				return TRUE;
+			case 'f':
+				arg = g_string_erase (arg, 0, 7);
+				return TRUE;
+			default:
+				return FALSE;
+		}
+	}
 
-  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
-
-  if (envp == NULL)
-    envp = environ;
-
-  for (env_len = 0; envp[env_len]; env_len++)
-    if (strncmp (envp[env_len], "DISPLAY", strlen ("DISPLAY")) == 0)
-      display_index = env_len;
-
-  retval = g_new (char *, env_len + 1);
-  retval[env_len] = NULL;
-
-  display_name = gdk_screen_make_display_name (screen);
-
-  for (i = 0; i < env_len; i++)
-    if (i == display_index)
-      retval[i] = g_strconcat ("DISPLAY=", display_name, NULL);
-    else
-      retval[i] = g_strdup (envp[i]);
-
-  g_assert (i == env_len);
-
-  g_free (display_name);
-
-  return retval;
 }
 
+static void
+awn_task_launch (AwnTask *task, const char *arg_str)
+{
+	AwnTaskPrivate *priv;
+	GtkWidget *menu = NULL;
+	char *argv[3];
+	GString *str = NULL;
+	GString *args = NULL;
+	gboolean use_args = FALSE;
+	int i = 0;
+	AwnArgType argt = AWN_ARG_TYPE_NONE;
+	int trun_point = 0;
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	str = g_string_new(gnome_desktop_item_get_string (priv->item, GNOME_DESKTOP_ITEM_EXEC));
+	//g_print("exec : %s\n", str->str);
+	/* first find arg type, if any */
+	for (i = 0; i < str->len; i++) {
+		if (str->str[i] == '%') {
+			trun_point = i-1;
+			switch (str->str[i+1]) {
+			
+				case 'U':
+				case 'u':
+					argt = AWN_ARG_TYPE_URI;
+					break;
+				case 'F':
+				case 'f':
+					argt = AWN_ARG_TYPE_FILE;
+					break;
+				default:
+					break;
+			}
+			break;
+		}	
+	}
+	
+	if (trun_point) {
+		str = g_string_truncate(str, trun_point);
+	} else {
+		for (i = 0; i < str->len; i++) {
+			if (str->str[i] == ' ')
+				break;
+		}
+		str = g_string_truncate(str, i);
+	}
+	if (arg_str) {
+	
+		if ( argt = AWN_ARG_TYPE_NONE ) {
+			;
+		} else {
+			args = g_string_new(arg_str);
+			use_args = _make_args (args, argt);
+		} 
+	}
+	//g_print("launch : %s, len : %d, arg type : %d\n", str->str, str->len, argt);
+	//if (use_args)
+	//	g_print("args : %s, len : %d\n", args->str, args->len);		
+	
+	//gdk_spawn_on_screen
+	//g_spawn_async
+	argv[0] = str->str;
+	if (use_args) {
+		argv[1] = args->str;
+		argv[2] = NULL;
+	} else {
+		argv[1] = NULL;
+		argv[2] = NULL;
+	}
+	GError *err = NULL;
+	
+	if (gdk_spawn_on_screen (gdk_screen_get_default(),
+                             NULL,
+                             argv,
+                             NULL,
+                             G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
+                             NULL,
+                             NULL,
+                             &priv->pid,
+                             &err) ) {
+        	g_print("Launched application : %d\n", priv->pid);
+        } else {
+        	if (err)
+        		g_print("Error: %s", err->message);
+        }
+	
+	g_string_free(str, TRUE);
+	g_string_free(args, TRUE);
+}
 
 static gboolean
 awn_task_button_press (GtkWidget *task, GdkEventButton *event)
@@ -710,21 +800,9 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 				return FALSE;
 		}
 	} else if (priv->is_launcher) {
-		GdkScreen *screen = gdk_screen_get_default();
-		char **envp;
-		envp = my_gdk_spawn_make_environment_for_screen (screen, NULL);
-				
 		switch (event->button) {
 			case 1:
-				gnome_desktop_item_set_launch_time (priv->item,
-					gtk_get_current_event_time ());
-				priv->pid = gnome_desktop_item_launch_on_screen 
-						(priv->item, 
-						NULL, 
-						0, 
-						screen, 
-						-1,
-						NULL);
+				awn_task_launch(task, NULL);
 				launch_launched_effect(task);			   
 				break;
 		
@@ -743,6 +821,69 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 	 
 	return FALSE;
 }
+
+static void 
+_task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context, 
+				  gint x, gint y, GtkSelectionData *selection_data, 
+				  guint target_type, guint time,
+                                              AwnTask *task)
+{
+        glong   *_idata;
+        gchar   *_sdata;
+        
+        gboolean dnd_success = FALSE;
+        gboolean delete_selection_data = FALSE;
+        
+        const gchar *name = gtk_widget_get_name (widget);
+        g_print ("%s: drag_data_received_handl\n", name);
+        
+        
+        /* Deal with what we are given from source */
+        if((selection_data != NULL) && (selection_data-> length >= 0))
+        {
+                /* Check that we got the format we can use */
+               	g_print (" Task Receiving ");
+                _sdata = (gchar*)selection_data-> data;
+                g_print ("string: %s\n", _sdata);
+                dnd_success = TRUE;
+               
+        }
+	
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	if (!priv->is_launcher) {
+		gtk_drag_finish (context, FALSE, delete_selection_data, time);
+		return;
+	}
+	
+	GString *uri;
+	uri = g_string_new(_sdata);
+	
+	int i = 0;
+	int res = 0;
+	
+	for (i =0; i < uri->len; i++) {
+		if (uri->str[i] == ' ')
+			res = i;
+	}
+	if (res)
+		uri = g_string_truncate(uri, res+1);
+	
+	/* check if uri is .desktop file */
+	char * r = NULL;
+	r = strstr(uri->str, ".desktop");
+	if (r) {
+		g_string_free(uri, TRUE);
+		gtk_drag_finish (context, FALSE, delete_selection_data, time);
+		return;	
+	} else {
+		awn_task_launch(task, uri->str);
+		g_string_free(uri, TRUE);
+       		gtk_drag_finish (context, TRUE, delete_selection_data, time);
+	}
+}
+
 
 static gboolean 
 awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
@@ -1323,6 +1464,8 @@ awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings)
 	g_signal_connect(G_OBJECT(settings->window), "leave-notify-event",
 			 G_CALLBACK(awn_task_win_enter_out), AWN_TASK(task));
 	*/
+	g_signal_connect (G_OBJECT(task), "drag-data-received",
+		  G_CALLBACK(_task_drag_data_recieved), (gpointer)task);
 	return task;
 }
 
