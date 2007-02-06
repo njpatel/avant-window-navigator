@@ -741,6 +741,11 @@ _task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 		return;
 	}
 	
+	char *res = NULL;
+	res = strstr (selection_data->data, ".desktop");
+	if (res)
+		return;
+	
         list = gnome_vfs_uri_list_parse ((const char*) selection_data->data);
 	for (li = list; li != NULL; li = li->next) {
 		GnomeVFSURI *uri = li->data;

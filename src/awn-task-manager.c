@@ -166,6 +166,30 @@ typedef struct {
 } AwnLauncherTerm;
 
 static void
+_normalize (char *str)
+{
+	size_t len;
+	int i;
+	
+	len = strlen(str);
+	
+	for (i = 0; i < len; i++) {
+		switch (str[i]) {
+		
+			case '-':
+			case ' ':
+			case '_':
+			case '.':
+				str[i] = '.';
+				break;
+			default:
+				break;
+		}
+	}
+
+}
+
+static void
 _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 {
 	g_return_if_fail (AWN_IS_TASK(task));
@@ -181,6 +205,7 @@ _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 	if (term->task == NULL) {
 		WnckApplication *wnck_app;
 		char *app_name;
+		char *exec;
 		GString *str;
 		
 		app_name = wnck_application_get_name(
@@ -190,10 +215,18 @@ _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 		str = g_string_new (wnck_application_get_name(wnck_app));
 		str = g_string_ascii_down (str);
 		
-		if ( strcmp (awn_task_get_application(task), str->str) == 0 ) {
+		_normalize (str->str);
+		
+		exec = g_strdup (awn_task_get_application(task));
+		_normalize (exec);
+		
+		if ( strcmp (exec, str->str) == 0 ) {
 			term->task = task;
-		} 
-		g_string_free (str, TRUE);	
+		} else {
+			g_print("No Match : %s : %s\n", exec, str->str);
+		}
+		g_string_free (str, TRUE);
+		g_free(exec);	
 		
 	}
 	/* try window name, kind of last resort :/ */
@@ -201,15 +234,17 @@ _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 		GString *str1 = g_string_new (awn_task_get_name (task));
 		str1 = g_string_ascii_down (str1);
 		
+		
 		GString *str2 = g_string_new (wnck_window_get_name (term->window));
 		str2 = g_string_ascii_down (str2);
-		
 		if ( str2->str[str2->len-1] == ' ')
 			 str2 = g_string_truncate (str2, str2->len -1);
 		
 		if ( strcmp (str1->str, str2->str) == 0 ) {
 			term->task = task;
+			
 		} 
+		
 			
 		g_string_free (str1, TRUE);	
 		g_string_free (str2, TRUE);	
