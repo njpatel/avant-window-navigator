@@ -335,9 +335,42 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 	
 }
 
+static void
+__find_launcher_for_win (AwnTask *launcher, AwnTask *task)
+{
+	if ( awn_task_get_xid (launcher) == awn_task_get_xid (task) ) {
+		g_print("Success! %s", awn_task_get_name(task));
+	}
+}
+
+static void
+_win_reparent (AwnTask *task, AwnTaskManager *task_manager)
+{
+	AwnTaskManagerPrivate *priv;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	g_list_foreach(priv->launchers, (GFunc)__find_launcher_for_win, (gpointer)task);
+}
+
+static void
+_reparent_windows (AwnTaskManager *task_manager)
+{
+	/* go through all windows look if they have a launcher, and reparent 
+	the window */
+	AwnTaskManagerPrivate *priv;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+
+	g_list_foreach(priv->tasks, (GFunc)_win_reparent, (gpointer)task_manager);
+	
+
+}
+
 typedef struct {
 	gulong xid;
 	GList *list;
+	int was_launcher;
 } AwnDestroyTerm;
 
 static void
@@ -350,8 +383,11 @@ _task_destroy (AwnTask *task, AwnDestroyTerm *term)
 	//window_id = GPOINTER_TO_UINT(xid);
 	task_id = awn_task_get_xid(task);
 	
-	if (term->xid == task_id)
+	if (term->xid == task_id) {
+		if (awn_task_is_launcher (task))
+			term->was_launcher = 1;
 		awn_task_close(task);
+	}
 }
 
 static void 
@@ -368,11 +404,13 @@ _task_manager_window_closed (WnckScreen *screen, WnckWindow *window,
 	
 	xid = wnck_window_get_xid (window);
 	term.xid = xid;
+	term.was_launcher = 0;
 	term.list = priv->launchers;
 	g_list_foreach (priv->launchers, _task_destroy, (gpointer)&term);
 	term.list = priv->tasks;
 	g_list_foreach (priv->tasks, _task_destroy, (gpointer)&term);
 	
+	_reparent_windows(task_manager);	
 	_refresh_box(task_manager);
 }
 
