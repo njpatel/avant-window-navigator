@@ -11,4 +11,6 @@ launch with avant-window-navigator OR Applications->Accessories->Avant Window Na
 
 configure with avant-preferences OR System->Preferences(->More Preferences)->Avant Preferences
 
--Neil
+New Features In SVN (newest first):
+
+Drap & Drop support for URIs on launchers! Including multiple files!

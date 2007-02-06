@@ -1,5 +1,11 @@
 2007-02-06  Neil Jagdish Patel  <njpatel@gmail.com>
 
+	Cleanup of D&D code
+	* src/awn-task.c: (_task_launched_effect), (awn_task_launch),
+	(_task_drag_data_recieved):
+
+2007-02-06  Neil Jagdish Patel  <njpatel@gmail.com>
+
 	Launchers now support dragging of uris to them (to launch the program 
 	with arguments.
 
