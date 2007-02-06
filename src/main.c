@@ -63,11 +63,15 @@ main (int argc, char* argv[])
 	bar = awn_bar_new(settings);
 	
 	win = awn_window_new (settings);
+	settings->window = win;
+	
 	gtk_window_set_policy (GTK_WINDOW (win), FALSE, FALSE, TRUE);
 	
+	gtk_widget_add_events (GTK_WIDGET (win),GDK_ALL_EVENTS_MASK);
 	g_signal_connect(G_OBJECT(win), "expose-event",
 			 G_CALLBACK(expose), bar);
 	
+
 	box = gtk_hbox_new(FALSE, 2);
 	
 	if ( argc >= 2) {

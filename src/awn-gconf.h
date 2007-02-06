@@ -35,6 +35,7 @@ typedef struct {
 	
 	/* Misc globals */
 	GtkIconTheme *icon_theme;
+	GtkWidget *window;
 	
 	/* Bar appearance settings */
 	gboolean rounded_corners;

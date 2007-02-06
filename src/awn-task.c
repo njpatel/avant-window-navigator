@@ -41,6 +41,9 @@ static gboolean awn_task_expose (GtkWidget *task, GdkEventExpose *event);
 static gboolean awn_task_button_press (GtkWidget *task, GdkEventButton *event);
 static gboolean awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event);
 static gboolean awn_task_proximity_out (GtkWidget *task, GdkEventCrossing *event);
+static gboolean awn_task_win_enter_in (GtkWidget *window, GdkEventMotion *event, AwnTask *task);
+static gboolean awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *task);
+
 static gboolean awn_task_drag_motion (GtkWidget *task, 
 		GdkDragContext *context, gint x, gint y, guint t);
 static void awn_task_create_menu(AwnTask *task, GtkMenu *menu);
@@ -89,6 +92,7 @@ struct _AwnTaskPrivate
 	gboolean effect_lock;
 	AwnTaskEffect current_effect;
 	gint effect_direction;
+	gint count;
 	
 	gint x_offset;
 	gint y_offset;
@@ -362,6 +366,9 @@ _task_hover_effect2 (AwnTask *task)
 		priv->alpha = 1.0;
 	}
 	
+	if (priv->hover && (priv->alpha <= 0.1))
+		return TRUE;
+	
 	if (priv->effect_direction) {
 		priv->alpha -=0.05;
 		
@@ -393,64 +400,10 @@ _task_hover_effect2 (AwnTask *task)
 	return TRUE;
 }
 
-static gboolean
-_task_hover_effect3 (AwnTask *task)
-{
-	AwnTaskPrivate *priv;
-
-	g_return_val_if_fail (AWN_IS_TASK(task), 0);
-
-	priv = AWN_TASK_GET_PRIVATE (task);
-	static gint max = 10;	
-	
-
-	if (priv->effect_lock) {
-		if ( priv->current_effect != AWN_TASK_EFFECT_HOVER)
-			return TRUE;
-	} else {
-		priv->effect_lock = TRUE;
-		priv->current_effect = AWN_TASK_EFFECT_HOVER;
-		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
-		priv->y_offset = 0;
-	}
-	
-	if (priv->effect_direction) {
-		priv->y_offset +=1;
-		
-		if (priv->hover)
-			continue;
-		if (priv->y_offset >= max ) 
-			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
-	
-	} else {
-		priv->y_offset-=1;
-		
-		if (priv->y_offset < 1) {
-			/* finished bouncing, back to normal */
-			if (priv->hover) 
-				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
-			else {
-				priv->effect_lock = FALSE;
-				priv->current_effect = AWN_TASK_EFFECT_NONE;
-				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
-				priv->y_offset = 0;
-			}
-		}
-	}
-	
-	gtk_widget_queue_draw(GTK_WIDGET(task));
-	
-	
-	if (priv->effect_lock == FALSE)
-		return FALSE;
-	
-	return TRUE;
-}
-
 static void
 launch_hover_effect (AwnTask *task )
 {
-	g_timeout_add(25, (GSourceFunc)_task_hover_effect3, (gpointer)task);
+	g_timeout_add(25, (GSourceFunc)_task_hover_effect, (gpointer)task);
 }
 
 static gboolean
@@ -506,6 +459,64 @@ static void
 launch_attention_effect (AwnTask *task )
 {
 	g_timeout_add(25, (GSourceFunc)_task_attention_effect, (gpointer)task);
+}
+
+static gboolean
+_task_fade_out_effect (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	static float min = 0.1;
+		
+
+	if (priv->hover) {
+		//priv->alpha = 1.0;
+		return FALSE;
+	}
+	
+	priv->alpha-=0.05;
+	
+	if (priv->alpha <= 0.2) {
+		return FALSE;
+	}
+	
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+
+	return TRUE;
+
+}
+
+static void
+launch_fade_out_effect (AwnTask *task )
+{
+	g_timeout_add(25, (GSourceFunc)_task_fade_out_effect, (gpointer)task);
+}
+
+
+static gboolean
+_task_fade_in_effect (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	static float max = 1.0;
+	
+	priv->alpha+=0.05;
+	
+	if (priv->alpha >= 1.0 ) {
+		gtk_widget_queue_draw(GTK_WIDGET(task));
+		return FALSE;
+	}
+	
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+
+	return TRUE;
+
+}
+
+static void
+launch_fade_in_effect (AwnTask *task )
+{
+	g_timeout_add(25, (GSourceFunc)_task_fade_in_effect, (gpointer)task);
 }
 
 static gboolean
@@ -594,7 +605,10 @@ draw (GtkWidget *task, cairo_t *cr)
 		
 		
 		gdk_cairo_set_source_pixbuf (cr, priv->icon, x1, y1);
-		cairo_paint_with_alpha(cr, priv->alpha);
+		if (priv->hover) 
+			cairo_paint_with_alpha(cr, 1.0);
+		else
+			cairo_paint_with_alpha(cr, priv->alpha);
 	}
 	if (priv->is_launcher && (priv->window == NULL)) {
 		
@@ -702,8 +716,15 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 				
 		switch (event->button) {
 			case 1:
-				priv->pid = gnome_desktop_item_launch_with_env (priv->item, 
-							   NULL, 0, envp, NULL);
+				gnome_desktop_item_set_launch_time (priv->item,
+					gtk_get_current_event_time ());
+				priv->pid = gnome_desktop_item_launch_on_screen 
+						(priv->item, 
+						NULL, 
+						0, 
+						screen, 
+						-1,
+						NULL);
 				launch_launched_effect(task);			   
 				break;
 		
@@ -744,9 +765,16 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 		if (priv->needs_attention)
 			return FALSE;
 		priv->hover = TRUE;
+		
 		if (priv->current_effect != AWN_TASK_EFFECT_HOVER)
 			launch_hover_effect (AWN_TASK (task));
+		
+		//priv->alpha = 1.0;
+		//gtk_widget_queue_draw(GTK_WIDGET(task));
+		//launch_fade_in_effect(task);
 	}
+	
+
 	return TRUE;
 }
 
@@ -759,7 +787,32 @@ awn_task_proximity_out (GtkWidget *task, GdkEventCrossing *event)
 	if (priv->title)
 		awn_title_show(AWN_TITLE (priv->title), " ", 20, 0);
 	priv->hover = FALSE;
+	//priv->alpha = 1.0;
+	//gtk_widget_queue_draw(GTK_WIDGET(task));
+	//launch_fade_in_effect(task);
 	return TRUE;
+}
+
+static gboolean 
+awn_task_win_enter_in (GtkWidget *window, GdkEventMotion *event, AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	//priv->alpha = 0.2;
+	//gtk_widget_queue_draw(GTK_WIDGET(task));
+	//launch_fade_out_effect(task);
+	return FALSE;
+}
+
+static gboolean 
+awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	//priv->alpha = 1.0;
+	//gtk_widget_queue_draw(GTK_WIDGET(task));
+	//launch_fade_in_effect(task);
+	return FALSE;
 }
 
 static gboolean 
@@ -1261,6 +1314,15 @@ awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings)
 	
 	priv->task_manager = task_manager;
 	priv->settings = settings;
+	
+	/* This is code which I will add later for better hover effects over 
+	the bar
+	g_signal_connect(G_OBJECT(settings->window), "motion-notify-event",
+			 G_CALLBACK(awn_task_win_enter_in), AWN_TASK(task));
+	
+	g_signal_connect(G_OBJECT(settings->window), "leave-notify-event",
+			 G_CALLBACK(awn_task_win_enter_out), AWN_TASK(task));
+	*/
 	return task;
 }
 
