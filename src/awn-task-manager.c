@@ -222,9 +222,8 @@ _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 		
 		if ( strcmp (exec, str->str) == 0 ) {
 			term->task = task;
-		} else {
-			g_print("No Match : %s : %s\n", exec, str->str);
 		}
+		
 		g_string_free (str, TRUE);
 		g_free(exec);	
 		
