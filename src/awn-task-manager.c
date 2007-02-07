@@ -300,23 +300,26 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
-	/* first check if it has a launcher */
-	task = _task_manager_window_has_launcher(task_manager, window);
-	if (task != NULL) {
-		//g_print("\n\n\nFound launcher for %s\n\n\n", wnck_window_get_name(window));
-		if (awn_task_set_window (AWN_TASK (task), window))
-			awn_task_refresh_icon_geometry(task);
-		else
-			task = NULL;
+	
+	/* if is skipping task bar, its not worthy of a launcher ;) */
+	if (!wnck_window_is_skip_tasklist(window)) {
+		/* first check if it has a launcher */
+		task = _task_manager_window_has_launcher(task_manager, window);
+		if (task != NULL) {
+			//g_print("\n\n\nFound launcher for %s\n\n\n", wnck_window_get_name(window));
+			if (awn_task_set_window (AWN_TASK (task), window))
+				awn_task_refresh_icon_geometry(task);
+			else
+				task = NULL;
+		}
+	
+		/* check startup notification */
+		if (task == NULL) {
+			task = _task_manager_window_has_starter(window);
+			if (task)
+				awn_task_set_window (AWN_TASK (task), window);	
+		}	
 	}
-	
-	/* check startup notification */
-	if (task == NULL) {
-		task = _task_manager_window_has_starter(window);
-		if (task)
-			awn_task_set_window (AWN_TASK (task), window);	
-	}	
-	
 	/* if not launcher & no starter, create new task */
 	if (task == NULL) {
 		task = awn_task_new(task_manager, priv->settings);
