@@ -1,0 +1,13 @@
+Here's a (incomplete) list of features and fixes which need to be implemented in Awn.
+
+* Startup-notification support
+* Dual screen support
+* User-configurable icon sizes
+* Let the WM know that Awn is a dock, and there stop windows from expanding behind it.
+* Allow choosing the font for the title.
+* Add drawers support. (Icons which are menus)
+* Allow applications to manipulate their icons.
+* Add beryl thumbnailer support.
+* Add python widget support
+* Add vertical bar support
+* Redesign avant-preferences with support for new options

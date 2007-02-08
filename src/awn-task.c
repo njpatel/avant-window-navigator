@@ -717,6 +717,57 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 	return FALSE;
 }
 
+static void
+launch (AwnTask *task, GList *uri_list)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+        GList *li;
+        int i = 0;
+        int argc = 0;
+        char **argv = NULL;
+        GString *exec = NULL;
+        GString *args = NULL;
+        gboolean accept_args = FALSE;
+        
+        exec = g_string_new(gnome_desktop_item_get_string (priv->item, 
+						GNOME_DESKTOP_ITEM_EXEC));
+        args = g_string_new(" ");
+        for (li = uri_list; li != NULL; li = li->next) {
+        	if (li->data) {
+        		args = g_string_append (args, li->data);
+        		args = g_string_append (args, " ");
+        	}
+        	argc++;
+        }
+        
+        for ( i = 0; i < exec->len; i++ ) {
+        	if ( exec->str[i] == '%' ) {
+        		accept_args = TRUE;
+        	}
+        }
+        
+        exec = g_string_truncate (exec, i-2);
+
+	GString *final = g_string_new(" ");;
+	
+	if (accept_args && args)
+		g_string_printf (final, "%s %s", exec->str, args->str);
+	else
+		final = exec;
+	
+	g_print ("\nLaunch : %s\n", final->str);
+	
+	GError *err = NULL;
+	g_spawn_command_line_async (final->str, &err);
+	
+	if (err)
+		g_print("\n%s\n", err->message);
+	g_string_free(final, TRUE);
+	g_string_free(args, TRUE);
+}
+
 static void 
 _task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context, 
 				  gint x, gint y, GtkSelectionData *selection_data, 
@@ -746,12 +797,17 @@ _task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 	if (res)
 		return;
 	
+	list = NULL;
         list = gnome_vfs_uri_list_parse ((const char*) selection_data->data);
 	for (li = list; li != NULL; li = li->next) {
 		GnomeVFSURI *uri = li->data;
 		li->data = gnome_vfs_uri_to_string (uri, 0 /* hide_options */);
 		gnome_vfs_uri_unref (uri);
 	}
+	
+	launch (task, list);
+	
+	
 	GError *err = NULL;
 	priv->pid = gnome_desktop_item_launch_on_screen
                                             (priv->item,
@@ -766,6 +822,8 @@ _task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
         else
         	g_print("Launched application : %d\n", priv->pid);
 
+	gtk_main_quit();
+	
 	g_list_foreach (list, (GFunc)g_free, NULL);
 	g_list_free (list);
 	
