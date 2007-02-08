@@ -259,6 +259,8 @@ _task_manager_window_has_launcher (AwnTaskManager *task_manager,
 	GtkWidget *task = NULL;
 	AwnLauncherTerm term;
 	
+	g_return_val_if_fail (WNCK_IS_WINDOW(window), 0);
+	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
 	term.task = NULL;
@@ -338,21 +340,31 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 }
 
 static void
-__find_launcher_for_win (AwnTask *launcher, AwnTask *task)
-{
-	if ( awn_task_get_xid (launcher) == awn_task_get_xid (task) ) {
-		g_print("Success! %s", awn_task_get_name(task));
-	}
-}
-
-static void
 _win_reparent (AwnTask *task, AwnTaskManager *task_manager)
 {
 	AwnTaskManagerPrivate *priv;
+	AwnTask *new_task = NULL;
+	WnckWindow *window = NULL;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
-	g_list_foreach(priv->launchers, (GFunc)__find_launcher_for_win, (gpointer)task);
+	g_return_if_fail (AWN_IS_TASK(task));
+	window = awn_task_get_window(task);
+	new_task = _task_manager_window_has_launcher(task_manager, window);
+	
+	if (new_task) {
+		if (awn_task_set_window (AWN_TASK (new_task), window)) {
+			//awn_task_set_window (task, NULL);
+			awn_task_close(task);
+			awn_task_manager_remove_task (task_manager, task);
+			awn_task_refresh_icon_geometry(new_task);
+			
+		} else
+			new_task = NULL;
+		
+	}
+	
+
 }
 
 static void

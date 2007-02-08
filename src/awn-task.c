@@ -103,6 +103,9 @@ struct _AwnTaskPrivate
 	double rotate_degrees;
 	gfloat alpha;
 	
+	/* signal handler ID's, for clean close */
+	gulong icon_changed;
+	gulong state_changed;
 };
 
 /* GLOBALS */
@@ -996,10 +999,10 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
 		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 	
 	}
-	g_signal_connect (G_OBJECT (priv->window), "icon_changed",
+	priv->icon_changed = g_signal_connect (G_OBJECT (priv->window), "icon_changed",
         		  G_CALLBACK (_task_wnck_icon_changed), (gpointer)task); 
         
-	g_signal_connect (G_OBJECT (priv->window), "state_changed",
+	priv->state_changed = g_signal_connect (G_OBJECT (priv->window), "state_changed",
         		  G_CALLBACK (_task_wnck_state_changed), (gpointer)task);
         
         /* if launcher, set a launch_sequence
@@ -1422,6 +1425,9 @@ awn_task_close (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	g_signal_handler_disconnect ((gpointer)priv->window, priv->icon_changed);
+	g_signal_handler_disconnect ((gpointer)priv->window, priv->state_changed);
 	
 	priv->window = NULL;
 	priv->needs_attention = FALSE;
