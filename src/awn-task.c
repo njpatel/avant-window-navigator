@@ -930,8 +930,6 @@ static void
 _task_wnck_icon_changed (WnckWindow *window, AwnTask *task)
 {
         AwnTaskPrivate *priv;
-	
-	g_return_if_fail(AWN_IS_TASK(task));
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
 	if (priv->is_launcher)
@@ -951,8 +949,6 @@ _task_wnck_state_changed (WnckWindow *window, WnckWindowState  old,
                                 WnckWindowState  new, AwnTask *task)
 {
 	AwnTaskPrivate *priv;
-	
-	g_return_if_fail(AWN_IS_TASK(task));
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
 	if (priv->window == NULL )
