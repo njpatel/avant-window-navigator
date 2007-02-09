@@ -143,6 +143,19 @@ leave_notify_event (GtkWidget *window, GdkEventCrossing *event, GtkWidget *win)
 }
 
 static void
+prefs_function (GtkMenuItem *menuitem, gpointer null)
+{
+	GError *err = NULL;
+	
+	gdk_spawn_command_line_on_screen (gdk_screen_get_default(),
+					  "avant-preferences", &err);
+	
+	if (err)
+		g_print("%s\n", err->message);
+}
+
+
+static void
 close_function (GtkMenuItem *menuitem, gpointer null)
 {
 	gtk_main_quit ();
@@ -155,10 +168,13 @@ create_menu (void)
 	GtkWidget *item;
 	
 	menu = gtk_menu_new ();
-	item = gtk_image_menu_item_new_from_stock (GTK_STOCK_CLOSE, NULL);
 	
+	item = gtk_image_menu_item_new_from_stock (GTK_STOCK_PREFERENCES , NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL(menu), item);
+	g_signal_connect (G_OBJECT(item), "activate", G_CALLBACK(prefs_function), NULL);
 	
+	item = gtk_image_menu_item_new_from_stock (GTK_STOCK_CLOSE, NULL);
+	gtk_menu_shell_append (GTK_MENU_SHELL(menu), item);
 	g_signal_connect (G_OBJECT(item), "activate", G_CALLBACK(close_function), NULL);
 	
 	gtk_widget_show_all(menu);
