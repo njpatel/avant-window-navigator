@@ -48,7 +48,7 @@ int
 main (int argc, char* argv[])
 {
 	
-	AwnSettings* settings = awn_gconf_new();
+	AwnSettings* settings;
 	GtkWidget *box = NULL;
 	GtkWidget *task_manager = NULL;
 	GtkWidget *lab = NULL;
@@ -57,6 +57,7 @@ main (int argc, char* argv[])
 	gtk_init (&argc, &argv);
 	gnome_vfs_init ();
 	
+	settings = awn_gconf_new();
 	settings->bar = awn_bar_new(settings);
 	
 	settings->window = awn_window_new (settings);

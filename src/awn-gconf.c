@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#define AWN_PATH		"/apps/avant-window-navigator/"
+#define AWN_MONITOR_N		"/apps/avant-window-navigator/monitor_number"
 
 #define BAR_PATH		"/apps/avant-window-navigator/bar"
 #define BAR_ROUNDED_CORNERS	"/apps/avant-window-navigator/bar/rounded_corners"	/* bool */
@@ -43,7 +45,8 @@
 #define WINMAN_LAUNCHERS	"/apps/avant-window-navigator/window_manager/launchers" /*str list*/
 
 #define APP_PATH		"/apps/avant-window-navigator/app"
-#define APP_ACTIVE_PNG		"/apps/avant-window-navigator/app/active_png" /*bool*/
+#define APP_ACTIVE_PNG		"/apps/avant-window-navigator/app/active_png" /*string*/
+#define APP_USE_PNG		"/apps/avant-window-navigator/app/use_png" /*bool*/
 
 #define TITLE_PATH		"/apps/avant-window-navigator/title"
 #define TITLE_TEXT_COLOR	"/apps/avant-window-navigator/title/text_color" /*color*/
@@ -61,15 +64,19 @@ static GtkWidget *update_window		= NULL;
 static void awn_load_bool(GConfClient *client, const gchar* key, gboolean *data, gboolean def);
 static void awn_load_string(GConfClient *client, const gchar* key, gchar **data, const char *def);
 static void awn_load_float(GConfClient *client, const gchar* key, gfloat *data, float def);
+static void awn_load_int(GConfClient *client, const gchar* key, int *data, int def);
 static void awn_load_color(GConfClient *client, const gchar* key, AwnColor *color, const char * def);
 static void awn_load_string_list(GConfClient *client, const gchar* key, GSList **data, GSList *def);
 
 static void awn_notify_bool (GConfClient *client, guint cid, GConfEntry *entry, gboolean* data);
 static void awn_notify_string (GConfClient *client, guint cid, GConfEntry *entry, gchar** data);
 static void awn_notify_float (GConfClient *client, guint cid, GConfEntry *entry, gfloat* data);
+static void awn_load_int (GConfClient *client, const gchar* key, int *data, int def);
 static void awn_notify_color (GConfClient *client, guint cid, GConfEntry *entry, AwnColor *color);
 
 static void hex2float(char* HexColor, float* FloatColor);
+
+static void load_monitor (AwnSettings *settings);
 
 AwnSettings* 
 awn_gconf_new()
@@ -81,8 +88,11 @@ awn_gconf_new()
 	client = gconf_client_get_default();
 	
 	s->icon_theme = gtk_icon_theme_get_default();
+	/* general settings */
+	gconf_client_add_dir(client, AWN_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
+	awn_load_float(client, AWN_MONITOR_N, &s->monitor_number, 1);
 	
-	/* Bar settings first */
+	/* Bar settings */
 	gconf_client_add_dir(client, BAR_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
 	
 	awn_load_bool(client, BAR_ROUNDED_CORNERS, &s->rounded_corners, TRUE);
@@ -107,9 +117,11 @@ awn_gconf_new()
 	awn_load_bool(client, WINMAN_SHOW_ALL_WINS, &s->show_all_windows, TRUE);
 	//s->launchers = gconf_client_get_list ( client, WINMAN_LAUNCHERS, GCONF_VALUE_STRING, NULL);
 	awn_load_string_list(client, WINMAN_LAUNCHERS, &s->launchers, NULL);
+	
 	/* App settings */
 	gconf_client_add_dir(client, APP_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
 	awn_load_string(client, APP_ACTIVE_PNG, &s->active_png, "~");
+	awn_load_bool(client, APP_USE_PNG, &s->use_png, FALSE);
 	
 	/* Title settings */
 	gconf_client_add_dir(client, TITLE_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
@@ -118,6 +130,9 @@ awn_gconf_new()
 	awn_load_bool(client, TITLE_ITALIC, &s->italic, FALSE);
 	awn_load_bool(client, TITLE_BOLD, &s->bold, FALSE);
 	awn_load_float(client, TITLE_FONT_SIZE, &s->font_size, 15.0);
+	
+	
+	load_monitor (s);
 	
 	return s;
 }
@@ -158,6 +173,16 @@ awn_notify_float (GConfClient *client, guint cid, GConfEntry *entry, gfloat* dat
 	
 	value = gconf_entry_get_value(entry);
 	*data = gconf_value_get_float(value);
+	//g_print("%s is %f\n", gconf_entry_get_key(entry), *data);
+}
+
+static void 
+awn_notify_int (GConfClient *client, guint cid, GConfEntry *entry, int* data)
+{
+	GConfValue *value = NULL;
+	
+	value = gconf_entry_get_value(entry);
+	*data = gconf_value_get_int(value);
 	//g_print("%s is %f\n", gconf_entry_get_key(entry), *data);
 }
 
@@ -221,6 +246,23 @@ awn_load_float(GConfClient *client, const gchar* key, gfloat *data, float def)
 	} else {
 		g_print("%s unset, setting now\n", key);
 		gconf_client_set_float (client, key, def, NULL);
+		*data = def;
+	}
+	
+	gconf_client_notify_add (client, key, awn_notify_float, data, NULL, NULL);
+}
+
+static void
+awn_load_int(GConfClient *client, const gchar* key, int *data, int def)
+{
+	GConfValue *value = NULL;
+	
+	value = gconf_client_get(client, key, NULL);
+	if (value) {
+		*data = gconf_client_get_int(client, key, NULL);
+	} else {
+		g_print("%s unset, setting now\n", key);
+		gconf_client_set_int (client, key, def, NULL);
 		*data = def;
 	}
 	
@@ -294,5 +336,20 @@ hex2float(char* HexColor, float* FloatColor)
      FloatColor[i] = (float) IntColor / 255.0;
      HexColorPtr += 2;
    }
+
+}
+
+static void 
+load_monitor (AwnSettings *s)
+{
+	GdkScreen *screen = gdk_screen_get_default();
+	
+	gdk_screen_get_monitor_geometry (screen, s->monitor_number-1, &s->monitor);
+	
+	g_print("Monitors = %d\n", gdk_screen_get_n_monitors (screen));
+	
+	g_print("%d:%d, %d:%d\n", s->monitor.x, s->monitor.y, s->monitor.width, s->monitor.height);
+	
+	g_signal_connect ( G_OBJECT(screen), "size-changed", G_CALLBACK(screen_size_changed), (gpointer)s);
 
 }

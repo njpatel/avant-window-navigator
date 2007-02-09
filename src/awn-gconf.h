@@ -38,6 +38,9 @@ typedef struct {
 	GtkWidget *bar;
 	GtkWidget *window;
 	
+	GdkRectangle monitor;
+	int monitor_number;
+	
 	/* Bar appearance settings */
 	gboolean rounded_corners;
 	gfloat corner_radius;
@@ -61,6 +64,7 @@ typedef struct {
 	GSList *launchers;
 	
 	/* App settings */
+	gboolean use_png;
 	gchar *active_png;
 	
 	/* Title settings */

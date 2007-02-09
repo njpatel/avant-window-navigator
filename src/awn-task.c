@@ -584,9 +584,13 @@ static void
 draw (GtkWidget *task, cairo_t *cr)
 {
 	AwnTaskPrivate *priv;
+	AwnSettings *settings;
+	GdkPixbuf *pixbuf = NULL;
 	double x, y;
 	double width, height;
+	
 	priv = AWN_TASK_GET_PRIVATE (task);
+	settings = priv->settings;
 	
 	width = task->allocation.width;
 	height = task->allocation.height;
@@ -602,12 +606,10 @@ draw (GtkWidget *task, cairo_t *cr)
 	/* active */
 	if (priv->window && wnck_window_is_active(priv->window)) {
 		
-		cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
 		cairo_set_source_rgba(cr, 1, 1, 1, 0.2);
-		cairo_rectangle(cr, 0, 50, 60, 50);
+		cairo_rectangle(cr, 0 , 52, 60,48);
 		cairo_fill(cr);
-	}
-	
+	}	
 	/* content */
 	if (priv->icon) {
 		double x1, y1;
