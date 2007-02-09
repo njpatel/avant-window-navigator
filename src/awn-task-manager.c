@@ -668,7 +668,7 @@ awn_task_manager_update_separator_position (AwnTaskManager *task_manager)
 	new_x = GTK_WIDGET(priv->eb)->allocation.x;
 	
 	if (1) {
-		awn_bar_set_separator_position (settings->bar, x+1);
+		awn_bar_set_separator_position (settings->bar, x+2);
 		x = new_x;
 	}
 }
@@ -691,7 +691,7 @@ awn_task_manager_new (AwnSettings *settings)
 	priv->launcher_box = gtk_hbox_new(FALSE, 0);
 	priv->tasks_box = gtk_hbox_new(FALSE, 0);
 	priv->eb = gtk_event_box_new();
-	gtk_widget_set_size_request(priv->eb, 2, -1);
+	gtk_widget_set_size_request(priv->eb, 4, -1);
 	gtk_event_box_set_visible_window (GTK_EVENT_BOX(priv->eb), FALSE);
 	
 	gtk_box_pack_start(GTK_BOX(task_manager), priv->launcher_box, FALSE, FALSE, 0);

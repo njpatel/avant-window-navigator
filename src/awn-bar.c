@@ -249,6 +249,28 @@ render (cairo_t *cr, gint x_width, gint height)
 	if (settings->show_separator) {
 		double real_x = (screen_width-dest_width)/2.0;
 		cairo_set_line_width (cr, 1.0);
+		
+		
+		
+		
+		cairo_move_to (cr, real_x+separator-2.5, 50);
+		cairo_line_to (cr, real_x+separator-2.5, 100);
+		cairo_set_source_rgba (cr, settings->hilight_color.red, 
+				   	   settings->hilight_color.green, 
+				           settings->hilight_color.blue,
+				           settings->hilight_color.alpha);
+		
+		cairo_stroke(cr);
+		
+		cairo_move_to (cr, real_x+separator-1.5, 50);
+		cairo_line_to (cr, real_x+separator-1.5, 100);
+		cairo_set_source_rgba (cr, settings->border_color.red, 
+				   	   settings->border_color.green, 
+				           settings->border_color.blue,
+				           settings->border_color.alpha);
+		
+		cairo_stroke(cr);
+		
 		cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 		cairo_move_to (cr, real_x+separator-0.5, 50);
 		cairo_line_to (cr, real_x+separator-0.5, 100);
@@ -258,6 +280,24 @@ render (cairo_t *cr, gint x_width, gint height)
 				           settings->sep_color.alpha);
 		cairo_stroke(cr);
 	
+
+		cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+		cairo_move_to (cr, real_x+separator+0.5, 50);
+		cairo_line_to (cr, real_x+separator+0.5, 100);
+		cairo_set_source_rgba (cr, settings->border_color.red, 
+				   	   settings->border_color.green, 
+				           settings->border_color.blue,
+				           settings->border_color.alpha);
+		cairo_stroke(cr);
+
+		
+		cairo_move_to (cr, real_x+separator+1.5, 50);
+		cairo_line_to (cr, real_x+separator+1.5, 100);
+		cairo_set_source_rgba (cr, settings->hilight_color.red, 
+				   	   settings->hilight_color.green, 
+				           settings->hilight_color.blue,
+				           settings->hilight_color.alpha);
+		cairo_stroke(cr);
 	}
 }
 
