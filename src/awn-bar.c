@@ -198,7 +198,7 @@ render (cairo_t *cr, gint x_width, gint height)
 	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 	cairo_paint (cr);
 	
-	double x = (screen_width-width)/2;
+	double x = (settings->monitor.width-width)/2;
 	
 	cairo_move_to(cr, x, 0);
 	cairo_set_line_width(cr, 1.0);
@@ -247,7 +247,7 @@ render (cairo_t *cr, gint x_width, gint height)
 
 	/* seaprator */
 	if (settings->show_separator) {
-		double real_x = (screen_width-dest_width)/2.0;
+		double real_x = (settings->monitor.width-dest_width)/2.0;
 		cairo_set_line_width (cr, 1.0);
 		
 		
@@ -433,22 +433,20 @@ _on_configure (GtkWidget* pWidget, GdkEventConfigure* pEvent, gpointer userData)
 static void
 _position_window (GtkWidget *window)
 {
-	GdkScreen *screen;
-	gint ww, wh;
-	gint sw, sh;
-	gint x, y;
+	int ww, wh;
+	int  x, y;
 	
 	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
-	screen = gtk_window_get_screen(GTK_WINDOW(window));
-	sw = gdk_screen_get_width(screen);
-	sh = gdk_screen_get_height(screen);
-	screen_width = sw;
-	x = (int) ((sw - ww) / 2);
-	y = (int) (sh-wh);
 	
-	if (ww != sw)
-		gtk_window_resize(GTK_WINDOW(window), sw, 100);
-	gtk_window_move(GTK_WINDOW(window), x, y);
+	y = settings->monitor.height - 100;
+	//x = (int) ( (settings->monitor.width - ww)/2);
+	x = settings->monitor.x;
+	if ( settings->monitor.width != ww) {
+		gtk_window_resize(GTK_WINDOW(window), settings->monitor.width, 100);
+		gtk_window_move(GTK_WINDOW(window), x, y);
+		g_print ("%d:%d, %d:%d\n", settings->monitor.x, settings->monitor.y, settings->monitor.width, settings->monitor.height);
+	}
+	
 }
 
 

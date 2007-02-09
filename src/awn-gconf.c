@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#define AWN_PATH		"/apps/avant-window-navigator/"
+#define AWN_PATH		"/apps/avant-window-navigator"
 #define AWN_MONITOR_N		"/apps/avant-window-navigator/monitor_number"
 
 #define BAR_PATH		"/apps/avant-window-navigator/bar"
@@ -90,7 +90,7 @@ awn_gconf_new()
 	s->icon_theme = gtk_icon_theme_get_default();
 	/* general settings */
 	gconf_client_add_dir(client, AWN_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	awn_load_float(client, AWN_MONITOR_N, &s->monitor_number, 1);
+	awn_load_int(client, AWN_MONITOR_N, &s->monitor_number, 0);
 	
 	/* Bar settings */
 	gconf_client_add_dir(client, BAR_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
@@ -343,19 +343,14 @@ static void
 screen_size_changed (GdkScreen *screen, AwnSettings *s)
 {
 	g_print ("Screen size changed\n");
+	gdk_screen_get_monitor_geometry (screen, 0, &s->monitor);
 }
 
 static void 
 load_monitor (AwnSettings *s)
 {
 	GdkScreen *screen = gdk_screen_get_default();
-	
-	gdk_screen_get_monitor_geometry (screen, s->monitor_number-1, &s->monitor);
-	
-	g_print("Monitors = %d\n", gdk_screen_get_n_monitors (screen));
-	
-	g_print("%d:%d, %d:%d\n", s->monitor.x, s->monitor.y, s->monitor.width, s->monitor.height);
-	
+	gdk_screen_get_monitor_geometry (screen, 0, &s->monitor);
 	g_signal_connect ( G_OBJECT(screen), "size-changed", G_CALLBACK(screen_size_changed), (gpointer)s);
 
 }
