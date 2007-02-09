@@ -339,6 +339,12 @@ hex2float(char* HexColor, float* FloatColor)
 
 }
 
+static void
+screen_size_changed (GdkScreen *screen, AwnSettings *s)
+{
+	g_print ("Screen size changed\n");
+}
+
 static void 
 load_monitor (AwnSettings *s)
 {
