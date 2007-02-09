@@ -1,3 +1,15 @@
+2007-02-09  Neil Jagdish Patel  <njp@Fedora>
+
+	D&D works for entire bar. Bar has popup to close.
+
+	* src/awn-bar.c: (render), (awn_bar_resize):
+	* src/awn-task-manager.c: (awn_task_manager_new):
+	* src/awn-task.c: (_task_drag_data_recieved):
+	* src/awn-window.c: (awn_window_init), (render):
+	* src/main.c: (main), (expose), (start_drag_animation),
+	(drag_motion), (leave_notify_event), (close_function),
+	(create_menu), (button_press_event):
+
 2007-02-06  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	Better launcher to window matching code.

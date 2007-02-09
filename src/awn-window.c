@@ -43,6 +43,12 @@ static gint x_pos = 0;
 static gint y_pos = 0;
 static current_pos = 0;
 
+static const GtkTargetEntry drop_types[] = {
+	{ "STRING", 0, 0 }
+};
+static const gint n_drop_types = G_N_ELEMENTS (drop_types);
+
+
 static void awn_window_destroy (GtkObject *object);
 static void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
 
@@ -68,7 +74,15 @@ awn_window_class_init( AwnWindowClass *this_class )
 static void
 awn_window_init( AwnWindow *window )
 {
-
+	gtk_widget_add_events (GTK_WIDGET (window),GDK_ALL_EVENTS_MASK);
+	
+	gtk_drag_dest_set (GTK_WIDGET (window),
+                           GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_DROP,
+                           drop_types, n_drop_types,
+                           GDK_ACTION_MOVE | GDK_ACTION_COPY);
+	
+	
+	gtk_drag_dest_add_uri_targets (GTK_WIDGET (window));
 }
 
 static void
@@ -114,85 +128,6 @@ _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* 
 	gtk_widget_set_colormap (pWidget, pColormap);
 }
 
-static void
-render_rect (cairo_t *cr, double x, double y, double width, double height  )
-{
-	if (settings->rounded_corners) {
-		/* modified from cairo snippets page */
-		double x0  = x ,  	
-		y0	   = y ,
-		rect_width  = width,
-		rect_height = height,
-		radius = 10.5; 
-
-		double x1,y1;
-
-		x1=x0+rect_width;
-		y1=y0+rect_height;
-	
-		cairo_move_to  (cr, x0, y0 + radius);
-		cairo_curve_to (cr, x0 , y0, x0 , y0, x0 + radius, y0);
-		cairo_line_to (cr, x1 - radius, y0);
-		cairo_curve_to (cr, x1, y0, x1, y0, x1, y0 + radius);
-		cairo_line_to (cr, x1 , y1 );
-		cairo_line_to (cr, x0 , y1);
-	
-        	cairo_close_path (cr);
-
-	} else 
-		cairo_rectangle(cr, x, y, width, height);
-}
-
-static void
-glass_engine (cairo_t *cr, gint width, gint height)
-{
-	cairo_pattern_t *pat;
-	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
-
-	/* main gradient */
-	pat = cairo_pattern_create_linear (0.0, 0.0, 0.0, height);
-	cairo_pattern_add_color_stop_rgba (pat, 0.5, 1.0, 1.0, 1.0, 0.3);
-	cairo_pattern_add_color_stop_rgba (pat, 1, 0.0, 0.0, 0.0, 0.3);
-	render_rect (cr, 0, height/2, width, height/2);
-	cairo_set_source(cr, pat);
-	cairo_fill(cr);
-	cairo_pattern_destroy(pat);
-	
-	/* hilight gradient */
-	pat = cairo_pattern_create_linear (0.0, 0.0, 0.0, height);
-	cairo_pattern_add_color_stop_rgba (pat, 0.5, 1, 1, 1, 0.15);
-	cairo_pattern_add_color_stop_rgba (pat, 1, 0.7, 0.7, 0.7, 0.02);
-	render_rect (cr, 1, height/2, width-2, height/5);
-	cairo_set_source(cr, pat);
-	cairo_fill(cr);
-	cairo_pattern_destroy(pat);
-
-}
-
-static void
-pattern_engine (cairo_t *cr, gint width, gint height)
-{
-	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
-	cairo_surface_t *image;
-        cairo_pattern_t *pattern;
-        
-	//image = cairo_image_surface_create_from_png ("/usr/share/nautilus/patterns/terracotta.png");
-        image = cairo_image_surface_create_from_png (settings->pattern_uri);
-        pattern = cairo_pattern_create_for_surface (image);
-        cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
-
-        cairo_set_source (cr, pattern);
-	render_rect  (cr, 0, (height/2), width, (height/2));
-        
-        cairo_save(cr);
-        	cairo_clip(cr);
-		cairo_paint_with_alpha(cr, settings->pattern_alpha);
-        cairo_restore(cr);
-
-        cairo_pattern_destroy (pattern);
-        cairo_surface_destroy (image);
-}
-
 static void 
 render (cairo_t *cr, gint width, gint height)
 {
@@ -200,34 +135,6 @@ render (cairo_t *cr, gint width, gint height)
 	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 	cairo_paint (cr);
 	return;
-	cairo_set_line_width(cr, 1.0);
-	
-	if (settings->render_pattern)
-		pattern_engine(cr, width, height);
-	
-	glass_engine(cr, width, height);
-	
-	/* internal border */
-	cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, 0.2f);
-	render_rect (cr, 1.5, (height/2)+1.5, width-2.5, (height/2)-2);
-	cairo_stroke(cr);
-	
-	/* glow
-	gfloat alpha = 0.2;
-	for (int i =1; i < 1; i++) {
-		alpha -=0.2/5;
-		cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, alpha);
-		
-		gfloat x = 1.5 + i;
-		gfloat w = (2*x)-0.5;
-		render_rect (cr, x, (height/2)+x, width-0.5-w, (height/2)-2-(2*i));
-		cairo_stroke(cr);
-	}
-	*/
-	/* border */
-	cairo_set_source_rgba (cr, 0.0f, 0.0f, 0.0f, 1.0);
-	render_rect (cr, 0.5, (height/2)+0.5, width-0.5, (height/2));
-	cairo_stroke(cr);
 }
 
 static gboolean 

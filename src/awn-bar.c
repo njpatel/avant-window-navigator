@@ -236,19 +236,6 @@ render (cairo_t *cr, gint x_width, gint height)
 	render_rect (cr, x+1.5, (height/2)+1.5, width-2, height, 1);
 	cairo_stroke(cr);
 	
-	/* glow
-	gfloat alpha = 0.2;
-	for (int i =1; i < 1; i++) {
-		alpha -=0.2/5;
-		cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, alpha);
-		
-		gfloat x = 1.5 + i;
-		gfloat w = (2*x)-0.5;
-		render_rect (cr, x, (height/2)+x, width-0.5-w, (height/2)-2-(2*i));
-		cairo_stroke(cr);
-	}
-	*/
-	
 	/* border */
 	cairo_set_source_rgba (cr, settings->border_color.red, 
 				   settings->border_color.green, 
@@ -456,12 +443,8 @@ resize( GtkWindow *window)
 void 
 awn_bar_resize(GtkWindow *window, gint width)
 {
-        //gtk_window_resize(window, width, 100);
-	dest_width = width+(settings->corner_radius*2);        
-        //redraw(GTK_WIDGET(window), width, 100);
-        //return;
-        
-        
+	dest_width = width;        
+
         if (resizing) {
                 return;
                              

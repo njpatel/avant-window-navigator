@@ -674,6 +674,12 @@ awn_task_manager_new (AwnSettings *settings)
 	g_signal_connect (G_OBJECT(priv->screen), "active_window_changed",
 	                  G_CALLBACK(_task_manager_window_activate), 
 	                  (gpointer)task_manager);	
+	                  
+	/* CONNECT D&D CODE */ 
+	
+	g_signal_connect (G_OBJECT(settings->window), "drag-data-received",
+			  G_CALLBACK(_task_manager_drag_data_recieved), (gpointer)task_manager);                 
+	
 	return task_manager;
 }
 

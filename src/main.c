@@ -33,18 +33,17 @@
 #include "awn-task.h"
 
 
+static gboolean expose (GtkWidget *widget, GdkEventExpose *event, GtkWindow *window);
+static gboolean drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
+                                                     gint            x,
+                                                     gint            y,
+                                                     guint           time,
+                                                     GtkWidget *win);
+static gboolean leave_notify_event (GtkWidget *window, GdkEventCrossing *event, 
+					GtkWidget *win);
 static gboolean
-expose (GtkWidget *widget, GdkEventExpose *event, GtkWindow *window)
-{
-        gint width, height;
-        
-        gtk_window_get_size (GTK_WINDOW (widget), &width, &height);
-        
-        //gtk_window_resize(window, width, height);
-        awn_bar_resize(window, width);
-        return FALSE;
-}
-
+button_press_event (GtkWidget *window, GdkEventButton *event);
+                                                    
 int 
 main (int argc, char* argv[])
 {
@@ -80,13 +79,12 @@ main (int argc, char* argv[])
 		}
 	}
 		
-	//winman = awn_win_mgr_new(settings);
 	if (!task_manager)
 		task_manager = awn_task_manager_new(settings);
 	
-	gtk_box_pack_start(GTK_BOX(box), gtk_label_new(" "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("    "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), task_manager, FALSE, TRUE, 0);	
-	gtk_box_pack_start(GTK_BOX(box), gtk_label_new(" "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("    "), FALSE, FALSE, 0);
 
 	gtk_container_add(GTK_CONTAINER(win), box);
 	
@@ -94,7 +92,93 @@ main (int argc, char* argv[])
 	gtk_widget_show_all(win);
 	gtk_window_set_transient_for(GTK_WINDOW(win), GTK_WINDOW(bar));
 	
+	g_signal_connect (G_OBJECT(win), "drag-motion",
+	                  G_CALLBACK(drag_motion), (gpointer)win);
+	g_signal_connect(G_OBJECT(win), "leave-notify-event",
+			 G_CALLBACK(leave_notify_event), (gpointer)win);
+	g_signal_connect(G_OBJECT(win), "button-press-event",
+			 G_CALLBACK(button_press_event), (gpointer)win);
 	gtk_main ();
 }
 
+static gboolean
+expose (GtkWidget *widget, GdkEventExpose *event, GtkWindow *window)
+{
+        gint width, height;
+        
+        gtk_window_get_size (GTK_WINDOW (widget), &width, &height);
+        
+        awn_bar_resize(window, width);
+        return FALSE;
+}
 
+
+static gboolean mouse_over_window = FALSE;
+
+static gboolean
+start_drag_animation ( GtkWindow *window) 
+{
+	
+	
+}
+
+static gboolean 
+drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
+                                                     gint            x,
+                                                     gint            y,
+                                                     guint           time,
+                                                     GtkWidget       *window)
+{
+	//g_print("Drag Motion\n");
+	mouse_over_window = TRUE;
+	return FALSE;
+}
+
+static gboolean 
+leave_notify_event (GtkWidget *window, GdkEventCrossing *event, GtkWidget *win)
+{
+	//g_print("Drag Ended\n");
+	mouse_over_window = FALSE;
+	return FALSE;
+}
+
+static void
+close_function (GtkMenuItem *menuitem, gpointer null)
+{
+	gtk_main_quit ();
+}
+
+static GtkWidget *
+create_menu (void)
+{
+	GtkWidget *menu;
+	GtkWidget *item;
+	
+	menu = gtk_menu_new ();
+	item = gtk_image_menu_item_new_from_stock (GTK_STOCK_CLOSE, NULL);
+	
+	gtk_menu_shell_append (GTK_MENU_SHELL(menu), item);
+	
+	g_signal_connect (G_OBJECT(item), "activate", G_CALLBACK(close_function), NULL);
+	
+	gtk_widget_show_all(menu);
+	return menu;
+}
+
+static gboolean
+button_press_event (GtkWidget *window, GdkEventButton *event)
+{
+	GtkWidget *menu = NULL;
+	
+	switch (event->button) {
+		case 3:
+			menu = create_menu ();
+			gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
+					       NULL, 3, event->time);
+			break;
+		default:
+			return FALSE;
+	}
+ 
+	return FALSE;
+}
