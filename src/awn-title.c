@@ -78,13 +78,8 @@ awn_title_new( AwnSettings *sets )
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);
         
-        gint sw, sh;
-	
-	GdkScreen *screen = gtk_window_get_screen(GTK_WINDOW(this));
-	AWN_TITLE_DEFAULT_WIDTH = gdk_screen_get_width(screen);
-	
-	        
-        gtk_window_resize (GTK_WIDGET(this), AWN_TITLE_DEFAULT_WIDTH, AWN_TITLE_DEFAULT_HEIGHT);
+        gtk_window_resize (GTK_WIDGET(this), settings->monitor.width, AWN_TITLE_DEFAULT_HEIGHT);
+        
         g_signal_connect (G_OBJECT (this),"destroy",
 			  G_CALLBACK (gtk_main_quit), NULL);
 	
@@ -370,18 +365,13 @@ _on_configure (GtkWidget* pWidget, GdkEventConfigure* pEvent, gpointer userData)
 static void
 _position_window (GtkWidget *window)
 {
-	GdkScreen *screen;
 	gint ww, wh;
-	gint sw, sh;
 	gint x, y;
 	
 	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
-	screen = gtk_window_get_screen(GTK_WINDOW(window));
-	sw = gdk_screen_get_width(screen);
-	sh = gdk_screen_get_height(screen);
 	
-	x = (int) ((sw - ww) / 2);
-	y = (int) (sh-90);
+	x = (int) ((settings->monitor.width - ww) / 2);
+	y = (int) (settings->monitor.height-90);
 	
 	gtk_window_move(GTK_WINDOW(window), x, y);
 	

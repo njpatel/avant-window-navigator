@@ -291,19 +291,14 @@ _position_func (GtkWidget *window)
 static void
 _position_window (GtkWidget *window)
 {
-	GdkScreen *screen;
 	gint ww, wh;
-	gint sw, sh;
 	gint x, y;
 	
 	
 	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
-	screen = gtk_window_get_screen(GTK_WINDOW(window));
-	sw = gdk_screen_get_width(screen);
-	sh = gdk_screen_get_height(screen);
 	
-	x_pos = (int) ((sw - ww) / 2);
-	y_pos = (int) (sh-wh);
+	x_pos = (int) ((settings->monitor.width - ww) / 2);
+	y_pos = (int) (settings->monitor.height-wh);
 	
 	if (stop_position) {
 		current_pos = x_pos;
