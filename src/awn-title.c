@@ -210,7 +210,18 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 				   settings->shadow_color.alpha);
 	cairo_move_to (cr, x+1, y+1);
 	cairo_show_text (cr, utf8);
+
 	
+	cairo_move_to (cr, x, y);
+	
+	/* outline
+	cairo_set_source_rgba (cr, 1, 1, 1, 1);
+	cairo_text_path (cr, utf8);
+	cairo_fill_preserve (cr);
+	cairo_set_line_width (cr, 1);
+	cairo_set_source_rgba (cr, 0, 0, 0, 0.3);
+	cairo_stroke (cr);
+	 */
 	/* text */
 	//cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, 1.0f);
 	cairo_set_source_rgba (cr, settings->text_color.red, 
@@ -219,7 +230,7 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 				   settings->text_color.alpha);
 	cairo_move_to (cr, x, y);
 	cairo_show_text (cr, utf8);
-
+	
 	/*
 	cairo_text_path (cr, utf8);
 	cairo_fill_preserve (cr);

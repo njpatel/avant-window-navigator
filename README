@@ -1,8 +1,5 @@
 avant-window-navigator	0.1.1-svn
 
-* You can test the new window manager code like this : avant-window-navigator -x *
-* This is still new, and may not have some features *
-
 ./autogen.sh --prefix=/usr && make && make install
 
 enjoy!!
@@ -13,4 +10,7 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
-Drap & Drop support for URIs on launchers! Including multiple files!
+*  1 sec delay before a window activates while you are dragging.
+*  Bar now has menu for proper exit. Right click on either edge of the bar.
+*  Drag anywhere on bar, not just on another icon.
+*  Drag & Drop support for URIs on launchers! Including multiple files!

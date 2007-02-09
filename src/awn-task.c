@@ -48,6 +48,9 @@ static gboolean awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *eve
 
 static gboolean awn_task_drag_motion (GtkWidget *task, 
 		GdkDragContext *context, gint x, gint y, guint t);
+static void
+awn_task_drag_leave (GtkWidget *widget, GdkDragContext *drag_context,
+                                        guint time);
 static void awn_task_create_menu(AwnTask *task, GtkMenu *menu);
 
 
@@ -130,7 +133,8 @@ awn_task_class_init (AwnTaskClass *class)
 	widget_class->enter_notify_event = awn_task_proximity_in;
 	widget_class->leave_notify_event = awn_task_proximity_out;
 	widget_class->drag_motion = awn_task_drag_motion;
-
+	widget_class->drag_leave = awn_task_drag_leave;
+	
 	g_type_class_add_private (obj_class, sizeof (AwnTaskPrivate));
 }
 
@@ -717,7 +721,7 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 		;
 	}
 	 
-	return FALSE;
+	return TRUE;
 }
 
 static void 
@@ -778,6 +782,7 @@ _task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
         
         
 }
+
 
 
 static gboolean 
@@ -852,6 +857,18 @@ awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *tas
 }
 
 static gboolean 
+activate_window(AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	if (priv->hover)
+		wnck_window_activate( priv->window, gtk_get_current_event_time() );
+	
+	return FALSE;
+}
+
+static gboolean 
 awn_task_drag_motion (GtkWidget *task, 
 		GdkDragContext *context, gint x, gint y, guint t)
 {
@@ -865,13 +882,23 @@ awn_task_drag_motion (GtkWidget *task,
 		
 		if ( wnck_window_is_active( priv->window ) )
 			return FALSE;
-		else
-			wnck_window_activate( priv->window, 
-						gtk_get_current_event_time() );
+		else {
+			priv->hover = TRUE;
+			g_timeout_add (1000, (GSourceFunc)activate_window, (gpointer)task);
+		}
 	}
 	
 	return FALSE;
 }
+
+static void
+awn_task_drag_leave (GtkWidget *task, GdkDragContext *drag_context,
+                                        guint time)
+{
+ 	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	priv->hover = FALSE;                                       
+}                                        
 
 static void 
 _task_wnck_icon_changed (WnckWindow *window, AwnTask *task)
@@ -1360,6 +1387,8 @@ awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings)
 			 G_CALLBACK(awn_task_win_enter_out), AWN_TASK(task));
 	*/
 	g_signal_connect (G_OBJECT(task), "drag-data-received",
+		  G_CALLBACK(_task_drag_data_recieved), (gpointer)task);
+	g_signal_connect (G_OBJECT(task), "drag-end",
 		  G_CALLBACK(_task_drag_data_recieved), (gpointer)task);
 	return task;
 }

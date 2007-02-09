@@ -1,5 +1,14 @@
 2007-02-09  Neil Jagdish Patel  <njp@Fedora>
 
+	Added 1 sec delay before window activates on drag
+
+	* src/awn-task.c: (awn_task_class_init), (awn_task_button_press),
+	(activate_window), (awn_task_drag_motion), (awn_task_drag_leave),
+	(awn_task_new):
+	* src/awn-title.c: (render):
+
+2007-02-09  Neil Jagdish Patel  <njp@Fedora>
+
 	D&D works for entire bar. Bar has popup to close.
 
 	* src/awn-bar.c: (render), (awn_bar_resize):
