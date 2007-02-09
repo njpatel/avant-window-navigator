@@ -90,7 +90,7 @@ awn_gconf_new()
 	s->icon_theme = gtk_icon_theme_get_default();
 	/* general settings */
 	gconf_client_add_dir(client, AWN_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	awn_load_int(client, AWN_MONITOR_N, &s->monitor_number, 0);
+	//awn_load_int(client, AWN_MONITOR_N, &s->monitor_number, 0);
 	
 	/* Bar settings */
 	gconf_client_add_dir(client, BAR_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
