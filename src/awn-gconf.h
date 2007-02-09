@@ -35,6 +35,7 @@ typedef struct {
 	
 	/* Misc globals */
 	GtkIconTheme *icon_theme;
+	GtkWidget *bar;
 	GtkWidget *window;
 	
 	/* Bar appearance settings */
@@ -51,6 +52,9 @@ typedef struct {
 	AwnColor g_histep_2;
 	AwnColor border_color;
 	AwnColor hilight_color;
+	
+	gboolean show_separator;
+	AwnColor sep_color;
 	
 	/* Window Manager Settings */
 	gboolean show_all_windows;

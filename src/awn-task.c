@@ -106,6 +106,8 @@ struct _AwnTaskPrivate
 	double rotate_degrees;
 	gfloat alpha;
 	
+	/* random */
+	guint timestamp;
 	/* signal handler ID's, for clean close */
 	gulong icon_changed;
 	gulong state_changed;
@@ -863,7 +865,7 @@ activate_window(AwnTask *task)
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
 	if (priv->hover)
-		wnck_window_activate( priv->window, gtk_get_current_event_time() );
+		wnck_window_activate( priv->window, priv->timestamp );
 	
 	return FALSE;
 }
@@ -884,6 +886,7 @@ awn_task_drag_motion (GtkWidget *task,
 			return FALSE;
 		else {
 			priv->hover = TRUE;
+			priv->timestamp = gtk_get_current_event_time();
 			g_timeout_add (1000, (GSourceFunc)activate_window, (gpointer)task);
 		}
 	}

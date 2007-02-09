@@ -1,5 +1,25 @@
 2007-02-09  Neil Jagdish Patel  <njp@Fedora>
 
+	Launchers and tasks separated, separator added
+
+	* avant-preferences/avant-preferences.in.py:
+	* avant-preferences/avant-preferences.py:
+	* avant-preferences/window.glade:
+	* src/awn-bar.c: (render), (awn_bar_set_separator_position):
+	* src/awn-bar.h:
+	* src/awn-gconf.c: (awn_gconf_new), (awn_notify_bool):
+	* src/awn-gconf.h:
+	* src/awn-task-manager.c: (_load_launchers_func),
+	(_task_manager_window_opened), (_task_manager_drag_data_recieved),
+	(_task_refresh), (_refresh_box),
+	(awn_task_manager_remove_launcher), (awn_task_manager_remove_task),
+	(awn_task_manager_update_separator_position),
+	(awn_task_manager_new):
+	* src/awn-task.c: (activate_window), (awn_task_drag_motion):
+	* src/main.c: (main):
+
+2007-02-09  Neil Jagdish Patel  <njp@Fedora>
+
 	Changed the code for getting the icon theme.
 
 	* src/awn-task.c: (awn_task_set_window), (icon_loader_get_icon):

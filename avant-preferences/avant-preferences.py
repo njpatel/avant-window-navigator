@@ -59,6 +59,8 @@ BAR_GLASS_HISTEP_1	= "/apps/avant-window-navigator/bar/glass_histep_1"		#string
 BAR_GLASS_HISTEP_2	= "/apps/avant-window-navigator/bar/glass_histep_2"		#string 
 BAR_BORDER_COLOR	= "/apps/avant-window-navigator/bar/border_color"		#string 
 BAR_HILIGHT_COLOR	= "/apps/avant-window-navigator/bar/hilight_color"		#string 
+BAR_SHOW_SEPARATOR	= "/apps/avant-window-navigator/bar/show_separator"		#bool
+BAR_SEP_COLOR		= "/apps/avant-window-navigator/bar/sep_color"
 
 WINMAN_PATH		= "/apps/avant-window-navigator/window_manager"
 WINMAN_SHOW_ALL_WINS	= "/apps/avant-window-navigator/window_manager/show_all_windows" #bool
@@ -139,6 +141,7 @@ class main:
 		self.setup_bool (WINMAN_SHOW_ALL_WINS, self.wTree.get_widget("allwindowscheck"))
 		self.setup_bool (TITLE_ITALIC, self.wTree.get_widget ("italiccheck"))
 		self.setup_bool (TITLE_BOLD, self.wTree.get_widget("boldcheck"))		
+		self.setup_bool (BAR_SHOW_SEPARATOR, self.wTree.get_widget("separatorcheck"))
 		
 		self.setup_chooser(APP_ACTIVE_PNG, self.wTree.get_widget("activefilechooser"))
 		self.setup_chooser(BAR_PATTERN_URI, self.wTree.get_widget("patternchooserbutton"))
@@ -158,6 +161,8 @@ class main:
 		
 		self.setup_color(BAR_GLASS_HISTEP_1, self.wTree.get_widget("highlightcolor1"))
 		self.setup_color(BAR_GLASS_HISTEP_1, self.wTree.get_widget("highlightcolor2"))
+		
+		self.setup_color(BAR_SEP_COLOR, self.wTree.get_widget("sepcolor"))
 
 	def refresh(self, button):
 		w = gtk.Window()
@@ -241,9 +246,11 @@ class main:
 		"""sets up checkboxes"""
 		check.set_active(self.client.get_bool(key))
 		check.connect("toggled", self.bool_changed, key)
+		
 	
 	def bool_changed(self, check, key):
 		self.client.set_bool(key, check.get_active())
+		print "toggled"
 
 
 if __name__ == "__main__":

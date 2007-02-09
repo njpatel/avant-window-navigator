@@ -35,6 +35,8 @@
 #define BAR_GLASS_HISTEP_2	"/apps/avant-window-navigator/bar/glass_histep_2"		/*string */
 #define BAR_BORDER_COLOR	"/apps/avant-window-navigator/bar/border_color"		/*string */
 #define BAR_HILIGHT_COLOR	"/apps/avant-window-navigator/bar/hilight_color"		/*string */
+#define BAR_SHOW_SEPARATOR	"/apps/avant-window-navigator/bar/show_separator"		/*string */
+#define BAR_SEP_COLOR		"/apps/avant-window-navigator/bar/sep_color"		/*string */
 
 #define WINMAN_PATH		"/apps/avant-window-navigator/window_manager"
 #define WINMAN_SHOW_ALL_WINS	"/apps/avant-window-navigator/window_manager/show_all_windows" /*bool*/
@@ -86,7 +88,7 @@ awn_gconf_new()
 	awn_load_bool(client, BAR_ROUNDED_CORNERS, &s->rounded_corners, TRUE);
 	awn_load_float(client, BAR_CORNER_RADIUS, &s->corner_radius, 10.0);	
 	awn_load_bool(client, BAR_RENDER_PATTERN, &s->render_pattern, FALSE);	
-	awn_load_string(client, BAR_PATTERN_URI, &s->pattern_uri, "/usr/share/nautilus/patterns/terracotta.png");
+	awn_load_string(client, BAR_PATTERN_URI, &s->pattern_uri, "~");
 	awn_load_float(client, BAR_PATTERN_ALPHA, &s->pattern_alpha, 1.0);
 	
 	awn_load_color(client, BAR_GLASS_STEP_1, &s->g_step_1, "454545C8");
@@ -97,6 +99,9 @@ awn_gconf_new()
 	awn_load_color(client, BAR_BORDER_COLOR, &s->border_color, "000000CC");
 	awn_load_color(client, BAR_HILIGHT_COLOR, &s->hilight_color, "FFFFFF11");
 	
+	awn_load_bool(client, BAR_SHOW_SEPARATOR, &s->show_separator, TRUE);
+	awn_load_color(client, BAR_SEP_COLOR, &s->sep_color, "FFFFFF00");
+	
 	/* Window Manager settings */
 	gconf_client_add_dir(client, WINMAN_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
 	awn_load_bool(client, WINMAN_SHOW_ALL_WINS, &s->show_all_windows, TRUE);
@@ -104,8 +109,7 @@ awn_gconf_new()
 	awn_load_string_list(client, WINMAN_LAUNCHERS, &s->launchers, NULL);
 	/* App settings */
 	gconf_client_add_dir(client, APP_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	awn_load_string(client, APP_ACTIVE_PNG, &s->active_png, 
-			"/usr/share/avant-window-navigator/active/glow4.png");
+	awn_load_string(client, APP_ACTIVE_PNG, &s->active_png, "~");
 	
 	/* Title settings */
 	gconf_client_add_dir(client, TITLE_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
@@ -114,14 +118,6 @@ awn_gconf_new()
 	awn_load_bool(client, TITLE_ITALIC, &s->italic, FALSE);
 	awn_load_bool(client, TITLE_BOLD, &s->bold, FALSE);
 	awn_load_float(client, TITLE_FONT_SIZE, &s->font_size, 15.0);
-	
-	
-	gconf_client_add_dir(client, "/apps/test4", GCONF_CLIENT_PRELOAD_NONE, NULL);
-	awn_load_bool(client, "/apps/test4/bool", &s->btest, FALSE);
-	awn_load_float(client, "/apps/test4/float", &s->ftest, 15.0);
-	awn_load_string(client, "/apps/test4/string", &s->stest, "hello");
-	awn_load_color(client, "/apps/test4/color", &s->ctest, "454545C8");
-	awn_load_string_list(client, "/apps/test4/slist", &s->ltest, NULL);
 	
 	return s;
 }
@@ -140,8 +136,8 @@ awn_notify_bool (GConfClient *client, guint cid, GConfEntry *entry, gboolean* da
 	value = gconf_entry_get_value(entry);
 	*data = gconf_value_get_bool(value);
 	
-	//if (*data)
-	//	g_print("%s is true\n", gconf_entry_get_key(entry));
+	if (*data)
+		g_print("%s is true\n", gconf_entry_get_key(entry));
 }
 
 static void 

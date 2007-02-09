@@ -56,6 +56,7 @@ GtkWidget *awn_bar_new(AwnSettings *settings);
 
 void awn_bar_resize(GtkWindow *window, gint width);
 gboolean _on_expose (GtkWidget *widget, GdkEventExpose *expose);
+void awn_bar_set_separator_position (GtkWidget *bar, int x);
 
 G_END_DECLS
 

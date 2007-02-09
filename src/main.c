@@ -49,8 +49,6 @@ main (int argc, char* argv[])
 {
 	
 	AwnSettings* settings = awn_gconf_new();
-	GtkWidget *win = NULL;
-	GtkWidget *bar = NULL;
 	GtkWidget *box = NULL;
 	GtkWidget *task_manager = NULL;
 	GtkWidget *lab = NULL;
@@ -59,16 +57,15 @@ main (int argc, char* argv[])
 	gtk_init (&argc, &argv);
 	gnome_vfs_init ();
 	
-	bar = awn_bar_new(settings);
+	settings->bar = awn_bar_new(settings);
 	
-	win = awn_window_new (settings);
-	settings->window = win;
+	settings->window = awn_window_new (settings);
 	
-	gtk_window_set_policy (GTK_WINDOW (win), FALSE, FALSE, TRUE);
+	gtk_window_set_policy (GTK_WINDOW (settings->window), FALSE, FALSE, TRUE);
 	
-	gtk_widget_add_events (GTK_WIDGET (win),GDK_ALL_EVENTS_MASK);
-	g_signal_connect(G_OBJECT(win), "expose-event",
-			 G_CALLBACK(expose), bar);
+	gtk_widget_add_events (GTK_WIDGET (settings->window),GDK_ALL_EVENTS_MASK);
+	g_signal_connect(G_OBJECT(settings->window), "expose-event",
+			 G_CALLBACK(expose), settings->bar);
 	
 
 	box = gtk_hbox_new(FALSE, 2);
@@ -86,18 +83,18 @@ main (int argc, char* argv[])
 	gtk_box_pack_start(GTK_BOX(box), task_manager, FALSE, TRUE, 0);	
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("    "), FALSE, FALSE, 0);
 
-	gtk_container_add(GTK_CONTAINER(win), box);
+	gtk_container_add(GTK_CONTAINER(settings->window), box);
 	
-	gtk_widget_show_all(bar);
-	gtk_widget_show_all(win);
-	gtk_window_set_transient_for(GTK_WINDOW(win), GTK_WINDOW(bar));
+	gtk_widget_show_all(settings->bar);
+	gtk_widget_show_all(settings->window);
+	gtk_window_set_transient_for(GTK_WINDOW(settings->window), GTK_WINDOW(settings->bar));
 	
-	g_signal_connect (G_OBJECT(win), "drag-motion",
-	                  G_CALLBACK(drag_motion), (gpointer)win);
-	g_signal_connect(G_OBJECT(win), "leave-notify-event",
-			 G_CALLBACK(leave_notify_event), (gpointer)win);
-	g_signal_connect(G_OBJECT(win), "button-press-event",
-			 G_CALLBACK(button_press_event), (gpointer)win);
+	g_signal_connect (G_OBJECT(settings->window), "drag-motion",
+	                  G_CALLBACK(drag_motion), (gpointer)settings->window);
+	g_signal_connect(G_OBJECT(settings->window), "leave-notify-event",
+			 G_CALLBACK(leave_notify_event), (gpointer)settings->window);
+	g_signal_connect(G_OBJECT(settings->window), "button-press-event",
+			 G_CALLBACK(button_press_event), (gpointer)settings->window);
 	gtk_main ();
 }
 

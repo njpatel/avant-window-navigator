@@ -39,6 +39,7 @@ static AwnSettings *settings		= NULL;
 static gint dest_width			= 0;
 static current_width 			= 400;
 static gint screen_width		= 1024;
+static int separator			= 0;
 
 static void awn_bar_destroy (GtkObject *object);
 static void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
@@ -243,6 +244,21 @@ render (cairo_t *cr, gint x_width, gint height)
 				   settings->border_color.alpha);
 	render_rect (cr, x +0.5, (height/2)+0.5, width, (height/2)+1, 0);
 	cairo_stroke(cr);
+
+	/* seaprator */
+	if (settings->show_separator) {
+		double real_x = (screen_width-dest_width)/2.0;
+		cairo_set_line_width (cr, 1.0);
+		cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+		cairo_move_to (cr, real_x+separator-0.5, 50);
+		cairo_line_to (cr, real_x+separator-0.5, 100);
+		cairo_set_source_rgba (cr, settings->sep_color.red, 
+				   	   settings->sep_color.green, 
+				           settings->sep_color.blue,
+				           settings->sep_color.alpha);
+		cairo_stroke(cr);
+	
+	}
 }
 
 gboolean 
@@ -455,8 +471,13 @@ awn_bar_resize(GtkWindow *window, gint width)
                 
 }
 
-
-
+void 
+awn_bar_set_separator_position (GtkWidget *window, int x)
+{
+	separator = x;
+	gtk_widget_queue_draw(GTK_WIDGET(window));
+	//g_print ("%d\n", x);
+}
 
 
 

@@ -10,6 +10,9 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+*  New preference window to accomodate the separator settings.
+*  You can have a separator between them
+*  Launchers and tasks are now in two different hboxs.
 *  1 sec delay before a window activates while you are dragging.
 *  Bar now has menu for proper exit. Right click on either edge of the bar.
 *  Drag anywhere on bar, not just on another icon.
