@@ -979,6 +979,7 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
         /* if launcher, set a launch_sequence
         else if starter, stop the launch_sequence, disable starter flag*/
         
+        //awn_task_refresh_icon_geometry(task);
         if (wnck_window_is_skip_tasklist(window))
         	return TRUE;
         
@@ -1001,7 +1002,9 @@ GdkPixbuf *
 icon_loader_get_icon( const char *name )
 {
         GdkPixbuf *icon = NULL;
-        GtkIconTheme *theme = gtk_icon_theme_get_default();
+        GdkScreen *screen = gdk_screen_get_default();
+        GtkIconTheme *theme = NULL;
+        theme = gtk_icon_theme_get_for_screen (screen);
         
         if (!name)
                 return NULL;
@@ -1009,8 +1012,12 @@ icon_loader_get_icon( const char *name )
         GError *error = NULL;
           
         /* first we try gtkicontheme */
-        icon = gtk_icon_theme_load_icon( theme, name, 48, 0, &error);
-          
+        if (theme)
+        	icon = gtk_icon_theme_load_icon( theme, name, 48, 0, &error);
+        else {
+        	g_print("Icon theme could not be loaded");
+        	error = 1;  
+        }
         if (error) {
                 /* lets try and load directly from file */
                 error = NULL;

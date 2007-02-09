@@ -54,7 +54,6 @@ GType awn_window_get_type(void);
 
 GtkWidget *awn_window_new(AwnSettings *settings);
 
-void awn_window_resize(AwnWindow *window);
 
 
 G_END_DECLS

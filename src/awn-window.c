@@ -316,12 +316,6 @@ _position_window (GtkWidget *window)
 }
 
 
-void 
-awn_window_resize(AwnWindow *window)
-{
-	gtk_window_resize(GTK_WINDOW(window), 1, 100);
-}
-
 
 
 

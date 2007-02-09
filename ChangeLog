@@ -1,5 +1,14 @@
 2007-02-09  Neil Jagdish Patel  <njp@Fedora>
 
+	Changed the code for getting the icon theme.
+
+	* src/awn-task.c: (awn_task_set_window), (icon_loader_get_icon):
+	* src/awn-window.c:
+	* src/awn-window.h:
+	* src/main.c: (expose):
+
+2007-02-09  Neil Jagdish Patel  <njp@Fedora>
+
 	* src/main.c: popup now includes a link to avant-preferences
 
 2007-02-09  Neil Jagdish Patel  <njp@Fedora>

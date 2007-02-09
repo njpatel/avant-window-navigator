@@ -109,6 +109,7 @@ expose (GtkWidget *widget, GdkEventExpose *event, GtkWindow *window)
         gtk_window_get_size (GTK_WINDOW (widget), &width, &height);
         
         awn_bar_resize(window, width);
+        //awn_window_resize(window, width);
         return FALSE;
 }
 
