@@ -63,9 +63,11 @@ typedef struct {
 	gboolean show_all_windows;
 	GSList *launchers;
 	
-	/* App settings */
+	/* Task settings */
 	gboolean use_png;
 	gchar *active_png;
+	
+	gboolean fade_effect;
 	
 	/* Title settings */
 	AwnColor text_color;

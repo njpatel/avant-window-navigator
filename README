@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+*  Added a new mouse-over effect, it is extreme alpha software, so be careful! Activate it by starting up GConf editor, go to /apps/avant-window-navigator/app/ and set  'fade_effect' to TRUE. Don't report bugs! I know them already, however report new ideas!
+
 *  New preference window to accomodate the separator settings.
 *  You can have a separator between them
 *  Launchers and tasks are now in two different hboxs.

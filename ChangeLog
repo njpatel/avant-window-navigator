@@ -1,5 +1,16 @@
 2007-02-09  Neil Jagdish Patel  <njp@Fedora>
 
+	Added new hover effect for review.
+
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-gconf.h:
+	* src/awn-task-manager.c: (_task_manager_drag_data_recieved):
+	* src/awn-task.c: (awn_task_proximity_in),
+	(awn_task_proximity_out), (awn_task_win_enter_in),
+	(awn_task_win_enter_out), (awn_task_new):
+
+2007-02-09  Neil Jagdish Patel  <njp@Fedora>
+
 	Launchers and tasks separated, separator added
 
 	* avant-preferences/avant-preferences.in.py:

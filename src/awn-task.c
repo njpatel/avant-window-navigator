@@ -793,7 +793,10 @@ static gboolean
 awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 {
 	AwnTaskPrivate *priv;
+	AwnSettings *settings;
+	
 	priv = AWN_TASK_GET_PRIVATE (task);
+	settings = priv->settings;
 	
 	if (priv->title) {
 		gint i = (int)event->x_root;
@@ -811,12 +814,14 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 			return FALSE;
 		priv->hover = TRUE;
 		
-		if (priv->current_effect != AWN_TASK_EFFECT_HOVER)
-			launch_hover_effect (AWN_TASK (task));
-		
-		//priv->alpha = 1.0;
-		//gtk_widget_queue_draw(GTK_WIDGET(task));
-		//launch_fade_in_effect(task);
+		if (!settings->fade_effect) {
+			if (priv->current_effect != AWN_TASK_EFFECT_HOVER)
+				launch_hover_effect (AWN_TASK (task));
+		} else {
+			priv->alpha = 1.0;
+			gtk_widget_queue_draw(GTK_WIDGET(task));
+			launch_fade_in_effect(task);
+		}
 	}
 	
 
@@ -835,17 +840,21 @@ awn_task_proximity_out (GtkWidget *task, GdkEventCrossing *event)
 	//priv->alpha = 1.0;
 	//gtk_widget_queue_draw(GTK_WIDGET(task));
 	//launch_fade_in_effect(task);
-	return TRUE;
+	return FALSE;
 }
 
 static gboolean 
 awn_task_win_enter_in (GtkWidget *window, GdkEventMotion *event, AwnTask *task)
 {
 	AwnTaskPrivate *priv;
+	AwnSettings *settings;
+	
 	priv = AWN_TASK_GET_PRIVATE (task);
+	settings = priv->settings;
 	//priv->alpha = 0.2;
 	//gtk_widget_queue_draw(GTK_WIDGET(task));
-	//launch_fade_out_effect(task);
+	if (settings->fade_effect)
+		launch_fade_out_effect(task);
 	return FALSE;
 }
 
@@ -854,8 +863,8 @@ awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *tas
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	//priv->alpha = 1.0;
-	//gtk_widget_queue_draw(GTK_WIDGET(task));
+	priv->alpha = 1.0;
+	gtk_widget_queue_draw(GTK_WIDGET(task));
 	//launch_fade_in_effect(task);
 	return FALSE;
 }
@@ -1391,13 +1400,13 @@ awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings)
 	priv->settings = settings;
 	
 	/* This is code which I will add later for better hover effects over 
-	the bar
+	the bar*/
 	g_signal_connect(G_OBJECT(settings->window), "motion-notify-event",
 			 G_CALLBACK(awn_task_win_enter_in), AWN_TASK(task));
 	
 	g_signal_connect(G_OBJECT(settings->window), "leave-notify-event",
 			 G_CALLBACK(awn_task_win_enter_out), AWN_TASK(task));
-	*/
+	
 	g_signal_connect (G_OBJECT(task), "drag-data-received",
 		  G_CALLBACK(_task_drag_data_recieved), (gpointer)task);
 	g_signal_connect (G_OBJECT(task), "drag-end",

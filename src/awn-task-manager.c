@@ -535,7 +535,7 @@ _task_manager_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 		gconf_client_set_list(client,
 					"/apps/avant-window-navigator/window_manager/launchers",
 					GCONF_VALUE_STRING,settings->launchers,NULL);
-		
+		awn_task_manager_update_separator_position (task_manager);
 	} else {
 		gtk_widget_destroy(task);
 		gnome_desktop_item_unref(item);
