@@ -111,6 +111,8 @@ struct _AwnTaskPrivate
 	/* signal handler ID's, for clean close */
 	gulong icon_changed;
 	gulong state_changed;
+	gulong win_enter;
+	gulong win_leave;
 };
 
 /* GLOBALS */
@@ -1404,10 +1406,10 @@ awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings)
 	
 	/* This is code which I will add later for better hover effects over 
 	the bar*/
-	g_signal_connect(G_OBJECT(settings->window), "motion-notify-event",
+	priv->win_enter = g_signal_connect(G_OBJECT(settings->window), "motion-notify-event",
 			 G_CALLBACK(awn_task_win_enter_in), AWN_TASK(task));
 	
-	g_signal_connect(G_OBJECT(settings->window), "leave-notify-event",
+	priv->win_leave = g_signal_connect(G_OBJECT(settings->window), "leave-notify-event",
 			 G_CALLBACK(awn_task_win_enter_out), AWN_TASK(task));
 	
 	g_signal_connect (G_OBJECT(task), "drag-data-received",
@@ -1425,6 +1427,8 @@ awn_task_close (AwnTask *task)
 	
 	g_signal_handler_disconnect ((gpointer)priv->window, priv->icon_changed);
 	g_signal_handler_disconnect ((gpointer)priv->window, priv->state_changed);
+	g_signal_handler_disconnect ((gpointer)priv->window, priv->win_enter);
+	g_signal_handler_disconnect ((gpointer)priv->window, priv->win_leave);
 	
 	priv->window = NULL;
 	priv->needs_attention = FALSE;
