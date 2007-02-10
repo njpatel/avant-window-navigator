@@ -38,8 +38,11 @@ typedef struct {
 	GtkWidget *bar;
 	GtkWidget *window;
 	
+	/* monitor settings */
 	GdkRectangle monitor;
-	int monitor_number;
+	gboolean force_monitor;
+	int monitor_height;
+	int monitor_width;
 	
 	/* Bar appearance settings */
 	gboolean rounded_corners;

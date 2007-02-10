@@ -23,7 +23,9 @@
 #include "config.h"
 
 #define AWN_PATH		"/apps/avant-window-navigator"
-#define AWN_MONITOR_N		"/apps/avant-window-navigator/monitor_number"
+#define AWN_FORCE_MONITOR	"/apps/avant-window-navigator/force_monitor"
+#define AWN_MONITOR_WIDTH	"/apps/avant-window-navigator/monitor_width"
+#define AWN_MONITOR_HEIGHT	"/apps/avant-window-navigator/monitor_height"
 
 #define BAR_PATH		"/apps/avant-window-navigator/bar"
 #define BAR_ROUNDED_CORNERS	"/apps/avant-window-navigator/bar/rounded_corners"	/* bool */
@@ -91,7 +93,9 @@ awn_gconf_new()
 	s->icon_theme = gtk_icon_theme_get_default();
 	/* general settings */
 	gconf_client_add_dir(client, AWN_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	//awn_load_int(client, AWN_MONITOR_N, &s->monitor_number, 0);
+	awn_load_bool(client, AWN_FORCE_MONITOR, &s->force_monitor, FALSE);
+	awn_load_int(client, AWN_MONITOR_WIDTH, &s->monitor_width, 1024);
+	awn_load_int(client, AWN_MONITOR_HEIGHT, &s->monitor_height, 768);
 	
 	/* Bar settings */
 	gconf_client_add_dir(client, BAR_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
@@ -351,8 +355,12 @@ screen_size_changed (GdkScreen *screen, AwnSettings *s)
 static void 
 load_monitor (AwnSettings *s)
 {
-	GdkScreen *screen = gdk_screen_get_default();
-	gdk_screen_get_monitor_geometry (screen, 0, &s->monitor);
-	g_signal_connect ( G_OBJECT(screen), "size-changed", G_CALLBACK(screen_size_changed), (gpointer)s);
-
+	if (s->force_monitor) {
+		s->monitor.width = s->monitor_width;
+		s->monitor.height = s->monitor_height;
+	} else{
+		GdkScreen *screen = gdk_screen_get_default();
+		gdk_screen_get_monitor_geometry (screen, 0, &s->monitor);
+		g_signal_connect ( G_OBJECT(screen), "size-changed", G_CALLBACK(screen_size_changed), (gpointer)s);
+	}
 }
