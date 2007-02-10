@@ -848,7 +848,7 @@ awn_task_win_enter_in (GtkWidget *window, GdkEventMotion *event, AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	AwnSettings *settings;
-	
+	g_return_if_fail(AWN_IS_TASK(task));
 	priv = AWN_TASK_GET_PRIVATE (task);
 	settings = priv->settings;
 	//priv->alpha = 0.2;
@@ -862,6 +862,9 @@ static gboolean
 awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *task)
 {
 	AwnTaskPrivate *priv;
+	
+	g_return_if_fail(AWN_IS_TASK(task));
+	
 	priv = AWN_TASK_GET_PRIVATE (task);
 	priv->alpha = 1.0;
 	gtk_widget_queue_draw(GTK_WIDGET(task));
