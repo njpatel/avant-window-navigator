@@ -215,24 +215,20 @@ _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 		app_name = wnck_application_get_name(
         			    wnck_window_get_application(term->window));
         	
-        	if (WNCK_IS_APPLICATION (wnck_app)) {
-        	
-        		wnck_app = wnck_window_get_application(term->window);
-			str = g_string_new (wnck_application_get_name(wnck_app));
-			str = g_string_ascii_down (str);
-		
-			_normalize (str->str);
-		
-			exec = g_strdup (awn_task_get_application(task));
-			_normalize (exec);
+        	wnck_app = wnck_window_get_application(term->window);
+		str = g_string_new (wnck_application_get_name(wnck_app));
+		str = g_string_ascii_down (str);
+		_normalize (str->str);
+		exec = g_strdup (awn_task_get_application(task));
+		_normalize (exec);
 			
-			if ( strcmp (exec, str->str) == 0 ) {
-				term->task = task;
-			}
+		if ( strcmp (exec, str->str) == 0 ) {
+			term->task = task;
+		}
 		
-			g_string_free (str, TRUE);
-			g_free(exec);
-		}	
+		g_string_free (str, TRUE);
+		g_free(exec);
+			
 		
 	}
 	/* try window name, kind of last resort :/ */

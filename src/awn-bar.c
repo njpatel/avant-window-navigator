@@ -245,13 +245,15 @@ render (cairo_t *cr, gint x_width, gint height)
 	render_rect (cr, x +0.5, (height/2)+0.5, width, (height/2)+1, 0);
 	cairo_stroke(cr);
 
-	/* seaprator */
+	/* separator */
 	if (settings->show_separator) {
 		double real_x = (settings->monitor.width-dest_width)/2.0;
+		if (current_width > dest_width )
+			real_x -= current_width - dest_width;
+		else
+			real_x += dest_width - current_width;
+		
 		cairo_set_line_width (cr, 1.0);
-		
-		
-		
 		
 		cairo_move_to (cr, real_x+separator-2.5, 50);
 		cairo_line_to (cr, real_x+separator-2.5, 100);
