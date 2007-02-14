@@ -1,3 +1,34 @@
+2007-02-14  Neil Jagdish Patel  <njpatel@gmail.com>
+
+	Ability to choose color of text background.
+
+	* avant-preferences/avant-preferences.in.py:
+	* avant-preferences/avant-preferences.py:
+	* avant-preferences/window.glade:
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-gconf.h:
+	* src/awn-task-manager.c: (_task_manager_window_has_launcher),
+	(awn_task_manager_get_windows):
+	* src/awn-task-manager.h:
+	* src/awn-task.c: (awn_task_win_enter_in),
+	(awn_task_win_enter_out), (awn_task_new), (awn_task_close):
+	* src/awn-title.c: (_rounded_rectangle), (_rounded_corners),
+	(render_bg), (render), (_position_window), (awn_title_show):
+	* src/main.c: (main):
+
+2007-02-14  Neil Jagdish Patel  <njpatel@gmail.com>
+
+	Re-enabled title background code. Quietened down AWN_IS_TASK messages. 
+
+	* src/awn-task-manager.c: (_task_manager_window_has_launcher),
+	(awn_task_manager_get_windows):
+	* src/awn-task-manager.h:
+	* src/awn-task.c: (awn_task_win_enter_in),
+	(awn_task_win_enter_out), (awn_task_new), (awn_task_close):
+	* src/awn-title.c: (_rounded_rectangle), (_rounded_corners),
+	(render_bg), (render), (_position_window), (awn_title_show):
+	* src/main.c: (main):
+
 2007-02-10  Neil Jagdish Patel  <njp@Fedora>
 
 	Some dual screen support. swapped auto detection with user specified dectection.

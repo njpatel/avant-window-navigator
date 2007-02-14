@@ -850,7 +850,9 @@ awn_task_win_enter_in (GtkWidget *window, GdkEventMotion *event, AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	AwnSettings *settings;
-	g_return_if_fail(AWN_IS_TASK(task));
+	//g_return_if_fail(AWN_IS_TASK(task));
+	if (!AWN_IS_TASK (task)) return;
+	
 	priv = AWN_TASK_GET_PRIVATE (task);
 	settings = priv->settings;
 	//priv->alpha = 0.2;
@@ -865,7 +867,8 @@ awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *tas
 {
 	AwnTaskPrivate *priv;
 	
-	g_return_if_fail(AWN_IS_TASK(task));
+	//g_return_if_fail(AWN_IS_TASK(task));
+	if (!AWN_IS_TASK (task)) return;
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
 	priv->alpha = 1.0;
@@ -1405,7 +1408,7 @@ awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings)
 	priv->settings = settings;
 	
 	/* This is code which I will add later for better hover effects over 
-	the bar*/
+	the bar */
 	priv->win_enter = g_signal_connect(G_OBJECT(settings->window), "motion-notify-event",
 			 G_CALLBACK(awn_task_win_enter_in), AWN_TASK(task));
 	
@@ -1427,8 +1430,8 @@ awn_task_close (AwnTask *task)
 	
 	g_signal_handler_disconnect ((gpointer)priv->window, priv->icon_changed);
 	g_signal_handler_disconnect ((gpointer)priv->window, priv->state_changed);
-	g_signal_handler_disconnect ((gpointer)priv->window, priv->win_enter);
-	g_signal_handler_disconnect ((gpointer)priv->window, priv->win_leave);
+	g_signal_handler_disconnect ((gpointer)priv->settings->window, priv->win_enter);
+	g_signal_handler_disconnect ((gpointer)priv->settings->window, priv->win_leave);
 	
 	priv->window = NULL;
 	priv->needs_attention = FALSE;

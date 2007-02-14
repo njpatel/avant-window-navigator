@@ -27,11 +27,12 @@
 
 
 #include "config.h"
+
 #include "awn-task-manager.h"
 
 #include "awn-title.h"
-
 #include "awn-task.h"
+
 
 
 #define AWN_TASK_MANAGER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), AWN_TYPE_TASK_MANAGER, AwnTaskManagerPrivate))
@@ -262,7 +263,8 @@ _task_manager_window_has_launcher (AwnTaskManager *task_manager,
 	GtkWidget *task = NULL;
 	AwnLauncherTerm term;
 	
-	g_return_val_if_fail (WNCK_IS_WINDOW(window), 0);
+	//g_return_if_fail(AWN_IS_TASK(task));
+	if (!WNCK_IS_WINDOW (window)) return NULL;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
@@ -672,6 +674,19 @@ awn_task_manager_update_separator_position (AwnTaskManager *task_manager)
 		x = new_x;
 	}
 }
+
+/********************* DBUS *********************************/
+
+gboolean
+awn_task_manager_get_windows (AwnTaskManager *task_manager, gdouble *number, GError **error)
+{
+	*number = 0.5;
+	return TRUE;
+}
+
+
+
+/********************* /DBUS   ********************************/
 
 /********************* awn_task_manager_new * *******************/
 

@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+*  Text has background! You can load up avant-preferences and set the background color. If you don't like it, just set the background color alpha to transparent. The drawing is a bit pixelated sometimes, but I am working on it!
+
 *  Dual screen support! Look under /apps/avant-window-navigator/ and set the monitor_width and monitor_height variables. Then set force_monitor to TRUE, and start up Awn. ATM this only works for the 1st screen. Single screen users should not be affected.
 
 *  Added a new mouse-over effect, it is extreme alpha software, so be careful! Activate it by starting up GConf editor, go to /apps/avant-window-navigator/app/ and set  'fade_effect' to TRUE. Don't report bugs! I know them already, however report new ideas!

@@ -50,10 +50,12 @@
 #define APP_ACTIVE_PNG		"/apps/avant-window-navigator/app/active_png" /*string*/
 #define APP_USE_PNG		"/apps/avant-window-navigator/app/use_png" /*bool*/
 #define APP_FADE_EFFECT		"/apps/avant-window-navigator/app/fade_effect" /*bool*/
+#define APP_ARROW_COLOR		"/apps/avant-window-navigator/app/arrow_color" /*bool*/
 
 #define TITLE_PATH		"/apps/avant-window-navigator/title"
 #define TITLE_TEXT_COLOR	"/apps/avant-window-navigator/title/text_color" /*color*/
 #define TITLE_SHADOW_COLOR	"/apps/avant-window-navigator/title/shadow_color" /*color*/
+#define TITLE_BACKGROUND	"/apps/avant-window-navigator/title/background" /*color*/
 #define TITLE_ITALIC		"/apps/avant-window-navigator/title/italic" /*bool*/
 #define TITLE_BOLD		"/apps/avant-window-navigator/title/bold" /*bool*/
 #define TITLE_FONT_SIZE		"/apps/avant-window-navigator/title/font_size" /*bool*/
@@ -133,6 +135,7 @@ awn_gconf_new()
 	gconf_client_add_dir(client, TITLE_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
 	awn_load_color(client, TITLE_TEXT_COLOR, &s->text_color, "FFFFFFFF");
 	awn_load_color(client, TITLE_SHADOW_COLOR, &s->shadow_color, "1B3B12E1");
+	awn_load_color(client, TITLE_BACKGROUND, &s->background, "000000AA");
 	awn_load_bool(client, TITLE_ITALIC, &s->italic, FALSE);
 	awn_load_bool(client, TITLE_BOLD, &s->bold, FALSE);
 	awn_load_float(client, TITLE_FONT_SIZE, &s->font_size, 15.0);

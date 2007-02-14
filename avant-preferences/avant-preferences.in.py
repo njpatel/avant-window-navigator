@@ -71,6 +71,7 @@ APP_ACTIVE_PNG		= "/apps/avant-window-navigator/app/active_png" 		#string
 TITLE_PATH		= "/apps/avant-window-navigator/title"
 TITLE_TEXT_COLOR	= "/apps/avant-window-navigator/title/text_color" 		#color
 TITLE_SHADOW_COLOR	= "/apps/avant-window-navigator/title/shadow_color" 		#color
+TITLE_BACKGROUND	= "/apps/avant-window-navigator/title/background" 		#color
 TITLE_ITALIC		= "/apps/avant-window-navigator/title/italic" 			#bool
 TITLE_BOLD		= "/apps/avant-window-navigator/title/bold" 			#bool
 TITLE_FONT_SIZE		= "/apps/avant-window-navigator/title/font_size" 		#float
@@ -152,6 +153,7 @@ class main:
 		
 		self.setup_color(TITLE_TEXT_COLOR, self.wTree.get_widget("textcolor"))
 		self.setup_color(TITLE_SHADOW_COLOR, self.wTree.get_widget("shadowcolor"))
+		self.setup_color(TITLE_BACKGROUND, self.wTree.get_widget("backgroundcolor"))
 		
 		self.setup_color(BAR_BORDER_COLOR, self.wTree.get_widget("mainbordercolor"))
 		self.setup_color(BAR_HILIGHT_COLOR, self.wTree.get_widget("internalbordercolor"))

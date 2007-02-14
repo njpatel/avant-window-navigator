@@ -31,8 +31,10 @@
 
 G_DEFINE_TYPE (AwnTitle, awn_title, GTK_TYPE_WINDOW)
 
+#define M_PI		3.14159265358979323846 
+
 static gint AWN_TITLE_DEFAULT_WIDTH		= 1024;
-static gint AWN_TITLE_DEFAULT_HEIGHT		= 40;
+static gint AWN_TITLE_DEFAULT_HEIGHT		= 50;
 
 static AwnSettings *settings = NULL;
 
@@ -125,14 +127,43 @@ _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* 
 }
 
 static void
+_rounded_rectangle (cairo_t *cr, double w, double h, double x, double y)
+{
+	const float RADIUS_CORNERS = 0.5;
+
+	cairo_move_to (cr, x+RADIUS_CORNERS, y);
+	cairo_line_to (cr, x+w-RADIUS_CORNERS, y);
+	cairo_move_to (cr, w+x, y+RADIUS_CORNERS);
+	cairo_line_to (cr, w+x, h+y-RADIUS_CORNERS);
+	cairo_move_to (cr, w+x-RADIUS_CORNERS, h+y);
+	cairo_line_to (cr, x+RADIUS_CORNERS, h+y);
+	cairo_move_to (cr, x, h+y-RADIUS_CORNERS);
+	cairo_line_to (cr, x, y+RADIUS_CORNERS);
+
+
+}
+
+static void
+_rounded_corners (cairo_t *cr, double w, double h, double x, double y)
+{
+	double radius = 5;
+	cairo_move_to (cr, x+radius, y);
+	cairo_arc (cr, x+w-radius, y+radius, radius, M_PI * 1.5, M_PI * 2);
+	cairo_arc (cr, x+w-radius, y+h-radius, radius, 0, M_PI * 0.5);
+	cairo_arc (cr, x+radius,   y+h-radius, radius, M_PI * 0.5, M_PI);
+	cairo_arc (cr, x+radius,   y+radius,   radius, M_PI, M_PI * 1.5);
+
+}
+
+static void
 render_bg (cairo_t *cr, double width, double height, double x, double y )
 {
-		/* a custom shape, that could be wrapped in a function */
+	/* a custom shape, that could be wrapped in a function */
 	double x0  = x +0.5,   /*< parameters like cairo_rectangle */	
 	y0	   = y +0.5,
 	rect_width  = width,
 	rect_height = height,
-	radius = height;   /*< and an approximate curvature radius */
+	radius = height/2.0;   /*< and an approximate curvature radius */
 
 	double x1,y1;
 
@@ -193,11 +224,23 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 	if (x <0 )
 		x = 0;
 	
-	/* background 
-	cairo_set_source_rgba (cr, 0.0f, 0.0f, 0.0f, 0.3f);
-	render_bg (cr, (double) extents.width+12, (double) extents.height+12, 
-		       (double) x-6, (double) y-extents.height-5 );
-	*/
+	/* background */
+	if (strlen (utf8) < 2)
+		cairo_set_source_rgba (cr, 0.0f, 0.0f, 0.0f, 0.0f);
+	else 
+		cairo_set_source_rgba (cr, settings->background.red, 
+					   settings->background.green, 
+					   settings->background.blue,
+					   settings->background.alpha);
+	
+	_rounded_rectangle (cr, (double) extents.width+19, (double) extents.height+19, 
+		       (double) x-9.5, (double) y-extents.height-9.5 );
+	
+	_rounded_corners (cr, (double) extents.width+20, (double) extents.height+20, 
+		       (double) x-9.5, (double) y-extents.height-9.5);
+	
+	cairo_fill (cr);	      
+	
 	/* shadow */
 	cairo_set_source_rgba (cr, settings->shadow_color.red, 
 				   settings->shadow_color.green, 
@@ -371,7 +414,7 @@ _position_window (GtkWidget *window)
 	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
 	
 	x = (int) ((settings->monitor.width - ww) / 2);
-	y = (int) (settings->monitor.height-90);
+	y = (int) (settings->monitor.height-100);
 	
 	gtk_window_move(GTK_WINDOW(window), x, y);
 	
@@ -437,7 +480,6 @@ awn_title_show (AwnTitle *title, const char *name, gint x, gint y)
 	name = title->text;
 	dest_x = x;
 	
-	//g_timeout_add(60, (GSourceFunc*)show_text, (gpointer)title);
 	title->x_pos = x;
 	_on_expose(GTK_WIDGET(title), NULL, title);
 }

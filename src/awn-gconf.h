@@ -70,11 +70,13 @@ typedef struct {
 	gboolean use_png;
 	gchar *active_png;
 	
+	AwnColor arrow_color;
 	gboolean fade_effect;
 	
 	/* Title settings */
 	AwnColor text_color;
 	AwnColor shadow_color;
+	AwnColor background;
 	gboolean italic;
 	gboolean bold;
 	gfloat font_size;

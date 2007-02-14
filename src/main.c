@@ -32,7 +32,6 @@
 
 #include "awn-task.h"
 
-
 static gboolean expose (GtkWidget *widget, GdkEventExpose *event, GtkWindow *window);
 static gboolean drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
                                                      gint            x,
@@ -53,6 +52,7 @@ main (int argc, char* argv[])
 	GtkWidget *task_manager = NULL;
 	GtkWidget *lab = NULL;
 	GtkWidget *eb = NULL;
+	
 	
 	gtk_init (&argc, &argv);
 	gnome_vfs_init ();
@@ -96,6 +96,9 @@ main (int argc, char* argv[])
 			 G_CALLBACK(leave_notify_event), (gpointer)settings->window);
 	g_signal_connect(G_OBJECT(settings->window), "button-press-event",
 			 G_CALLBACK(button_press_event), (gpointer)settings->window);
+	
+	
+	
 	gtk_main ();
 }
 

@@ -57,6 +57,8 @@ void awn_task_manager_remove_launcher (AwnTaskManager *task_manager, gpointer ta
 
 void awn_task_manager_remove_task     (AwnTaskManager *task_manager, gpointer task);
 
+gboolean awn_task_manager_get_windows (AwnTaskManager *task_manager, gdouble *number, GError **error);
+
 G_END_DECLS
 
 #endif
