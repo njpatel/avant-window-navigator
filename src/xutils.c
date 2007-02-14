@@ -2399,3 +2399,55 @@ _wnck_read_icons_ (Window         xwindow,
   return FALSE;
 }
 
+
+enum {
+	STRUT_LEFT = 0,
+	STRUT_RIGHT = 1,
+	STRUT_TOP = 2,
+	STRUT_BOTTOM = 3,
+	STRUT_LEFT_START = 4,
+	STRUT_LEFT_END = 5,
+	STRUT_RIGHT_START = 6,
+	STRUT_RIGHT_END = 7,
+	STRUT_TOP_START = 8,
+	STRUT_TOP_END = 9,
+	STRUT_BOTTOM_START = 10,
+	STRUT_BOTTOM_END = 11
+};
+
+static Atom net_wm_strut              = 0;
+static Atom net_wm_strut_partial      = 0;
+
+void
+xutils_set_strut (GdkWindow        *gdk_window,
+			guint32           strut,
+			guint32           strut_start,
+			guint32           strut_end)
+ {
+	Display *display;
+	Window   window;
+	gulong   struts [12] = { 0, };
+
+	g_return_if_fail (GDK_IS_WINDOW (gdk_window));
+
+	display = GDK_WINDOW_XDISPLAY (gdk_window);
+	window  = GDK_WINDOW_XWINDOW (gdk_window);
+
+	if (net_wm_strut == 0)
+		net_wm_strut = XInternAtom (display, "_NET_WM_STRUT", False);
+	if (net_wm_strut_partial == 0)
+		net_wm_strut_partial = XInternAtom (display, "_NET_WM_STRUT_PARTIAL", False);
+
+	struts [STRUT_BOTTOM] = strut;
+	struts [STRUT_BOTTOM_START] = strut_start;
+	struts [STRUT_BOTTOM_END] = strut_end;
+	
+	gdk_error_trap_push ();
+	XChangeProperty (display, window, net_wm_strut,
+			 XA_CARDINAL, 32, PropModeReplace,
+			 (guchar *) &struts, 4);
+	XChangeProperty (display, window, net_wm_strut_partial,
+			 XA_CARDINAL, 32, PropModeReplace,
+			 (guchar *) &struts, 12);
+	gdk_error_trap_pop ();
+}

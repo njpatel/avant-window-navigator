@@ -77,6 +77,20 @@ awn_x_get_icon (WnckWindow *window, gint width, gint height)
 
 }
 
+void 
+awn_x_set_strut (GtkWindow *window)
+{
+	int x = 0;
+	int y = 0;
+	int width = 0;
+	int height = 0;
+	
+	gtk_window_get_size (window, &width, &height);
+	gtk_window_get_position (window, &x, &y);
+	
+	xutils_set_strut ((GTK_WIDGET(window)->window), 50, x, x+width);
+
+}
 
 /*
 

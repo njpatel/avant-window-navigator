@@ -38,10 +38,9 @@ static gboolean drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
                                                      gint            y,
                                                      guint           time,
                                                      GtkWidget *win);
-static gboolean leave_notify_event (GtkWidget *window, GdkEventCrossing *event, 
-					GtkWidget *win);
-static gboolean
-button_press_event (GtkWidget *window, GdkEventButton *event);
+static gboolean enter_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings);
+static gboolean leave_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings);
+static gboolean button_press_event (GtkWidget *window, GdkEventButton *event);
                                                     
 int 
 main (int argc, char* argv[])
@@ -92,10 +91,14 @@ main (int argc, char* argv[])
 	
 	g_signal_connect (G_OBJECT(settings->window), "drag-motion",
 	                  G_CALLBACK(drag_motion), (gpointer)settings->window);
+	
+	g_signal_connect(G_OBJECT(settings->window), "enter-notify-event",
+			 G_CALLBACK(enter_notify_event), (gpointer)settings);	                  
 	g_signal_connect(G_OBJECT(settings->window), "leave-notify-event",
-			 G_CALLBACK(leave_notify_event), (gpointer)settings->window);
+			 G_CALLBACK(leave_notify_event), (gpointer)settings);
+	
 	g_signal_connect(G_OBJECT(settings->window), "button-press-event",
-			 G_CALLBACK(button_press_event), (gpointer)settings->window);
+			 G_CALLBACK(button_press_event), (gpointer)settings);
 	
 	
 	
@@ -131,16 +134,22 @@ drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
                                                      guint           time,
                                                      GtkWidget       *window)
 {
-	//g_print("Drag Motion\n");
 	mouse_over_window = TRUE;
+	return;
+}
+
+static gboolean HIDDEN = FALSE;
+static gboolean 
+enter_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings)
+{
+	//g_print("Enter\n");
 	return FALSE;
 }
 
 static gboolean 
-leave_notify_event (GtkWidget *window, GdkEventCrossing *event, GtkWidget *win)
+leave_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings)
 {
-	//g_print("Drag Ended\n");
-	mouse_over_window = FALSE;
+	//g_print("Leave\n");
 	return FALSE;
 }
 

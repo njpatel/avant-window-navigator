@@ -221,6 +221,11 @@ gboolean _wnck_desktop_layout_manager_process_event (XEvent *xev);
 
 void _wnck_stock_icons_init (void);
 
+void xutils_set_strut (GdkWindow        *gdk_window,
+			guint32           strut,
+			guint32           strut_start,
+			guint32           strut_end);
+
 G_END_DECLS
 
 #endif /* WNCK_XUTILS_H */

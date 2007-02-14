@@ -98,9 +98,10 @@ struct _AwnTaskPrivate
 	AwnTaskEffect current_effect;
 	gint effect_direction;
 	gint count;
+	GdkPixbuf *pixbufs[15];
 	
-	gint x_offset;
-	gint y_offset;
+	double x_offset;
+	double y_offset;
 	gint width;
 	gint height;
 	double rotate_degrees;
@@ -180,8 +181,9 @@ awn_task_init (AwnTask *task)
 	priv->effect_lock = FALSE;
 	priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 	priv->current_effect = AWN_TASK_EFFECT_NONE;
-	priv->x_offset = 0;
-	priv->y_offset = 0;
+	priv->pixbufs[0] = NULL;
+	priv->x_offset = 0.0;
+	priv->y_offset = 0.0;
 	priv->width = 0;
 	priv->height = 0;
 	priv->rotate_degrees = 0.0;
@@ -401,6 +403,178 @@ _task_hover_effect2 (AwnTask *task)
 				priv->current_effect = AWN_TASK_EFFECT_NONE;
 				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 				priv->alpha = 1.0;
+			}
+		}
+	}
+	
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+	
+	
+	if (priv->effect_lock == FALSE)
+		return FALSE;
+	
+	return TRUE;
+}
+GdkPixbuf * 
+icon_loader_get_icon_spec( const char *name, int width, int height )
+{
+        GdkPixbuf *icon = NULL;
+        GdkScreen *screen = gdk_screen_get_default();
+        GtkIconTheme *theme = NULL;
+        theme = gtk_icon_theme_get_for_screen (screen);
+        
+        if (!name)
+                return NULL;
+        
+        GError *error = NULL;
+          
+        /* first we try gtkicontheme */
+        if (theme)
+        	icon = gtk_icon_theme_load_icon( theme, name, width, GTK_ICON_LOOKUP_FORCE_SVG, &error);
+        else {
+        	g_print("Icon theme could not be loaded");
+        	error = 1;  
+        }
+        if (error) {
+                /* lets try and load directly from file */
+                error = NULL;
+                GString *str;
+                
+                if ( strstr(name, "/") != NULL )
+                        str = g_string_new(name);
+                else {
+                        str = g_string_new("/usr/share/pixmaps/");
+                        g_string_append(str, name);
+                }
+                
+                icon = gdk_pixbuf_new_from_file_at_scale(str->str, 
+                                                         width,
+                                                         height,
+                                                         TRUE, &error);
+                g_string_free(str, TRUE);
+        }
+        
+        if (icon == NULL) {
+                /* lets try and load directly from file */
+                error = NULL;
+                GString *str;
+                
+                if ( strstr(name, "/") != NULL )
+                        str = g_string_new(name);
+                else {
+                        str = g_string_new("/usr/local/share/pixmaps/");
+                        g_string_append(str, name);
+                }
+                
+                icon = gdk_pixbuf_new_from_file_at_scale(str->str, 
+                                                         width,
+                                                         -1,
+                                                         TRUE, &error);
+                g_string_free(str, TRUE);
+        }
+        
+        if (icon == NULL) {
+                error = NULL;
+                GString *str;
+                
+                str = g_string_new("/usr/share/");
+                g_string_append(str, name);
+                g_string_erase(str, (str->len - 4), -1 );
+                g_string_append(str, "/");
+		g_string_append(str, "pixmaps/");
+		g_string_append(str, name);
+		
+		icon = gdk_pixbuf_new_from_file_at_scale
+       		                             (str->str,
+                                             width,
+                                             -1,
+                                             TRUE,
+                                             &error);
+                g_string_free(str, TRUE);
+        }
+        
+        return icon;
+}
+
+static void
+_load_pixbufs (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+
+	if (!AWN_IS_TASK (task)) return;
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	int i = 0;
+	for (i = 0; i < 15; i++) {
+		
+		if (priv->is_launcher) {
+			char *icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
+			priv->pixbufs[i] = icon_loader_get_icon_spec (icon_name, 48+i, 48+i) ;
+		} else {
+			priv->pixbufs[i] = gdk_pixbuf_copy ( awn_x_get_icon (priv->window, 48+i, 48+i) );
+		}
+	}
+}
+
+static gboolean
+_task_hover_effect3 (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+
+	if (!AWN_IS_TASK (task)) return FALSE;
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	static gint max = 10;	
+	
+
+	if (priv->effect_lock) {
+		if ( priv->current_effect != AWN_TASK_EFFECT_HOVER)
+			return TRUE;
+	} else {
+		priv->effect_lock = TRUE;
+		priv->current_effect = AWN_TASK_EFFECT_HOVER;
+		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+		priv->y_offset = 0;
+		priv->count = 0;
+	}
+	
+	if (priv->pixbufs[0] == NULL)
+		_load_pixbufs (task);
+	
+	if (priv->hover && (priv->count == 13) )
+		return TRUE;
+	
+	if (priv->effect_direction) {
+		priv->count++;
+		priv->y_offset +=0.5;
+		priv->icon = priv->pixbufs[priv->count];
+		priv->icon_width = gdk_pixbuf_get_width(priv->icon);
+		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
+		
+		//gtk_widget_set_size_request (GTK_WIDGET(task), priv->icon_width + 12, 100);
+		
+		if (priv->count >= 14) 
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
+		
+	} else {
+		priv->count--;
+		priv->y_offset -=0.5;
+		priv->icon = priv->pixbufs[priv->count];
+		priv->icon_width = gdk_pixbuf_get_width(priv->icon);
+		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
+		//gtk_widget_set_size_request (GTK_WIDGET(task), priv->icon_width + 12, 100);
+		if (priv->count < 1) {
+			/* finished bouncing, back to normal */
+			if (priv->hover) 
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+			else {
+				priv->effect_lock = FALSE;
+				priv->current_effect = AWN_TASK_EFFECT_NONE;
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+				priv->count = 0;
+				priv->y_offset = 0;
+				//gtk_widget_set_size_request (GTK_WIDGET(task), 60, 100);
 			}
 		}
 	}
@@ -1125,7 +1299,7 @@ awn_task_set_launcher (AwnTask *task, GnomeDesktopItem *item)
 	if (!icon_name)
 		return FALSE;
 	priv->item = item;
-	priv->icon = gdk_pixbuf_copy (icon_loader_get_icon(icon_name));
+	priv->icon = icon_loader_get_icon(icon_name);
         
 	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);

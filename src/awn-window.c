@@ -30,6 +30,8 @@
 #include <X11/extensions/shape.h>
 #include <gdk/gdkx.h>
 
+#include "awn-x.h"
+
 
 G_DEFINE_TYPE (AwnWindow, awn_window, GTK_TYPE_WINDOW)
 
@@ -83,6 +85,7 @@ awn_window_init( AwnWindow *window )
 	
 	
 	gtk_drag_dest_add_uri_targets (GTK_WIDGET (window));
+	awn_x_set_strut (GTK_WINDOW(window));
 }
 
 static void
@@ -299,7 +302,7 @@ _position_window (GtkWidget *window)
 	
 	x_pos = (int) ((settings->monitor.width - ww) / 2);
 	y_pos = (int) (settings->monitor.height-wh);
-	
+	awn_x_set_strut (GTK_WINDOW(window));	
 	if (stop_position) {
 		current_pos = x_pos;
 		gtk_window_move(GTK_WINDOW(window), x_pos, y_pos);

@@ -35,4 +35,6 @@ GdkPixbuf* awn_x_get_icon (WnckWindow *window, gint width, gint height);
 
 void awn_x_set_icon_geometry (gulong xwindow, int x, int y, int width, int height);
 
+void awn_x_set_strut (GtkWindow *window);
+
 #endif

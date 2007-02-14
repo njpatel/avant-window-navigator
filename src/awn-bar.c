@@ -249,9 +249,9 @@ render (cairo_t *cr, gint x_width, gint height)
 	if (settings->show_separator) {
 		double real_x = (settings->monitor.width-dest_width)/2.0;
 		if (current_width > dest_width )
-			real_x -= current_width - dest_width;
+			real_x = x + current_width - dest_width;
 		else
-			real_x += dest_width - current_width;
+			real_x = x + dest_width - current_width;
 		
 		cairo_set_line_width (cr, 1.0);
 		
