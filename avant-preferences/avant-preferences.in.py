@@ -67,6 +67,9 @@ WINMAN_SHOW_ALL_WINS	= "/apps/avant-window-navigator/window_manager/show_all_win
 
 APP_PATH		= "/apps/avant-window-navigator/app"
 APP_ACTIVE_PNG		= "/apps/avant-window-navigator/app/active_png" 		#string
+APP_ARROW_COLOR		= "/apps/avant-window-navigator/app/arrow_color" 		#color
+APP_TASKS_H_ARROWS	= "/apps/avant-window-navigator/app/tasks_have_arrows" 		#bool
+
 
 TITLE_PATH		= "/apps/avant-window-navigator/title"
 TITLE_TEXT_COLOR	= "/apps/avant-window-navigator/title/text_color" 		#color
@@ -143,6 +146,7 @@ class main:
 		self.setup_bool (TITLE_ITALIC, self.wTree.get_widget ("italiccheck"))
 		self.setup_bool (TITLE_BOLD, self.wTree.get_widget("boldcheck"))		
 		self.setup_bool (BAR_SHOW_SEPARATOR, self.wTree.get_widget("separatorcheck"))
+		self.setup_bool (APP_TASKS_H_ARROWS, self.wTree.get_widget("arrowcheck"))
 		
 		self.setup_chooser(APP_ACTIVE_PNG, self.wTree.get_widget("activefilechooser"))
 		self.setup_chooser(BAR_PATTERN_URI, self.wTree.get_widget("patternchooserbutton"))
@@ -165,6 +169,7 @@ class main:
 		self.setup_color(BAR_GLASS_HISTEP_1, self.wTree.get_widget("highlightcolor2"))
 		
 		self.setup_color(BAR_SEP_COLOR, self.wTree.get_widget("sepcolor"))
+		self.setup_color(APP_ARROW_COLOR, self.wTree.get_widget("arrowcolor"))
 
 	def refresh(self, button):
 		w = gtk.Window()

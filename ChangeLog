@@ -1,5 +1,16 @@
 2007-02-14  Neil Jagdish Patel  <njpatel@gmail.com>
 
+	Added choice for arrow type (Awn or the "dock"), and colour of arrow.
+
+	* avant-preferences/avant-preferences.in.py:
+	* avant-preferences/window.glade:
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-gconf.h:
+	* src/awn-task-manager.c: (_find_launcher):
+	* src/awn-task.c: (_task_hover_effect), (draw):
+
+2007-02-14  Neil Jagdish Patel  <njpatel@gmail.com>
+
 	Ability to choose color of text background.
 
 	* avant-preferences/avant-preferences.in.py:

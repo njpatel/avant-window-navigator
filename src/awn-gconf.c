@@ -50,7 +50,8 @@
 #define APP_ACTIVE_PNG		"/apps/avant-window-navigator/app/active_png" /*string*/
 #define APP_USE_PNG		"/apps/avant-window-navigator/app/use_png" /*bool*/
 #define APP_FADE_EFFECT		"/apps/avant-window-navigator/app/fade_effect" /*bool*/
-#define APP_ARROW_COLOR		"/apps/avant-window-navigator/app/arrow_color" /*bool*/
+#define APP_ARROW_COLOR		"/apps/avant-window-navigator/app/arrow_color" /*color*/
+#define APP_TASKS_H_ARROWS	"/apps/avant-window-navigator/app/tasks_have_arrows" /*bool*/
 
 #define TITLE_PATH		"/apps/avant-window-navigator/title"
 #define TITLE_TEXT_COLOR	"/apps/avant-window-navigator/title/text_color" /*color*/
@@ -130,6 +131,8 @@ awn_gconf_new()
 	awn_load_string(client, APP_ACTIVE_PNG, &s->active_png, "~");
 	awn_load_bool(client, APP_USE_PNG, &s->use_png, FALSE);
 	awn_load_bool(client, APP_FADE_EFFECT, &s->fade_effect, FALSE);
+	awn_load_color(client, APP_ARROW_COLOR, &s->arrow_color, "FFFFFF66");
+	awn_load_bool(client, APP_TASKS_H_ARROWS, &s->tasks_have_arrows, FALSE);
 	
 	/* Title settings */
 	gconf_client_add_dir(client, TITLE_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);

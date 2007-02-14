@@ -71,6 +71,7 @@ typedef struct {
 	gchar *active_png;
 	
 	AwnColor arrow_color;
+	gboolean tasks_have_arrows;
 	gboolean fade_effect;
 	
 	/* Title settings */

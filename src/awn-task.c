@@ -314,8 +314,8 @@ _task_hover_effect (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 
-	g_return_val_if_fail (AWN_IS_TASK(task), 0);
-
+	if (!AWN_IS_TASK (task)) return FALSE;
+	
 	priv = AWN_TASK_GET_PRIVATE (task);
 	static gint max = 10;	
 	
@@ -626,17 +626,27 @@ draw (GtkWidget *task, cairo_t *cr)
 		else
 			cairo_paint_with_alpha(cr, priv->alpha);
 	}
-	if (priv->is_launcher && (priv->window == NULL)) {
-		
-		double x1, y1;
-		x1 = width/2.0;
-		cairo_set_source_rgba(cr, 1, 1, 1, 0.3);
-		cairo_move_to(cr, x1-5, 100);
-		cairo_line_to(cr, x1, 95);
-		cairo_line_to(cr, x1+5, 100);
-		cairo_close_path (cr);
+	
+	/* arrows */
+	double x1, y1;
+	x1 = width/2.0;
+	cairo_set_source_rgba (cr, settings->arrow_color.red, 
+				   settings->arrow_color.green, 
+				   settings->arrow_color.blue,
+				   settings->arrow_color.alpha);
+	cairo_move_to(cr, x1-5, 100);
+	cairo_line_to(cr, x1, 95);
+	cairo_line_to(cr, x1+5, 100);
+	cairo_close_path (cr);
+
+	if (settings->tasks_have_arrows) {
+		if (priv->window != NULL) 
+			cairo_fill(cr);				
+	
+	} else if (priv->is_launcher && (priv->window == NULL)) 
 		cairo_fill(cr);
-	}
+	else
+		;
 }
 
 static gboolean
