@@ -10,7 +10,7 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
-* Sets _NET_WM_STRUT & _NEW_WM_STRUT_PARTIAL (that means that windows don't go under Awn when they are maximised ;)
+* Optionally sets _NET_WM_STRUT & _NEW_WM_STRUT_PARTIAL (that means that windows don't go under Awn when they are maximised ;) If you want to activate this behaviour, set '/apps/avant-window-navigator/panel_mode' to TRUE. If you switch it off again, you'll have to restart Awn to see the changes.
 
 *  Made the separator slightly smoother, it still needs work!
 

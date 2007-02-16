@@ -302,7 +302,10 @@ _position_window (GtkWidget *window)
 	
 	x_pos = (int) ((settings->monitor.width - ww) / 2);
 	y_pos = (int) (settings->monitor.height-wh);
-	awn_x_set_strut (GTK_WINDOW(window));	
+	
+	if (settings->panel_mode)
+		awn_x_set_strut (GTK_WINDOW(window));	
+	
 	if (stop_position) {
 		current_pos = x_pos;
 		gtk_window_move(GTK_WINDOW(window), x_pos, y_pos);

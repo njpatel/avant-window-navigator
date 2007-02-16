@@ -43,6 +43,7 @@ typedef struct {
 	gboolean force_monitor;
 	int monitor_height;
 	int monitor_width;
+	gboolean panel_mode;
 	
 	/* Bar appearance settings */
 	gboolean rounded_corners;
