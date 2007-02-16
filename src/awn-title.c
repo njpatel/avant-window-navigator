@@ -80,6 +80,8 @@ awn_title_new( AwnSettings *sets )
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);
         
+        
+        
         gtk_window_resize (GTK_WIDGET(this), settings->monitor.width, AWN_TITLE_DEFAULT_HEIGHT);
         
         g_signal_connect (G_OBJECT (this),"destroy",
@@ -479,6 +481,11 @@ awn_title_show (AwnTitle *title, const char *name, gint x, gint y)
 	title->text = g_strdup(name);
 	name = title->text;
 	dest_x = x;
+	
+	if (strlen (name) > 1) {
+		gtk_window_set_keep_above (GTK_WINDOW (title), TRUE);
+	} else
+		gtk_window_set_keep_above (GTK_WINDOW (title), FALSE);
 	
 	title->x_pos = x;
 	_on_expose(GTK_WIDGET(title), NULL, title);

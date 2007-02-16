@@ -1,3 +1,26 @@
+2007-02-16  Neil Jagdish Patel  <njp@Fedora>
+
+	Merged "keep_above" patch by Vickor Gal. Title should stay above other windows now.
+
+	* README:
+	* src/awn-title.c: (awn_title_new), (awn_title_show):
+
+2007-02-14  Neil Jagdish Patel  <njpatel@gmail.com>
+
+	Sets _NET_WM_STRUT & _NEW_WM_STRUT_PARTIAL so maximised windows dont go underneath it!
+
+	* README:
+	* src/awn-bar.c: (render):
+	* src/awn-task.c: (awn_task_init), (icon_loader_get_icon_spec),
+	(_load_pixbufs), (_task_hover_effect3), (awn_task_set_launcher):
+	* src/awn-window.c: (awn_window_init), (_position_window):
+	* src/awn-x.c: (awn_x_set_strut):
+	* src/awn-x.h:
+	* src/main.c: (main), (drag_motion), (enter_notify_event),
+	(leave_notify_event):
+	* src/xutils.c: (xutils_set_strut):
+	* src/xutils.h:
+
 2007-02-14  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	Added choice for arrow type (Awn or the "dock"), and colour of arrow.

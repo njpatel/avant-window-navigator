@@ -10,6 +10,10 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+* Sets _NET_WM_STRUT & _NEW_WM_STRUT_PARTIAL (that means that windows don't go under Awn when they are maximised ;)
+
+*  Made the separator slightly smoother, it still needs work!
+
 *  You can now choose between Awn style arrows, or the "dock" style arrows, and also the arrow colour. Ammended avant-preferences to match.
 
 *  Text has background! You can load up avant-preferences and set the background color. If you don't like it, just set the background color alpha to transparent. The drawing is a bit pixelated sometimes, but I am working on it!
