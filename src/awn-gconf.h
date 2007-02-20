@@ -75,6 +75,8 @@ typedef struct {
 	gboolean tasks_have_arrows;
 	gboolean fade_effect;
 	
+	gboolean name_change_notify;
+	
 	/* Title settings */
 	AwnColor text_color;
 	AwnColor shadow_color;

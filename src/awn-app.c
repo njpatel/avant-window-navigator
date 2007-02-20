@@ -149,8 +149,7 @@ on_button_press_event  (GtkWidget *widget, GdkEventButton *event, WnckWindow *wi
 				wnck_window_minimize( win );
 				return TRUE;
 			}
-			wnck_window_activate( win, 
-						gtk_get_current_event_time() );
+			wnck_window_activate( win, event->time );
 			break;
 		
 		case 3:

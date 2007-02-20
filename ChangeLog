@@ -1,3 +1,16 @@
+2007-02-20  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+
+	Added patche by trevi55 to have notifcation on window title change.
+
+	* src/awn-app.c: (on_button_press_event):
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-gconf.h:
+	* src/awn-task.c: (awn_task_init), (launch_launched_effect),
+	(icon_loader_get_icon_spec), (_load_pixbufs),
+	(launch_hover_effect), (_task_change_name_effect),
+	(_launch_name_change_effect), (_task_wnck_name_hide),
+	(_task_wnck_name_changed), (awn_task_set_window):
+
 2007-02-16  Neil Jagdish Patel  <njp@Fedora>
 
 	Optionally can behave like a panel (windows cannot maximise over/under the bar).

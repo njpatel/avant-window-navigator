@@ -61,7 +61,8 @@ typedef enum {
 	AWN_TASK_EFFECT_OPENING,
 	AWN_TASK_EFFECT_HOVER,
 	AWN_TASK_EFFECT_ATTENTION,
-	AWN_TASK_EFFECT_CLOSING
+	AWN_TASK_EFFECT_CLOSING,
+	AWN_TASK_EFFECT_CHANGE_NAME
 
 } AwnTaskEffect;
 
@@ -112,6 +113,7 @@ struct _AwnTaskPrivate
 	/* signal handler ID's, for clean close */
 	gulong icon_changed;
 	gulong state_changed;
+	gulong name_changed; // 3v1n0: added notification on name changing
 	gulong win_enter;
 	gulong win_leave;
 };
@@ -188,6 +190,7 @@ awn_task_init (AwnTask *task)
 	priv->height = 0;
 	priv->rotate_degrees = 0.0;
 	priv->alpha = 1.0;
+	priv->name_changed = FALSE;
 }
 
 
@@ -308,7 +311,10 @@ _task_launched_effect (AwnTask *task)
 static void
 launch_launched_effect (AwnTask *task )
 {
-	g_timeout_add(30, (GSourceFunc)_task_launched_effect, (gpointer)task);
+	static guint tag = NULL; // 3v1n0: fix animation on multiple clicks
+	if (tag)
+		g_source_remove(tag);
+	tag = g_timeout_add(30, (GSourceFunc)_task_launched_effect, (gpointer)task);
 }
 
 static gboolean
@@ -427,15 +433,24 @@ icon_loader_get_icon_spec( const char *name, int width, int height )
                 return NULL;
         
         GError *error = NULL;
-          
+        
+        GtkIconInfo *icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (),
+                                name, width, 0);
+	if (icon_info != NULL) {
+		icon = gdk_pixbuf_new_from_file_at_size (
+				      gtk_icon_info_get_filename (icon_info),
+                                      width, -1, &error);
+		gtk_icon_info_free(icon_info);
+	}
+	  
         /* first we try gtkicontheme */
-        if (theme)
+        if (icon == NULL)
         	icon = gtk_icon_theme_load_icon( theme, name, width, GTK_ICON_LOOKUP_FORCE_SVG, &error);
         else {
         	g_print("Icon theme could not be loaded");
         	error = 1;  
         }
-        if (error) {
+        if (icon == NULL) {
                 /* lets try and load directly from file */
                 error = NULL;
                 GString *str;
@@ -512,7 +527,7 @@ _load_pixbufs (AwnTask *task)
 			char *icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
 			priv->pixbufs[i] = icon_loader_get_icon_spec (icon_name, 48+i, 48+i) ;
 		} else {
-			priv->pixbufs[i] = gdk_pixbuf_copy ( awn_x_get_icon (priv->window, 48+i, 48+i) );
+			priv->pixbufs[i] = awn_x_get_icon (priv->window, 48+i, 48+i);
 		}
 	}
 }
@@ -591,7 +606,7 @@ _task_hover_effect3 (AwnTask *task)
 static void
 launch_hover_effect (AwnTask *task )
 {
-	g_timeout_add(25, (GSourceFunc)_task_hover_effect, (gpointer)task);
+	g_timeout_add(25, (GSourceFunc)_task_hover_effect3, (gpointer)task);
 }
 
 static gboolean
@@ -753,6 +768,64 @@ _task_destroy (AwnTask *task)
 	
 }
 
+static gboolean				// 3v1n0: Change Name (title) effect
+_task_change_name_effect (AwnTask *task)	// Based on notification effect
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	static gint max = 14;	
+
+	if (priv->effect_lock) {
+		if ( priv->current_effect != AWN_TASK_EFFECT_CHANGE_NAME)
+			return TRUE;
+	} else {
+		priv->effect_lock = TRUE;
+		priv->current_effect = AWN_TASK_EFFECT_CHANGE_NAME;
+		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+		priv->y_offset = 0;
+		priv->rotate_degrees = 0.0;
+	}
+	
+	if (priv->effect_direction) {
+		priv->y_offset +=1;
+		
+		if (priv->y_offset >= max) 
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
+	
+	} else {
+		priv->y_offset-=1;
+		if (priv->y_offset < 1) {
+			/* finished bouncing, back to normal */
+			if (priv->name_changed) 
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+			else {
+				priv->effect_lock = FALSE;
+				priv->current_effect = AWN_TASK_EFFECT_NONE;
+				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
+				priv->y_offset = 0;
+				priv->rotate_degrees = 0.0;
+			}
+		}
+	}
+		
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+	
+	
+	if (priv->effect_lock == FALSE)
+		return FALSE;
+	
+	return TRUE;
+}
+
+static gboolean
+_launch_name_change_effect (AwnTask *task)
+{
+	//static guint tag = NULL; // 3v1n0: fix animation on multiple clicks
+	//if (tag)
+	//	g_source_remove(tag);
+	//tag = 
+	g_timeout_add(30, (GSourceFunc)_task_change_name_effect, (gpointer)task);
+}
 
 /**********************  CALLBACKS  **********************/
 
@@ -1124,6 +1197,49 @@ _task_wnck_icon_changed (WnckWindow *window, AwnTask *task)
         gtk_widget_queue_draw(GTK_WIDGET(task));
 }
 
+static gboolean
+_task_wnck_name_hide (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	awn_title_show(AWN_TITLE (priv->title), " ", 20, 0);
+	priv->name_changed = FALSE;
+	//return FALSE;
+}
+
+static void
+_task_wnck_name_changed (WnckWindow *window, AwnTask *task)
+{
+	static guint tag = NULL;
+        AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+
+	if (!priv->window)
+		return;
+	if (!priv->settings->name_change_notify) {
+		return;
+	}
+	//g_print("Name changed on window '%s'\n",
+        //   wnck_window_get_name (priv->window));
+
+	if (!wnck_window_is_active(priv->window)) {
+		gint i, x, y;
+		gdk_window_get_origin (GTK_WIDGET(task)->window, &x, &y);
+
+		if (!priv->needs_attention) {
+			priv->name_changed = TRUE;
+			_launch_name_change_effect(task);
+		}
+		
+		awn_title_show (AWN_TITLE (priv->title), awn_task_get_name(AWN_TASK(task)), x+30, 0);
+		
+		if (tag)
+			g_source_remove(tag);
+		tag = g_timeout_add(2500, (GSourceFunc)_task_wnck_name_hide, (gpointer)task);
+
+	}
+}
+
 static void
 _task_wnck_state_changed (WnckWindow *window, WnckWindowState  old, 
                                 WnckWindowState  new, AwnTask *task)
@@ -1181,6 +1297,9 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
         
 	priv->state_changed = g_signal_connect (G_OBJECT (priv->window), "state_changed",
         		  G_CALLBACK (_task_wnck_state_changed), (gpointer)task);
+
+	priv->name_changed = g_signal_connect (G_OBJECT (priv->window), "name_changed",
+        		  G_CALLBACK (_task_wnck_name_changed), (gpointer)task);
         
         /* if launcher, set a launch_sequence
         else if starter, stop the launch_sequence, disable starter flag*/
