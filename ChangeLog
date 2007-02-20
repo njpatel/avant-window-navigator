@@ -1,5 +1,11 @@
 2007-02-20  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
 
+	Applyed patch by trevi55 to fix separator size
+
+	* src/awn-bar.c: (render):
+
+2007-02-20  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+
 	Added patche by trevi55 to have notifcation on window title change.
 
 	* src/awn-app.c: (on_button_press_event):

@@ -255,7 +255,7 @@ render (cairo_t *cr, gint x_width, gint height)
 		
 		cairo_set_line_width (cr, 1.0);
 		
-		cairo_move_to (cr, real_x+separator-2.5, 50);
+		cairo_move_to (cr, real_x+separator-2.5, 51);
 		cairo_line_to (cr, real_x+separator-2.5, 100);
 		cairo_set_source_rgba (cr, settings->hilight_color.red, 
 				   	   settings->hilight_color.green, 
@@ -293,7 +293,7 @@ render (cairo_t *cr, gint x_width, gint height)
 		cairo_stroke(cr);
 
 		
-		cairo_move_to (cr, real_x+separator+1.5, 50);
+		cairo_move_to (cr, real_x+separator+1.5, 51);
 		cairo_line_to (cr, real_x+separator+1.5, 100);
 		cairo_set_source_rgba (cr, settings->hilight_color.red, 
 				   	   settings->hilight_color.green, 
