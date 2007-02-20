@@ -36,6 +36,7 @@ G_DEFINE_TYPE (AwnTask, awn_task, GTK_TYPE_DRAWING_AREA);
 #define  AWN_TASK_EFFECT_DIR_LEFT		2
 #define  AWN_TASK_EFFECT_DIR_RIGHT		3
 #define  M_PI 					3.14159265358979323846
+#define  AWN_CLICK_IDLE_TIME			450
 
 /* FORWARD DECLERATIONS */
 
@@ -914,6 +915,28 @@ awn_task_expose (GtkWidget *task, GdkEventExpose *event)
 }
 
 static void
+awn_task_launch_unique (AwnTask *task, const char *arg_str)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);;
+	
+	GError *err = NULL;
+	int pid = gnome_desktop_item_launch_on_screen
+                                            (priv->item,
+                                             NULL,
+                                             0,
+                                             gdk_screen_get_default(),
+                                             -1,
+                                             &err);
+        
+        if (err)
+        	g_print("Error: %s", err->message);
+        else
+        	g_print("Launched application : %d\n", pid);
+	
+}
+
+static void
 awn_task_launch (AwnTask *task, const char *arg_str)
 {
 	AwnTaskPrivate *priv;
@@ -938,52 +961,69 @@ awn_task_launch (AwnTask *task, const char *arg_str)
 static gboolean
 awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 {
+	static guint32 past_time; // 3v1n0 double-click (or more) prevention	
 	AwnTaskPrivate *priv;
 	GtkWidget *menu = NULL;
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
-	if (priv->window) {
-	
-		switch (event->button) {
-			case 1:
-				if ( wnck_window_is_active( priv->window ) ) {
-					wnck_window_minimize( priv->window );
-					return TRUE;
-				}
-				wnck_window_activate( priv->window, 
-						gtk_get_current_event_time() );
-				break;
+
+	if (event->time - past_time > AWN_CLICK_IDLE_TIME) {
+		past_time = event->time;
+		if (priv->window) {
 		
-			case 3:
-				menu = wnck_create_window_action_menu(priv->window);
-				awn_task_create_menu(AWN_TASK(task), menu);
-				gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
-						       NULL, 3, event->time);
-				break;
-			default:
-				return FALSE;
+			switch (event->button) {
+				case 1:
+					if ( wnck_window_is_active( priv->window ) ) {
+						wnck_window_minimize( priv->window );
+						return TRUE;
+					}
+					wnck_window_activate( priv->window, 
+							event->time );
+					break;
+				case 2:
+					if (priv->is_launcher)
+						awn_task_launch_unique(task, NULL);
+					// 3v1n0 close on middle-click
+					//g_print("Middle click pressed for %s. Closing it... \n",
+					//	wnck_window_get_name(priv->window));
+					//wnck_window_close(priv->window, event->time);
+					break;
+				case 3:
+					menu = wnck_create_window_action_menu(priv->window);
+					awn_task_create_menu(AWN_TASK(task), menu);
+					gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
+							NULL, 3, event->time);
+					break;
+				default:
+					return FALSE;
+			}
+		} else if (priv->is_launcher) {
+			switch (event->button) {
+				case 1:
+					awn_task_launch(task, NULL);
+					launch_launched_effect(task);			   
+					break;
+// 				case 2:
+// 					// Manage middle click on launchers
+// 					g_print("Middle click pressed for launcher\n");
+// 					break;
+				case 3:
+					menu = gtk_menu_new();
+					awn_task_create_menu(AWN_TASK(task), menu);
+					gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
+							NULL, 3, event->time);
+					break;
+				default:
+					return FALSE;
+			}
+		} else {
+			;
 		}
-	} else if (priv->is_launcher) {
-		switch (event->button) {
-			case 1:
-				awn_task_launch(task, NULL);
-				launch_launched_effect(task);			   
-				break;
-		
-			case 3:
-				menu = gtk_menu_new();
-				awn_task_create_menu(AWN_TASK(task), menu);
-				gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
-						       NULL, 3, event->time);
-				break;
-			default:
-				return FALSE;
-		}
-	} else {
-		;
 	}
-	 
+	else {
+		return FALSE;
+	}
+
 	return TRUE;
 }
 

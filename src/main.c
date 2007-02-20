@@ -203,6 +203,9 @@ button_press_event (GtkWidget *window, GdkEventButton *event)
 			gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
 					       NULL, 3, event->time);
 			break;
+		case 2: // 3v1n0 run preferences on middleclick
+			prefs_function (NULL, NULL);
+			break;
 		default:
 			return FALSE;
 	}

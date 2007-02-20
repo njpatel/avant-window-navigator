@@ -10,7 +10,9 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
-* You can optionally have a notification when a window title changes, byt settings /apps/avant-window-navigator/app/name_change_notify to TRUE.
+* Middle-clicking an active launcher will launch that application again. (Modified the patch by Tervi55)
+
+* You can optionally have a notification when a window title changes, byt settings /apps/avant-window-navigator/app/name_change_notify to TRUE. Patch by trevi55.
 
 * Optionally sets _NET_WM_STRUT & _NEW_WM_STRUT_PARTIAL (that means that windows don't go under Awn when they are maximised ;) If you want to activate this behaviour, set '/apps/avant-window-navigator/panel_mode' to TRUE. If you switch it off again, you'll have to restart Awn to see the changes.
 

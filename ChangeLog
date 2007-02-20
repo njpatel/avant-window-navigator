@@ -1,5 +1,13 @@
 2007-02-20  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
 
+	Applied patch from trevi55 for better click-control. Changed middle-click of a launcher to launch a new instance of that application.
+
+	* src/awn-task.c: (awn_task_launch_unique),
+	(awn_task_button_press):
+	* src/main.c: (button_press_event):
+
+2007-02-20  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+
 	Applyed patch by trevi55 to fix separator size
 
 	* src/awn-bar.c: (render):
