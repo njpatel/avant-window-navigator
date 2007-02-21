@@ -1256,13 +1256,15 @@ _task_wnck_name_changed (WnckWindow *window, AwnTask *task)
 {
 	static guint tag = NULL;
         AwnTaskPrivate *priv;
-	priv = AWN_TASK_GET_PRIVATE (task);
-
+	
+	g_return_if_fail (AWN_IS_TASK (task));
 	if (!priv->window)
 		return;
 	if (!priv->settings->name_change_notify) {
 		return;
 	}
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
 	//g_print("Name changed on window '%s'\n",
         //   wnck_window_get_name (priv->window));
 
@@ -1277,9 +1279,7 @@ _task_wnck_name_changed (WnckWindow *window, AwnTask *task)
 		
 		awn_title_show (AWN_TITLE (priv->title), awn_task_get_name(AWN_TASK(task)), x+30, 0);
 		
-		if (tag)
-			g_source_remove(tag);
-		tag = g_timeout_add(2500, (GSourceFunc)_task_wnck_name_hide, (gpointer)task);
+		g_timeout_add(2500, (GSourceFunc)_task_wnck_name_hide, (gpointer)task);
 
 	}
 }
