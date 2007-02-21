@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+****NOTICE*** fade_effect won't work for a while as I am rethinking the effect code.
+
 * Middle-clicking an active launcher will launch that application again. (Modified the patch by Tervi55)
 
 * You can optionally have a notification when a window title changes, byt settings /apps/avant-window-navigator/app/name_change_notify to TRUE. Patch by trevi55.

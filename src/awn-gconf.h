@@ -76,6 +76,7 @@ typedef struct {
 	gboolean fade_effect;
 	
 	gboolean name_change_notify;
+	gboolean alpha_effect;
 	
 	/* Title settings */
 	AwnColor text_color;

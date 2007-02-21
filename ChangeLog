@@ -1,3 +1,24 @@
+2007-02-21  Neil Jagdish Patel,,,01923 820 124  <njp@Fedora>
+
+	Added a fade_effect to the hover effects
+
+	* README:
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-gconf.h:
+	* src/awn-task-manager.c: (_task_refresh), (_refresh_box),
+	(awn_task_manager_update_separator_position):
+	* src/awn-task.c: (_task_hover_effect2), (launch_hover_effect),
+	(draw):
+
+2007-02-20  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+
+	Cleaned up a few things, separator should vanish whent there are no tasks.
+
+	* src/awn-task-manager.c: (_task_refresh), (_refresh_box),
+	(awn_task_manager_update_separator_position):
+	* src/awn-task.c: (_task_hover_effect2), (launch_hover_effect),
+	(draw):
+
 2007-02-20  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
 
 	Applied patch from trevi55 for better click-control. Changed middle-click of a launcher to launch a new instance of that application.

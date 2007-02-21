@@ -558,6 +558,7 @@ _task_fails (AwnTask *task)
 	return 0;
 }
 
+static int num_tasks = 0;
 
 static void
 _task_refresh (AwnTask *task, AwnTaskManager *task_manager)
@@ -590,6 +591,7 @@ _task_refresh (AwnTask *task, AwnTaskManager *task_manager)
 		gtk_widget_show (GTK_WIDGET (task));
 		awn_task_refresh_icon_geometry(task);
 		gtk_widget_queue_draw(GTK_WIDGET(task));
+		num_tasks++;
 		awn_task_manager_update_separator_position (task_manager);
 		return;
 	}	
@@ -604,6 +606,7 @@ _task_refresh (AwnTask *task, AwnTaskManager *task_manager)
 		gtk_widget_show (GTK_WIDGET (task));
 		awn_task_refresh_icon_geometry(task);
 		gtk_widget_queue_draw(GTK_WIDGET(task));
+		num_tasks++;
 		awn_task_manager_update_separator_position (task_manager);
 		return;
 	}
@@ -612,6 +615,7 @@ _task_refresh (AwnTask *task, AwnTaskManager *task_manager)
 		gtk_widget_show_all (GTK_WIDGET (task));
 		awn_task_refresh_icon_geometry(task);
 		gtk_widget_queue_draw(GTK_WIDGET(task));
+		num_tasks++;
 	} else
 		gtk_widget_hide (GTK_WIDGET (task));
 	
@@ -627,11 +631,16 @@ _refresh_box(AwnTaskManager *task_manager)
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
-	
 	space = wnck_screen_get_active_workspace(priv->screen);
 	g_list_foreach(priv->launchers, _task_refresh, (gpointer)task_manager);
-	g_list_foreach(priv->tasks, _task_refresh, (gpointer)task_manager);
 	
+	num_tasks = 0;
+	g_list_foreach(priv->tasks, _task_refresh, (gpointer)task_manager);
+	if (num_tasks == 0) {
+		gtk_widget_hide (priv->eb);		
+	} else {
+		gtk_widget_show (priv->eb);
+	}
 	awn_task_manager_update_separator_position (task_manager);
 }
 
@@ -666,12 +675,15 @@ awn_task_manager_update_separator_position (AwnTaskManager *task_manager)
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	settings = priv->settings;
 	
+	if (num_tasks == 0) {
+		awn_bar_set_separator_position (settings->bar, -1000);
+		return;
+	}
 	new_x = GTK_WIDGET(priv->eb)->allocation.x;
 	
-	if (1) {
-		awn_bar_set_separator_position (settings->bar, x+2);
-		x = new_x;
-	}
+	awn_bar_set_separator_position (settings->bar, x+2);
+	x = new_x;
+	
 }
 
 /********************* DBUS *********************************/

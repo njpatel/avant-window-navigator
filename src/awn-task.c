@@ -389,9 +389,6 @@ _task_hover_effect2 (AwnTask *task)
 		priv->alpha = 1.0;
 	}
 	
-	if (priv->hover && (priv->alpha <= 0.1))
-		return TRUE;
-	
 	if (priv->effect_direction) {
 		priv->alpha -=0.05;
 		
@@ -607,7 +604,13 @@ _task_hover_effect3 (AwnTask *task)
 static void
 launch_hover_effect (AwnTask *task )
 {
-	g_timeout_add(25, (GSourceFunc)_task_hover_effect3, (gpointer)task);
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	if (priv->settings->fade_effect)
+		g_timeout_add(25, (GSourceFunc)_task_hover_effect2, (gpointer)task);
+	else
+		g_timeout_add(25, (GSourceFunc)_task_hover_effect, (gpointer)task);
 }
 
 static gboolean
@@ -870,9 +873,10 @@ draw (GtkWidget *task, cairo_t *cr)
 		
 		gdk_cairo_set_source_pixbuf (cr, priv->icon, x1, y1);
 		if (priv->hover) 
-			cairo_paint_with_alpha(cr, 1.0);
-		else
 			cairo_paint_with_alpha(cr, priv->alpha);
+		else
+			cairo_paint_with_alpha(cr, 1.0);
+			
 	}
 	
 	/* arrows */
