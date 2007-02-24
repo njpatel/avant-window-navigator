@@ -1,3 +1,40 @@
+2007-02-24  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+
+	Added Dbus support
+
+	* avant-preferences/Makefile.in:
+	* configure.in:
+	* data/active/Makefile.in:
+	* plugins/Rhythmbox/README:
+	* plugins/Rhythmbox/artdisplay-awn.rb-plugin:
+	* plugins/Rhythmbox/artdisplay-awn/AmazonCoverArtSearch.py:
+	* plugins/Rhythmbox/artdisplay-awn/CoverArtDatabase.py:
+	* plugins/Rhythmbox/artdisplay-awn/Loader.py:
+	* plugins/Rhythmbox/artdisplay-awn/__init__.py:
+	* src/Makefile.am:
+	* src/awn-dbus.xml:
+	* src/awn-task-manager.c:
+	(awn_task_manager_update_separator_position), (_dbus_find_task),
+	(__find_by_name), (__find_by_xid),
+	(awn_task_manager_set_task_icon_by_name),
+	(awn_task_manager_set_task_icon_by_xid),
+	(awn_task_manager_unset_task_icon_by_name),
+	(awn_task_manager_unset_task_icon_by_xid),
+	(awn_task_manager_set_progress_by_name),
+	(awn_task_manager_set_progress_by_xid),
+	(awn_task_manager_set_info_by_name),
+	(awn_task_manager_set_info_by_xid),
+	(awn_task_manager_unset_info_by_name),
+	(awn_task_manager_unset_info_by_xid),
+	(awn_task_manager_class_init), (awn_task_manager_init):
+	* src/awn-task.c: (awn_task_init), (_rounded_rectangle),
+	(_rounded_corners), (draw), (_task_wnck_name_changed),
+	(awn_task_set_custom_icon), (awn_task_unset_custom_icon),
+	(awn_task_set_progress), (awn_task_set_info),
+	(awn_task_unset_info):
+	* src/awn-task.h:
+	* src/main.c: (main):
+
 2007-02-21  Neil Jagdish Patel,,,01923 820 124  <njp@Fedora>
 
 	Added a fade_effect to the hover effects

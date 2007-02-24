@@ -1,0 +1,15 @@
+This is an example Rhythmbox plugin.
+
+It is a tweaked version of the art-display plugin that ships with rhythmbox.
+
+It will change the Rhythmbox task icon to match the cover art. If there is no 
+cover art, it will unset the icon.
+
+
+INSTALLATION
+############
+
+copy artdisplay-awn and artdisplay-awn.rb-plugin to ~/.gnome2/rhythmbox/plugins
+
+and then select artdisplay-awn from the rhythmbox 'plugins' menu item
+
