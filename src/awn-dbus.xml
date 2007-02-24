@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<node name="/com/google/code/Awn">
+<interface name="com.google.code.Awn">
+<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="awn_task_manager"/>
+	
+	<method name="SetTaskIconByName">
+		<arg name="name" type="s" direction="in" />
+		<arg name="icon_path" type="s" direction="in" />
+	</method>
+	<method name="SetTaskIconByXid">
+		<arg name="xid" type="x" direction="in" />
+		<arg name="icon_path" type="s" direction="in" />
+	</method>	
+	
+	<method name="UnsetTaskIconByName">
+		<arg name="name" type="s" direction="in" />
+	</method>
+	<method name="UnsetTaskIconByXid">
+		<arg name="xid" type="x" direction="in" />
+	</method>		
+
+	<method name="SetProgressByName">
+		<arg name="name" type="s" direction="in" />
+		<arg name="progress" type="i" direction="in" />
+	</method>
+	<method name="SetProgressByXid">
+		<arg name="xid" type="x" direction="in" />
+		<arg name="progress" type="i" direction="in" />
+	</method>
+	
+	<method name="SetInfoByName">
+		<arg name="name" type="s" direction="in" />
+		<arg name="info" type="s" direction="in" />
+	</method>
+	<method name="SetInfoByXid">
+		<arg name="xid" type="x" direction="in" />
+		<arg name="info" type="s" direction="in" />
+	</method>	
+	
+	<method name="UnsetInfoByName">
+		<arg name="name" type="s" direction="in" />
+	</method>
+	<method name="UnsetInfoByXid">
+		<arg name="xid" type="x" direction="in" />
+	</method>	
+		
+</interface>
+</node>

@@ -20,6 +20,8 @@
 
 #include <gtk/gtk.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include "dbus/dbus-glib.h"
+#include <dbus/dbus-glib-bindings.h>
 
 #include "config.h"
 
@@ -31,6 +33,10 @@
 #include "awn-task-manager.h"
 
 #include "awn-task.h"
+
+#define AWN_NAMESPACE "com.google.code.Awn"
+#define AWN_OBJECT_PATH "/com/google/code/Awn"
+
 
 static gboolean expose (GtkWidget *widget, GdkEventExpose *event, GtkWindow *window);
 static gboolean drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
@@ -52,6 +58,10 @@ main (int argc, char* argv[])
 	GtkWidget *lab = NULL;
 	GtkWidget *eb = NULL;
 	
+	DBusGConnection *connection;
+	DBusGProxy *proxy;
+	GError *error = NULL;
+	guint32 ret;
 	
 	gtk_init (&argc, &argv);
 	gnome_vfs_init ();
@@ -101,6 +111,34 @@ main (int argc, char* argv[])
 			 G_CALLBACK(button_press_event), (gpointer)settings);
 	
 	
+	/* Get the connection and ensure the name is not used yet */
+	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+	if (connection == NULL) {
+		g_warning ("Failed to make connection to session bus: %s",
+			   error->message);
+		g_error_free (error);
+		exit(1);
+	}
+		
+	proxy = dbus_g_proxy_new_for_name (connection, DBUS_SERVICE_DBUS,
+					   DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+	if (!org_freedesktop_DBus_request_name (proxy, AWN_NAMESPACE,
+						0, &ret, &error)) {
+		g_warning ("There was an error requesting the name: %s",
+			   error->message);
+		g_error_free (error);
+		exit(1);
+	}
+	
+	if (ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
+		/* Someone else registered the name before us */
+		exit(1);
+	}
+		
+	/* Register the app on the bus */
+	dbus_g_connection_register_g_object (connection,
+					     AWN_OBJECT_PATH,
+					     G_OBJECT (task_manager));
 	
 	gtk_main ();
 }

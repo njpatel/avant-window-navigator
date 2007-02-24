@@ -33,8 +33,6 @@
 #include "awn-title.h"
 #include "awn-task.h"
 
-
-
 #define AWN_TASK_MANAGER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), AWN_TYPE_TASK_MANAGER, AwnTaskManagerPrivate))
 
 G_DEFINE_TYPE (AwnTaskManager, awn_task_manager, GTK_TYPE_HBOX);
@@ -58,8 +56,9 @@ static void _task_manager_drag_data_recieved (GtkWidget        *widget,
                                               guint             time,
                                               AwnTaskManager    *task_manager);
 
-
-
+static gboolean awn_task_manager_test_dbus (AwnTaskManager *task_manager,
+			    gchar    **title,
+			    GError   **error);
 static void _refresh_box(AwnTaskManager *task_manager);
 static void _task_manager_load_launchers(AwnTaskManager *task_manager);
 void awn_task_manager_update_separator_position (AwnTaskManager *task_manager);
@@ -87,34 +86,6 @@ struct _AwnTaskManagerPrivate
 
 /* GLOBALS */
 
-
-static void
-awn_task_manager_class_init (AwnTaskManagerClass *class)
-{
-	GObjectClass *obj_class;
-	GtkWidgetClass *widget_class;
-
-	obj_class = G_OBJECT_CLASS (class);
-	widget_class = GTK_WIDGET_CLASS (class);
-
-	g_type_class_add_private (obj_class, sizeof (AwnTaskManagerPrivate));
-}
-
-static void
-awn_task_manager_init (AwnTaskManager *task_manager)
-{
-	/* set all priv variables */
-	AwnTaskManagerPrivate *priv;
-	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
-	
-	priv->screen = wnck_screen_get_default();
-	
-	priv->title_window = NULL;
-	priv->launchers = NULL;
-	priv->tasks = NULL;
-}
-
-/***************************************************************/
 
 static void
 _load_launchers_func (const char *uri, AwnTaskManager *task_manager)
@@ -670,7 +641,7 @@ awn_task_manager_update_separator_position (AwnTaskManager *task_manager)
 	AwnTaskManagerPrivate *priv;
 	AwnSettings *settings;
 	static int x = 0;
-	int new_x;
+	int new_x = 0;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	settings = priv->settings;
@@ -688,18 +659,356 @@ awn_task_manager_update_separator_position (AwnTaskManager *task_manager)
 
 /********************* DBUS *********************************/
 
-gboolean
-awn_task_manager_get_windows (AwnTaskManager *task_manager, gdouble *number, GError **error)
+typedef struct {
+	AwnTaskManager *task_manager;
+	gchar *name;
+	gint xid;
+	gint pid;
+	AwnTask *task;
+} AwnDBusTerm;
+
+static void
+_dbus_find_task (AwnTask *task, AwnDBusTerm *term)
 {
-	*number = 0.5;
+	gchar *temp;
+	gulong id;
+	
+	if (term->name) {
+		temp = awn_task_get_application (task);
+		if (strcmp (term->name, temp) == 0) {
+			term->task = task;
+			return;
+		}
+		temp = awn_task_get_name (task);
+		if (strcmp (term->name, temp) == 0) {
+			term->task = task;
+			return;
+		}
+	} else if (term->xid) {
+		id = awn_task_get_xid (task);
+		if (term->xid == id) {
+			term->task = task;
+			return;
+		}
+	} else if (term->pid) {
+		id = awn_task_get_pid (task);
+		if (term->pid == id) {
+			term->task = task;
+			return;
+		}
+	} else {
+		return;
+	
+	}
+}
+
+static void
+__find_by_name (AwnTaskManagerPrivate *priv, AwnDBusTerm *term, const gchar *name)
+{
+	term->name = name;
+	term->xid = NULL;
+	term->pid = 0;
+	term->task = NULL;
+	
+	g_list_foreach(priv->launchers, _dbus_find_task, (gpointer)term);
+	if (term->task == NULL) {
+		g_list_foreach(priv->tasks, _dbus_find_task, (gpointer)term);
+	}
+}
+
+static void
+__find_by_xid (AwnTaskManagerPrivate *priv, AwnDBusTerm *term, gulong xid)
+{
+	term->name = NULL;
+	term->xid = xid;
+	term->pid = 0;
+	term->task = NULL;
+	
+	g_list_foreach(priv->launchers, _dbus_find_task, (gpointer)term);
+	if (term->task == NULL) {
+		g_list_foreach(priv->tasks, _dbus_find_task, (gpointer)term);
+	}
+}
+
+static gboolean
+awn_task_manager_set_task_icon_by_name (AwnTaskManager *task_manager,
+			    		gchar 		*name,
+			    		gchar 	  	*icon_path,
+			        	GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_name (priv, &term, name);
+
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 
+		
+	/* Try and load icon from path */
+	icon = gdk_pixbuf_new_from_file_at_scale (icon_path,
+                                                  46,
+                                                  46,
+                                                  TRUE,
+                                                  NULL);
+	if (icon)
+		awn_task_set_custom_icon (term.task, icon);
+	                                                 
+	//g_free (icon_path);
 	return TRUE;
 }
 
+static gboolean
+awn_task_manager_set_task_icon_by_xid (AwnTaskManager *task_manager,
+			    		gulong		xid,
+			    		gchar 	  	*icon_path,
+			        	GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_xid (priv, &term, xid); 
 
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 
+		
+	/* Try and load icon from path */
+	icon = gdk_pixbuf_new_from_file_at_scale (icon_path,
+                                                  46,
+                                                  46,
+                                                  TRUE,
+                                                  NULL);
+	if (icon)
+		awn_task_set_custom_icon (term.task, icon);
+	                                                 
+	//g_free (icon_path);
+	return TRUE;
+}
+
+static gboolean
+awn_task_manager_unset_task_icon_by_name (AwnTaskManager *task_manager,
+			    		gchar 		*name,
+			    		GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_name (priv, &term, name); 
+
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 	
+	awn_task_unset_custom_icon (term.task);
+	                                                 
+	//g_free (icon_path);
+	return TRUE;
+}
+
+static gboolean
+awn_task_manager_unset_task_icon_by_xid (AwnTaskManager *task_manager,
+			    		gulong		xid,
+			    		GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_xid (priv, &term, xid); 
+
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 	
+	awn_task_unset_custom_icon (term.task);
+	                                                 
+	//g_free (icon_path);
+	return TRUE;
+}
+
+static gboolean
+awn_task_manager_set_progress_by_name (AwnTaskManager *task_manager,
+			    		gchar 		*name,
+			    		gint		progress,
+			    		GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_name (priv, &term, name); 
+	
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 
+	
+	awn_task_set_progress (term.task, progress);
+	                                                 
+	return TRUE;
+}
+
+static gboolean
+awn_task_manager_set_progress_by_xid (AwnTaskManager *task_manager,
+			    		gulong		xid,
+			    		gint		progress,
+			    		GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_xid (priv, &term, xid); 
+	
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 
+	awn_task_set_progress (term.task, progress);
+	return TRUE;
+}
+
+static gboolean
+awn_task_manager_set_info_by_name (AwnTaskManager *task_manager,
+			    		gchar 		*name,
+			    		gchar		*info,
+			    		GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_name (priv, &term, name); 
+	
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 
+	awn_task_set_info (term.task, info);
+	                                                 
+	return TRUE;
+}
+
+static gboolean
+awn_task_manager_set_info_by_xid (AwnTaskManager *task_manager,
+			    		gulong		xid,
+			    		gchar		*info,
+			    		GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_xid (priv, &term, xid); 
+	
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 
+	awn_task_set_info (term.task, info);
+	return TRUE;
+}
+
+static gboolean
+awn_task_manager_unset_info_by_name (AwnTaskManager *task_manager,
+			    		gchar 		*name,
+			    		GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_name (priv, &term, name); 
+	
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 
+	awn_task_unset_info (term.task);
+	                                                 
+	return TRUE;
+}
+
+static gboolean
+awn_task_manager_unset_info_by_xid (AwnTaskManager *task_manager,
+			    		gulong		xid,
+			    		GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_xid (priv, &term, xid); 
+	
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 
+	awn_task_unset_info (term.task);
+	return TRUE;
+}
 
 /********************* /DBUS   ********************************/
 
 /********************* awn_task_manager_new * *******************/
+
+#include "awn-dbus-glue.h"
+
+static void
+awn_task_manager_class_init (AwnTaskManagerClass *class)
+{
+	GObjectClass *obj_class;
+	GtkWidgetClass *widget_class;
+
+	obj_class = G_OBJECT_CLASS (class);
+	widget_class = GTK_WIDGET_CLASS (class);
+
+	g_type_class_add_private (obj_class, sizeof (AwnTaskManagerPrivate));
+	
+	dbus_g_object_type_install_info (G_TYPE_FROM_CLASS (class),
+					 &dbus_glib_awn_task_manager_object_info);
+
+}
+
+static void
+awn_task_manager_init (AwnTaskManager *task_manager)
+{
+	/* set all priv variables */
+	AwnTaskManagerPrivate *priv;
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	priv->screen = wnck_screen_get_default();
+	
+	priv->title_window = NULL;
+	priv->launchers = NULL;
+	priv->tasks = NULL;
+}
 
 GtkWidget *
 awn_task_manager_new (AwnSettings *settings)

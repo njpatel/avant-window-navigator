@@ -88,6 +88,15 @@ AwnSettings* awn_task_get_settings (AwnTask *task);
 
 void awn_task_refresh_icon_geometry (AwnTask *task);
 
+/* DBUS CALLS */
+void awn_task_set_custom_icon (AwnTask *task, GdkPixbuf *icon);
+void awn_task_unset_custom_icon (AwnTask *task);
+
+void awn_task_set_progress (AwnTask *task, gint progress);
+
+void awn_task_set_info (AwnTask *task, const char *info);
+void awn_task_unset_info (AwnTask *task);
+
 G_END_DECLS
 
 #endif

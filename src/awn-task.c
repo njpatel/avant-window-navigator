@@ -38,6 +38,8 @@ G_DEFINE_TYPE (AwnTask, awn_task, GTK_TYPE_DRAWING_AREA);
 #define  M_PI 					3.14159265358979323846
 #define  AWN_CLICK_IDLE_TIME			450
 
+#define M_PI		3.14159265358979323846 
+
 /* FORWARD DECLERATIONS */
 
 static gboolean awn_task_expose (GtkWidget *task, GdkEventExpose *event);
@@ -75,9 +77,9 @@ struct _AwnTaskPrivate
 	AwnSettings *settings;
 	
 	GnomeDesktopItem *item;
-	int pid;
+	gint pid;
 	
-	char *application;
+	gchar *application;
 	
 	gboolean is_launcher;
 	AwnSmartLauncher launcher;
@@ -95,6 +97,11 @@ struct _AwnTaskPrivate
 	gint icon_width;
 	gint icon_height;
 	
+	gint progress;
+	
+	gboolean info;
+	gchar *info_text;
+	
 	/* EFFECT VARIABLES */
 	gboolean effect_lock;
 	AwnTaskEffect current_effect;
@@ -102,11 +109,11 @@ struct _AwnTaskPrivate
 	gint count;
 	GdkPixbuf *pixbufs[15];
 	
-	double x_offset;
-	double y_offset;
+	gdouble x_offset;
+	gdouble y_offset;
 	gint width;
 	gint height;
-	double rotate_degrees;
+	gdouble rotate_degrees;
 	gfloat alpha;
 	
 	/* random */
@@ -179,6 +186,9 @@ awn_task_init (AwnTask *task)
 	priv->window = NULL;
 	priv->title = NULL;
 	priv->icon = NULL;
+	priv->progress = 100;
+	priv->info = FALSE;
+	priv->info_text = NULL;
 	priv->is_active = FALSE;
 	priv->needs_attention = FALSE;
 	priv->effect_lock = FALSE;
@@ -834,6 +844,35 @@ _launch_name_change_effect (AwnTask *task)
 /**********************  CALLBACKS  **********************/
 
 static void
+_rounded_rectangle (cairo_t *cr, double w, double h, double x, double y)
+{
+	const float RADIUS_CORNERS = 1.5;
+
+	cairo_move_to (cr, x+RADIUS_CORNERS, y);
+	cairo_line_to (cr, x+w-RADIUS_CORNERS, y);
+	cairo_move_to (cr, w+x, y+RADIUS_CORNERS);
+	cairo_line_to (cr, w+x, h+y-RADIUS_CORNERS);
+	cairo_move_to (cr, w+x-RADIUS_CORNERS, h+y);
+	cairo_line_to (cr, x+RADIUS_CORNERS, h+y);
+	cairo_move_to (cr, x, h+y-RADIUS_CORNERS);
+	cairo_line_to (cr, x, y+RADIUS_CORNERS);
+
+
+}
+
+static void
+_rounded_corners (cairo_t *cr, double w, double h, double x, double y)
+{
+	double radius = 1.5;
+	cairo_move_to (cr, x+radius, y);
+	cairo_arc (cr, x+w-radius, y+radius, radius, M_PI * 1.5, M_PI * 2);
+	cairo_arc (cr, x+w-radius, y+h-radius, radius, 0, M_PI * 0.5);
+	cairo_arc (cr, x+radius,   y+h-radius, radius, M_PI * 0.5, M_PI);
+	cairo_arc (cr, x+radius,   y+radius,   radius, M_PI, M_PI * 1.5);
+
+}
+
+static void
 draw (GtkWidget *task, cairo_t *cr)
 {
 	AwnTaskPrivate *priv;
@@ -870,16 +909,14 @@ draw (GtkWidget *task, cairo_t *cr)
 		x1 = (width-priv->icon_width)/2;
 		y1 = ((50-priv->icon_height)/2) + 50 + (-1 * priv->y_offset);
 		
-		
 		gdk_cairo_set_source_pixbuf (cr, priv->icon, x1, y1);
-		if (priv->hover) 
-			cairo_paint_with_alpha(cr, priv->alpha);
-		else
-			cairo_paint_with_alpha(cr, 1.0);
+		cairo_paint_with_alpha(cr, priv->alpha);
+
 			
 	}
 	
 	/* arrows */
+	cairo_save (cr);
 	double x1, y1;
 	x1 = width/2.0;
 	cairo_set_source_rgba (cr, settings->arrow_color.red, 
@@ -897,8 +934,83 @@ draw (GtkWidget *task, cairo_t *cr)
 	
 	} else if (priv->is_launcher && (priv->window == NULL)) 
 		cairo_fill(cr);
-	else
+	else {
 		;
+	}
+	cairo_restore (cr);
+	/* progress meter */
+	
+	if (priv->progress != 100) {
+		/*
+		_rounded_rectangle (cr, width-6, 5, 3, 44);
+		_rounded_corners (cr, width-6, 5, 3, 44);
+		
+		cairo_set_source_rgba (cr, settings->background.red, 
+					   settings->background.green, 
+					   settings->background.blue,
+					   settings->background.alpha);
+		cairo_fill (cr);
+		
+		cairo_set_source_rgba (cr, settings->text_color.red, 
+				   settings->text_color.green, 
+				   settings->text_color.blue,
+				   settings->text_color.alpha);
+				   
+		cairo_rectangle (cr, 5, 46, ( (double)(priv->progress/100.0) * (width-10) ), 1);
+		cairo_fill (cr);
+		*/
+		cairo_move_to (cr, width/2.0, 75);	
+		cairo_set_source_rgba (cr, settings->background.red, 
+					   settings->background.green, 
+					   settings->background.blue,
+					   settings->background.alpha);
+				
+		cairo_arc (cr, width/2.0, 75, 15, 0, 360.0 * (M_PI / 180.0) );
+		cairo_fill (cr);
+		
+		cairo_move_to (cr, width/2.0, 75);
+		cairo_set_source_rgba (cr, settings->text_color.red, 
+				   settings->text_color.green, 
+				   settings->text_color.blue,
+				   0.8);
+		cairo_arc (cr, width/2.0, 75, 12, 270.0 * (M_PI / 180.0),  (270.0 + ((double)(priv->progress/100.0) * 360.0))  * (M_PI / 180.0) );
+		cairo_fill (cr);
+	}
+	
+	if ( (priv->progress == 100) && priv->info) {
+		
+		cairo_text_extents_t extents;
+		cairo_select_font_face (cr, "Sans",CAIRO_FONT_SLANT_NORMAL, 
+					 	   CAIRO_FONT_WEIGHT_BOLD);
+		
+		if (strlen (priv->info_text) > 5)
+			cairo_set_font_size (cr, 10);
+		else
+			cairo_set_font_size (cr, 12);
+		cairo_text_extents (cr, priv->info_text, &extents);
+		
+		cairo_move_to (cr, width/2.0, 75);	
+		cairo_set_source_rgba (cr, settings->background.red, 
+					   settings->background.green, 
+					   settings->background.blue,
+					   settings->background.alpha);
+				
+		cairo_arc (cr, width/2.0, 75, (extents.width/2.0) + 4.0, 0, 360.0 * (M_PI / 180.0) );
+		
+		/*rounded_rectangle (cr, (double) extents.width+4.0, (double) extents.height+4.0, (width/2.0) - 2.0 - ( (extents.width+extents.x_bearing)/2.0), 75- ( extents.height /2.0)-2.0);
+		_rounded_corners (cr, (double) extents.width+4.0, (double) extents.height+4.0, (width/2.0) - 2.0 - ( (extents.width+extents.x_bearing)/2.0), 75- ( extents.height /2.0)-2.0);
+		*/
+		cairo_fill (cr);		
+		
+		
+		cairo_set_source_rgba (cr, settings->text_color.red, 
+				   settings->text_color.green, 
+				   settings->text_color.blue,
+				   0.8);
+			
+		cairo_move_to (cr, (width/2.0) - ((extents.width+ extents.x_bearing)/2.0)-1, 75+ ( extents.height /2.0));
+		cairo_show_text (cr, priv->info_text);
+	}
 }
 
 static gboolean
@@ -1258,12 +1370,17 @@ _task_wnck_name_changed (WnckWindow *window, AwnTask *task)
         AwnTaskPrivate *priv;
 	
 	g_return_if_fail (AWN_IS_TASK (task));
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
 	if (!priv->window)
 		return;
 	if (!priv->settings->name_change_notify) {
 		return;
 	}
-	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	if (priv->current_effect == AWN_TASK_EFFECT_CHANGE_NAME)
+		return;
 	
 	//g_print("Name changed on window '%s'\n",
         //   wnck_window_get_name (priv->window));
@@ -1642,6 +1759,99 @@ awn_task_refresh_icon_geometry (AwnTask *task)
 
 }
 
+/********************* DBUS FUNCTIONS *******************/
+
+void
+awn_task_set_custom_icon (AwnTask *task, GdkPixbuf *icon)
+{
+	AwnTaskPrivate *priv;
+	GdkPixbuf *old_icon;
+	
+	g_return_if_fail (AWN_IS_TASK (task));
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	old_icon = priv->icon;
+	
+	priv->icon = icon;
+	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
+	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
+	
+	g_object_unref (G_OBJECT (old_icon));
+	
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+}
+
+void
+awn_task_unset_custom_icon (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	GdkPixbuf *old_icon;
+	
+	g_return_if_fail (AWN_IS_TASK (task));
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	old_icon = priv->icon;
+	
+	priv->icon = awn_x_get_icon (priv->window, 48, 48);
+	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
+	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
+	
+	g_object_unref (G_OBJECT (old_icon));
+	
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+}
+
+void 
+awn_task_set_progress (AwnTask *task, gint progress)
+{
+	AwnTaskPrivate *priv;
+	
+	g_return_if_fail (AWN_IS_TASK (task));
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	if ( (progress < 101) && (progress >= 0))
+		priv->progress = progress;
+	else
+		priv->progress = 100;
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+}
+
+void 
+awn_task_set_info (AwnTask *task, const gchar *info)
+{
+	AwnTaskPrivate *priv;
+	
+	g_return_if_fail (AWN_IS_TASK (task));
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	if (priv->info_text) {
+		g_free (priv->info_text);
+		priv->info_text = NULL;
+	}
+	priv->info = TRUE;
+	priv->info_text = g_strdup (info);
+	
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+}
+
+void 
+awn_task_unset_info (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	
+	g_return_if_fail (AWN_IS_TASK (task));
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	priv->info = FALSE;
+	if (priv->info_text) {
+		g_free (priv->info_text);
+		priv->info_text = NULL;
+	}
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+}
 
 /********************* MISC FUNCTIONS *******************/
 

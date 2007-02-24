@@ -16,6 +16,7 @@ avant_window_navigator_SOURCES =			\
 	awn-bar.c   			\
 	awn-app.h			\
 	awn-app.c      			\
+	awn-dbus-glue.h			\
 	awn-win-manager.h		\
 	awn-win-manager.c    		\
 	awn-title.h			\
@@ -39,6 +40,12 @@ icon_test_SOURCES=		\
 						
 icon_test_LDADD =			\
 	$(AWN_LIBS)
+
+awn-dbus-glue.h: awn-dbus.xml Makefile
+	$(LIBTOOL) --mode=execute $(DBUS_GLIB_BIN)/dbus-binding-tool --prefix=awn_task_manager --mode=glib-server --output=$@ $<
+
+BUILT_SOURCES = awn-dbus-glue.h
+EXTRA_DIST = awn-dbus.xml
 
 noinst_PROGRAMS=		\
 	icon-test		
