@@ -183,11 +183,12 @@ _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 		char *exec;
 		GString *str;
 		
-		app_name = wnck_application_get_name(
-        			    wnck_window_get_application(term->window));
-        	
-        	wnck_app = wnck_window_get_application(term->window);
-		str = g_string_new (wnck_application_get_name(wnck_app));
+		wnck_app = wnck_window_get_application(term->window);
+        	if (WNCK_IS_APPLICATION (wnck_app))
+        	      	app_name = wnck_application_get_name(wnck_app);
+		else
+			app_name = NULL;
+		str = g_string_new (app_name);
 		str = g_string_ascii_down (str);
 		_normalize (str->str);
 		exec = g_strdup (awn_task_get_application(task));
@@ -1037,6 +1038,7 @@ awn_task_manager_new (AwnSettings *settings)
 	gtk_widget_show(priv->tasks_box);
 		
 	priv->title_window = awn_title_new(priv->settings);
+	settings->title = priv->title_window;
 	awn_title_show(priv->title_window, " ", 0, 0);
 	gtk_widget_show(priv->title_window);
 	

@@ -18,26 +18,43 @@
  *  Author : Neil Jagdish Patel <njpatel@gmail.com>
 */
 
-#ifndef _AWN_UTILS_
-#define _AWN_UTILS_
 
-#include "awn-gconf.h"
+#ifndef	_AWN_HOTSPOT_H
+#define	_AWN_HOTSPOT_H
+
+#include <glib.h>
 #include <gtk/gtk.h>
 
-typedef struct {
-	/*
-	GnomeDesktopItem *desktop_item
-	
-	*/
-	gint place_holder;	
-} AwnSmartLauncher;
+#include "awn-gconf.h"
 
-void awn_hide (AwnSettings *settings);
-void awn_show (AwnSettings *settings);
+G_BEGIN_DECLS
 
-void hide_window (GtkWindow *window);
-void show_window (GtkWindow *window);
+#define AWN_HOTSPOT_TYPE      (awn_hotspot_get_type())
+#define AWN_HOTSPOT(o)        (G_TYPE_CHECK_INSTANCE_CAST((o), AWN_HOTSPOT_TYPE, AwnHotspot))
+#define AWN_HOTSPOT_CLASS(c)  (G_TYPE_CHECK_CLASS_CAST((c), AWN_HOTSPOT_TYPE, AwnHotspotClass))
+#define IS_AWN_HOTSPOT(o)     (G_TYPE_CHECK_INSTANCE_TYPE((o), AWN_HOTSPOT_TYPE))
+#define IS_AWN_HOTSPOT_CLASS  (G_TYPE_INSTANCE_GET_CLASS((o), AWN_HOTSPOT_TYPE, AwnHotspotClass))
+
+typedef struct _AwnHotspot AwnHotspot;
+typedef struct _AwnHotspotClass AwnHotspotClass;
+
+struct _AwnHotspot {
+        GtkWindow win;
+           
+};
+
+struct _AwnHotspotClass {
+        GtkWindowClass parent_class;
+        
+
+};
+
+GType awn_hotspot_get_type (void);
+
+GtkWidget *awn_hotspot_new (AwnSettings *sets);
+
+G_END_DECLS
 
 
+#endif /* _AWN_HOTSPOT_H */
 
-#endif

@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+* Elementry autohide support :). set /apps/avant-window-navigator/auto_hide to TRUE. Once hidden, the 'hot spot' is the bottom 2px of you monitor. It doesn't always hide, but I am working on it. Also, I promise to make it look cooler!
+
 * Awn now has a dbus backend :). Look under 'plugins' for an example. Chck blog for more info, and how to write your own.
 
 ****NOTICE*** fade_effect won't work for a while as I am rethinking the effect code.

@@ -1,3 +1,42 @@
+2007-02-25  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+
+	Added autohide support
+
+	* src/Makefile.am:
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-gconf.h:
+	* src/awn-hotspot.c: (awn_hotspot_class_init), (awn_hotspot_init),
+	(awn_hotspot_new), (awn_hotspot_destroy),
+	(_on_alpha_screen_changed), (render), (render_pixmap),
+	(do_shape_combine_mask), (_update_input_shape), (_on_expose),
+	(_on_configure), (_position_window):
+	* src/awn-hotspot.h:
+	* src/awn-task-manager.c: (_find_launcher), (awn_task_manager_new):
+	* src/awn-task.c: (_shell_done), (awn_task_create_menu):
+	* src/awn-utils.c: (hide_window), (show_window), (awn_hide),
+	(awn_show):
+	* src/awn-utils.h:
+	* src/main.c: (main), (enter_notify_event), (leave_notify_event):
+
+2007-02-25  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* src/Makefile.am:
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-gconf.h:
+	* src/awn-hotspot.c: (awn_hotspot_class_init), (awn_hotspot_init),
+	(awn_hotspot_new), (awn_hotspot_destroy),
+	(_on_alpha_screen_changed), (render), (render_pixmap),
+	(do_shape_combine_mask), (_update_input_shape), (_on_expose),
+	(_on_configure), (_position_window):
+	* src/awn-hotspot.h:
+	* src/awn-task-manager.c: (_find_launcher), (awn_task_manager_new):
+	* src/awn-task.c: (_shell_done), (awn_task_create_menu):
+	* src/awn-utils.c: (hide_window), (show_window):
+	* src/awn-utils.h:
+	* src/main.c: (main), (enter_notify_event), (leave_notify_event):
+
 2007-02-24  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
 
 	Added Dbus support

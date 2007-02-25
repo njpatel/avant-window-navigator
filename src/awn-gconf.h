@@ -28,8 +28,15 @@
 
 #include <gconf/gconf-client.h>
 
-#include "awn-utils.h"
 
+
+typedef struct {
+	float red;
+	float green;
+	float blue;
+	float alpha;
+
+} AwnColor; /* spelt incorrectly, in the interest of brevity ;) */
 
 typedef struct {
 	
@@ -37,6 +44,7 @@ typedef struct {
 	GtkIconTheme *icon_theme;
 	GtkWidget *bar;
 	GtkWidget *window;
+	GtkWidget *title;
 	
 	/* monitor settings */
 	GdkRectangle monitor;
@@ -45,6 +53,9 @@ typedef struct {
 	int monitor_width;
 	gboolean panel_mode;
 	
+	gboolean auto_hide;
+	gboolean hidden;
+		
 	/* Bar appearance settings */
 	gboolean rounded_corners;
 	gfloat corner_radius;
@@ -94,6 +105,7 @@ typedef struct {
 	GSList *ltest;
 		
 } AwnSettings;
+
 
 AwnSettings* awn_gconf_new(void);
 

@@ -25,6 +25,8 @@
 
 #include "awn-task.h"
 
+#include "awn-utils.h"
+
 #define AWN_TASK_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), AWN_TYPE_TASK, AwnTaskPrivate))
 
 G_DEFINE_TYPE (AwnTask, awn_task, GTK_TYPE_DRAWING_AREA);
@@ -1928,6 +1930,20 @@ _task_remove_launcher (GtkMenuItem *item, AwnTask *task)
 	g_timeout_add(AWN_FRAME_RATE, (GSourceFunc)_task_destroy, (gpointer)task);
 }
 
+static void
+_shell_done (GtkMenuShell *shell, AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	if (priv->settings->auto_hide == FALSE) {
+		if (priv->settings->hidden == TRUE) {
+			awn_show (priv->settings);	
+		}
+		return;
+	}
+	awn_hide (priv->settings);
+}
+
 static void 
 awn_task_create_menu(AwnTask *task, GtkMenu *menu)
 {
@@ -1936,6 +1952,9 @@ awn_task_create_menu(AwnTask *task, GtkMenu *menu)
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
 	item = NULL;
+	
+	g_signal_connect (GTK_MENU_SHELL (menu), "selection-done",
+			  _shell_done, (gpointer)task);
 	
 	if (priv->window != NULL) {
 		item = gtk_separator_menu_item_new ();

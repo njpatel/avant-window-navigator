@@ -27,6 +27,8 @@
 #define AWN_MONITOR_WIDTH	"/apps/avant-window-navigator/monitor_width"
 #define AWN_MONITOR_HEIGHT	"/apps/avant-window-navigator/monitor_height"
 #define AWN_PANEL_MODE		"/apps/avant-window-navigator/panel_mode"
+#define AWN_AUTO_HIDE		"/apps/avant-window-navigator/auto_hide"
+
 
 #define BAR_PATH		"/apps/avant-window-navigator/bar"
 #define BAR_ROUNDED_CORNERS	"/apps/avant-window-navigator/bar/rounded_corners"	/* bool */
@@ -103,6 +105,8 @@ awn_gconf_new()
 	awn_load_int(client, AWN_MONITOR_WIDTH, &s->monitor_width, 1024);
 	awn_load_int(client, AWN_MONITOR_HEIGHT, &s->monitor_height, 768);
 	awn_load_bool(client, AWN_PANEL_MODE, &s->panel_mode, FALSE);
+	awn_load_bool(client, AWN_AUTO_HIDE, &s->auto_hide, FALSE);
+	s->hidden = FALSE;
 	
 	/* Bar settings */
 	gconf_client_add_dir(client, BAR_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);

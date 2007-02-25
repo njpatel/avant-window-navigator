@@ -17,6 +17,8 @@ avant_window_navigator_SOURCES =			\
 	awn-app.h			\
 	awn-app.c      			\
 	awn-dbus-glue.h			\
+	awn-hotspot.h			\
+	awn-hotspot.c			\
 	awn-win-manager.h		\
 	awn-win-manager.c    		\
 	awn-title.h			\
@@ -30,6 +32,7 @@ avant_window_navigator_SOURCES =			\
 	awn-x.h				\
 	awn-x.c				\
 	awn-utils.h			\
+	awn-utils.c			\
 	xutils.h			\
 	xutils.c			
 

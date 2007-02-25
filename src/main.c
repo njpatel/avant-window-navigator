@@ -31,7 +31,8 @@
 #include "awn-app.h"
 #include "awn-win-manager.h"
 #include "awn-task-manager.h"
-
+#include "awn-hotspot.h"
+#include "awn-utils.h"
 #include "awn-task.h"
 
 #define AWN_NAMESPACE "com.google.code.Awn"
@@ -99,10 +100,13 @@ main (int argc, char* argv[])
 	gtk_widget_show_all(settings->window);
 	gtk_window_set_transient_for(GTK_WINDOW(settings->window), GTK_WINDOW(settings->bar));
 	
+	GtkWidget *hot = awn_hotspot_new (settings);
+	gtk_widget_show (hot);
+	
 	g_signal_connect (G_OBJECT(settings->window), "drag-motion",
 	                  G_CALLBACK(drag_motion), (gpointer)settings->window);
 	
-	g_signal_connect(G_OBJECT(settings->window), "enter-notify-event",
+	g_signal_connect(G_OBJECT(hot), "enter-notify-event",
 			 G_CALLBACK(enter_notify_event), (gpointer)settings);	                  
 	g_signal_connect(G_OBJECT(settings->window), "leave-notify-event",
 			 G_CALLBACK(leave_notify_event), (gpointer)settings);
@@ -117,7 +121,7 @@ main (int argc, char* argv[])
 		g_warning ("Failed to make connection to session bus: %s",
 			   error->message);
 		g_error_free (error);
-		exit(1);
+		//exit(1);
 	}
 		
 	proxy = dbus_g_proxy_new_for_name (connection, DBUS_SERVICE_DBUS,
@@ -127,12 +131,12 @@ main (int argc, char* argv[])
 		g_warning ("There was an error requesting the name: %s",
 			   error->message);
 		g_error_free (error);
-		exit(1);
+		//exit(1);
 	}
 	
 	if (ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
 		/* Someone else registered the name before us */
-		exit(1);
+		//exit(1);
 	}
 		
 	/* Register the app on the bus */
@@ -177,17 +181,41 @@ drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
 }
 
 static gboolean HIDDEN = FALSE;
+
 static gboolean 
 enter_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings)
 {
-	//g_print("Enter\n");
+	if (settings->hidden == TRUE) {
+		awn_show (settings);	
+		return FALSE;	
+	}
 	return FALSE;
 }
 
 static gboolean 
 leave_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings)
 {
-	//g_print("Leave\n");
+	gint width, height;
+	gint x, y;
+	gint x_container, y_container;
+		
+	if (settings->auto_hide == FALSE) {
+		if (settings->hidden == TRUE)
+			awn_show (settings);
+		return FALSE;
+	}
+	gtk_window_get_position (GTK_WINDOW (settings->window), &x, &y);
+	gtk_window_get_size (GTK_WINDOW (settings->window), &width, &height);
+	
+	gint x_root = (int)event->x_root;
+	
+	if ( (x < x_root) && (x_root < x+width) && ( ( settings->monitor.height - 50) < event->y_root)) {
+		
+		//g_print ("Do nothing\n", event->y_root);
+	} else {
+		awn_hide (settings);
+	}
+	//g_print ("%d < %f < %d", x, event->x_root, x+width);
 	return FALSE;
 }
 
