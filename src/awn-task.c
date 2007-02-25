@@ -1787,14 +1787,24 @@ awn_task_unset_custom_icon (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	GdkPixbuf *old_icon;
+	char *icon_name = NULL;
 	
 	g_return_if_fail (AWN_IS_TASK (task));
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
 	old_icon = priv->icon;
 	
-	priv->icon = awn_x_get_icon (priv->window, 48, 48);
-	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
+	if (priv->is_launcher) {
+		icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
+		if (!icon_name)
+			priv->icon = awn_x_get_icon (priv->window, 48, 48);
+		
+		priv->icon = icon_loader_get_icon(icon_name);
+		g_free (icon_name);
+        } else {
+        	priv->icon = awn_x_get_icon (priv->window, 48, 48);
+        }
+        priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 	
 	g_object_unref (G_OBJECT (old_icon));
