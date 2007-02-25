@@ -64,6 +64,7 @@ awn_show (AwnSettings *settings)
 	gtk_window_move (GTK_WINDOW (settings->window), x, settings->monitor.height-100);
 	
 	gtk_widget_show (settings->title);
+	settings->hidden = FALSE;
 }
 
 
