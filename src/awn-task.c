@@ -323,9 +323,10 @@ static void
 launch_launched_effect (AwnTask *task )
 {
 	static guint tag = NULL; // 3v1n0: fix animation on multiple clicks
-	if (tag)
+	/*if (tag)
 		g_source_remove(tag);
-	tag = g_timeout_add(30, (GSourceFunc)_task_launched_effect, (gpointer)task);
+	*/
+	g_timeout_add(30, (GSourceFunc)_task_launched_effect, (gpointer)task);
 }
 
 static gboolean
