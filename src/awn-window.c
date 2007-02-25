@@ -301,7 +301,11 @@ _position_window (GtkWidget *window)
 	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
 	
 	x_pos = (int) ((settings->monitor.width - ww) / 2);
-	y_pos = (int) (settings->monitor.height-wh);
+	
+	if (settings->hidden)
+		y_pos = (int)settings->monitor.height;
+	else
+		y_pos = (int) (settings->monitor.height-wh);
 	
 	if (settings->panel_mode)
 		awn_x_set_strut (GTK_WINDOW(window));	
