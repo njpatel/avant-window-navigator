@@ -185,10 +185,7 @@ static gboolean HIDDEN = FALSE;
 static gboolean 
 enter_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings)
 {
-	if (settings->hidden == TRUE) {
-		awn_show (settings);	
-		return FALSE;	
-	}
+	awn_show (settings);	
 	return FALSE;
 }
 
@@ -198,7 +195,7 @@ leave_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *set
 	gint width, height;
 	gint x, y;
 	gint x_container, y_container;
-		
+	
 	if (settings->auto_hide == FALSE) {
 		if (settings->hidden == TRUE)
 			awn_show (settings);
