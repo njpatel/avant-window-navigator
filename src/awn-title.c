@@ -341,7 +341,7 @@ _update_input_shape (GtkWidget* window, int width, int height)
 {
 	static GdkBitmap* pShapeBitmap = NULL;
 	static cairo_t* pCairoContext = NULL;
-
+	g_return_if_fail (GTK_IS_WINDOW (window));
 	pShapeBitmap = (GdkBitmap*) gdk_pixmap_new (NULL, width, height, 1);
 	if (pShapeBitmap)
 	{
