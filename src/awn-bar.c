@@ -89,7 +89,7 @@ awn_bar_new( AwnSettings *set )
 	g_signal_connect (G_OBJECT (this), "configure-event",
 			  G_CALLBACK (_on_configure), NULL);       
         
-        _update_input_shape (GTK_WIDGET(this), AWN_BAR_DEFAULT_WIDTH, AWN_BAR_DEFAULT_HEIGHT);
+        //_update_input_shape (GTK_WIDGET(this), AWN_BAR_DEFAULT_WIDTH, AWN_BAR_DEFAULT_HEIGHT);
         
                
         

@@ -94,7 +94,7 @@ awn_title_new( AwnSettings *sets )
 	g_signal_connect (G_OBJECT (this), "configure-event",
 			  G_CALLBACK (_on_configure), NULL);       
         
-        _update_input_shape (GTK_WIDGET(this), AWN_TITLE_DEFAULT_WIDTH, AWN_TITLE_DEFAULT_HEIGHT);
+        //_update_input_shape (GTK_WIDGET(this), AWN_TITLE_DEFAULT_WIDTH, AWN_TITLE_DEFAULT_HEIGHT);
         
                
         _position_window(GTK_WIDGET(this));
