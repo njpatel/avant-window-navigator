@@ -225,7 +225,6 @@ do_shape_combine_mask (GdkWindow* window, GdkBitmap* mask, gint x, gint y)
 					   x,
 					   y,
 					   pixmap,
-					   ShapeSet);
 }
 #endif
 

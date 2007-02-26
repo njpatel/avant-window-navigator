@@ -25,7 +25,6 @@
 
 #include "awn-bar.h"
 
-
 #include <X11/Xlib.h>
 #include <X11/extensions/shape.h>
 #include <gdk/gdkx.h>
@@ -385,7 +384,6 @@ do_shape_combine_mask (GdkWindow* window, GdkBitmap* mask, gint x, gint y)
 					   x,
 					   y,
 					   pixmap,
-					   ShapeSet);
 }
 #endif
 
