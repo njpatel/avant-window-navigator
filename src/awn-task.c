@@ -537,6 +537,7 @@ _load_pixbufs (AwnTask *task)
 		if (priv->is_launcher) {
 			char *icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
 			priv->pixbufs[i] = icon_loader_get_icon_spec (icon_name, 48+i, 48+i) ;
+			g_free (icon_name);
 		} else {
 			priv->pixbufs[i] = awn_x_get_icon (priv->window, 48+i, 48+i);
 		}
@@ -1451,7 +1452,7 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
 	
 	priv->window = window;
 	if (!priv->is_launcher) {
-		priv->icon = gdk_pixbuf_copy (awn_x_get_icon (priv->window, 48, 48) );
+		priv->icon = awn_x_get_icon_for_window (priv->window, 48, 48);
 		priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 	
@@ -1486,6 +1487,8 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
 	TODO: There _has_ to be a better way than this, may something I am 
 	missing?
 */
+
+
 
 GdkPixbuf * 
 icon_loader_get_icon( const char *name )
@@ -1581,8 +1584,9 @@ awn_task_set_launcher (AwnTask *task, GnomeDesktopItem *item)
 	icon_name = gnome_desktop_item_get_icon (item, priv->settings->icon_theme );
 	if (!icon_name)
 		return FALSE;
+	g_free (icon_name);
 	priv->item = item;
-	priv->icon = icon_loader_get_icon(icon_name);
+	priv->icon = awn_x_get_icon_for_launcher (item, 48, 48);
         
 	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);

@@ -94,7 +94,9 @@ awn_hotspot_new( AwnSettings *sets )
 	g_signal_connect (G_OBJECT (this), "configure-event",
 			  G_CALLBACK (_on_configure), NULL);       
         
-        //_update_input_shape (GTK_WIDGET(this), AWN_HOTSPOT_DEFAULT_WIDTH, AWN_HOTSPOT_DEFAULT_HEIGHT);
+#if GTK_CHECK_VERSION(2,9,0)
+        _update_input_shape (GTK_WIDGET(this), AWN_HOTSPOT_DEFAULT_WIDTH, AWN_HOTSPOT_DEFAULT_HEIGHT);
+#endif  
         
                
         _position_window(GTK_WIDGET(this));
