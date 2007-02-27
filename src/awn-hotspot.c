@@ -139,10 +139,10 @@ static void
 render_pixmap (cairo_t *cr, gint width, gint height)
 {
 	
-	cairo_scale (cr, (double) width, (double) height);
 	cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, 1.0f);
 	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint (cr);
+	cairo_rectangle (cr, 5, 0, width-10, height);
+	cairo_fill (cr);
 	
 
 }
