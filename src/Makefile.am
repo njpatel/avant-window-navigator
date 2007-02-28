@@ -19,8 +19,6 @@ avant_window_navigator_SOURCES =			\
 	awn-dbus-glue.h			\
 	awn-hotspot.h			\
 	awn-hotspot.c			\
-	awn-prefs.h			\
-	awn-prefs.c			\
 	awn-win-manager.h		\
 	awn-win-manager.c    		\
 	awn-title.h			\
