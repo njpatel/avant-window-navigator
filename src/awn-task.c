@@ -22,8 +22,10 @@
 #include <string.h>
 #include <libgnome/gnome-desktop-item.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libgnome/libgnome.h>
 
 #include "awn-task.h"
+
 
 #include "awn-utils.h"
 
@@ -1873,6 +1875,11 @@ awn_task_unset_info (AwnTask *task)
 /********************* MISC FUNCTIONS *******************/
 
 static void
+_task_choose_custom_icon (GtkMenuItem *item, AwnTask *task)
+{
+}	
+
+static void
 _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 {
 	g_print("Preferences for %s\n", awn_task_get_name(task));
@@ -1880,7 +1887,81 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 		TODO : Provide an interface to change the icon of the current
 		       application to one of the users choice. Save it.
 	*/
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	GtkWidget *dialog;
+
+	dialog = gtk_file_chooser_dialog_new ("Open File",
+				      priv->settings->window,
+				      GTK_FILE_CHOOSER_ACTION_OPEN,
+				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+				      NULL);
+
+	int res = gtk_dialog_run (GTK_DIALOG (dialog));
+	
+	if ( res == GTK_RESPONSE_ACCEPT) {
+		char *filename;
+
+		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+		
+		GString *name = NULL;
+		gchar *uri = NULL;
+		
+		if (priv->is_launcher) {
+			name = g_string_new ( gnome_desktop_item_get_string (priv->item, GNOME_DESKTOP_ITEM_EXEC));
+			name = g_string_prepend (name, ".awn/custom-icons/");
+			int i = 0;
+			for (i = 0; i < name->len; i++) {
+				if (name->str[i] == ' ')
+					name->str[i] = '-';
+			}
+			uri = gnome_util_prepend_user_home(name->str);
+			g_string_printf (name, "cp %s %s", filename, uri);
+			g_spawn_command_line_async (name->str, NULL);
+
+			priv->icon = awn_x_get_icon_for_launcher (priv->item, 48, 48);		
+		        priv->icon_width = gdk_pixbuf_get_width(priv->icon);
+			priv->icon_height = gdk_pixbuf_get_height(priv->icon);	
+			
+			gtk_widget_queue_draw (GTK_WIDGET (task));			
+
+		} else if (priv->window != NULL) {
+			WnckApplication *app;
+			app = wnck_window_get_application (priv->window);	
+			
+			g_return_val_if_fail (WNCK_IS_APPLICATION (app), NULL);
+	
+			name = g_string_new (wnck_application_get_name (app));
+			name = g_string_prepend (name, ".awn/custom-icons/");
+			int i = 0;
+			for (i = 0; i < name->len; i++) {
+				if (name->str[i] == ' ')
+					name->str[i] = '-';
+			}
+			
+			uri = gnome_util_prepend_user_home(name->str);
+			g_string_printf (name, "cp %s %s", filename, uri);
+			g_spawn_command_line_async (name->str, NULL);
+
+			priv->icon = awn_x_get_icon_for_window (priv->window, 48, 48);		
+		        priv->icon_width = gdk_pixbuf_get_width(priv->icon);
+			priv->icon_height = gdk_pixbuf_get_height(priv->icon);	
+			gtk_widget_queue_draw (GTK_WIDGET (task));
+
+		} else {
+			return;
+		}
+		g_string_free (name, TRUE);
+		g_free (uri);		
+		g_free (filename);
+	} 
+
+	gtk_widget_destroy (dialog);
 }
+
+
 
 typedef struct {
 	const char *uri;
@@ -1960,18 +2041,8 @@ awn_task_create_menu(AwnTask *task, GtkMenu *menu)
 	g_signal_connect (GTK_MENU_SHELL (menu), "selection-done",
 			  _shell_done, (gpointer)task);
 	
-	if (priv->window != NULL) {
-		item = gtk_separator_menu_item_new ();
-		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show(item);
 		
-		item = gtk_image_menu_item_new_from_stock ("gtk-preferences", 
-							   NULL);
-		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show(item);
-		g_signal_connect (G_OBJECT(item), "activate",
-				  G_CALLBACK(_task_show_prefs), (gpointer)task);
-	} else if (priv->is_launcher) {
+	if (priv->is_launcher && priv->window == NULL) {
 		
 		
 		item = gtk_image_menu_item_new_from_stock ("gtk-remove", 
@@ -1980,9 +2051,19 @@ awn_task_create_menu(AwnTask *task, GtkMenu *menu)
 		gtk_widget_show(item);
 		g_signal_connect (G_OBJECT(item), "activate",
 				  G_CALLBACK(_task_remove_launcher), (gpointer)task);
-	} else {
-		;
 	}
+	
+	item = gtk_separator_menu_item_new ();
+	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
+	gtk_widget_show(item);
+	
+	item = gtk_image_menu_item_new_from_stock ("gtk-preferences", 
+						   NULL);
+	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
+	gtk_widget_show(item);
+	g_signal_connect (G_OBJECT(item), "activate",
+			  G_CALLBACK(_task_show_prefs), (gpointer)task);			  
+	
 }
 
 /********************* awn_task_new * *******************/

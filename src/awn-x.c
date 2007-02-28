@@ -124,9 +124,13 @@ awn_x_get_icon_for_window (WnckWindow *window, gint width, gint height)
 	g_return_val_if_fail (WNCK_IS_APPLICATION (app), NULL);
 	
 	name = g_string_new (wnck_application_get_name (app));
-	name = g_string_append (name, ".png");
 	name = g_string_prepend (name, ".awn/custom-icons/");
-	
+	int i = 0;
+	for (i = 0; i < name->len; i++) {
+		if (name->str[i] == ' ')
+			name->str[i] = '-';
+	}
+			
 	uri = gnome_util_prepend_user_home(name->str);
 	
 	g_print ("%s\n", uri);
@@ -240,9 +244,12 @@ awn_x_get_icon_for_launcher (GnomeDesktopItem *item, gint width, gint height)
 	GdkPixbuf *icon = NULL;
 		
 	name = g_string_new ( gnome_desktop_item_get_string (item, GNOME_DESKTOP_ITEM_EXEC));
-	name = g_string_append (name, ".png");
 	name = g_string_prepend (name, ".awn/custom-icons/");
-	
+	int i = 0;
+	for (i = 0; i < name->len; i++) {
+		if (name->str[i] == ' ')
+			name->str[i] = '-';
+	}	
 	uri = gnome_util_prepend_user_home(name->str);
 	
 	g_print ("%s\n", uri);
