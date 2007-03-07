@@ -1,3 +1,7 @@
+2007-03-07  Neil Jagdish Patel   <njpatel@gmail.com>
+
+	* Listens to theme change signals and updates the bar as required.
+
 2007-03-07  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	* Auto-hide now supports D&D

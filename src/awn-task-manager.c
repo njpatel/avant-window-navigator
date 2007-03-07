@@ -633,6 +633,21 @@ awn_task_manager_update_separator_position (AwnTaskManager *task_manager)
 	
 }
 
+static void
+_task_update_icon (AwnTask *task, AwnTaskManager *task_manager)
+{
+	awn_task_update_icon (task);
+}
+
+static void
+_task_manager_icon_theme_changed (GtkIconTheme *icon_theme, AwnTaskManager *task_manager) 
+{
+	AwnTaskManagerPrivate *priv;
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	g_list_foreach(priv->launchers, (GFunc)_task_update_icon, (gpointer)task_manager);	
+}                                                        
+
 /********************* DBUS *********************************/
 
 typedef struct {
@@ -1151,7 +1166,13 @@ awn_task_manager_new (AwnSettings *settings)
 	/* CONNECT D&D CODE */ 
 	
 	g_signal_connect (G_OBJECT(settings->window), "drag-data-received",
-			  G_CALLBACK(_task_manager_drag_data_recieved), (gpointer)task_manager);                 
+			  G_CALLBACK(_task_manager_drag_data_recieved), (gpointer)task_manager); 
+			  
+	/* THEME CHANGED CODE */
+	GtkIconTheme *theme = gtk_icon_theme_get_default ();
+	
+	g_signal_connect (G_OBJECT(theme), "changed",
+			  G_CALLBACK(_task_manager_icon_theme_changed), (gpointer)task_manager); 	                
 	
 	return task_manager;
 }

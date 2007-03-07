@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+* Awn catches theme-changes signals and updates the launcher icons (window icons are automatic)
+
 * Autohide now supports D&D
 
 * Merged patch by James Willcox that makes the hover effect actually 'bounch' rathe rthan just go up and down.

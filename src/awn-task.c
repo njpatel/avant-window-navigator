@@ -1752,6 +1752,22 @@ awn_task_refresh_icon_geometry (AwnTask *task)
 
 }
 
+void 
+awn_task_update_icon (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	GdkPixbuf *old = NULL;
+	priv = AWN_TASK_GET_PRIVATE (task);
+
+	old = priv->icon;
+	
+	priv->icon = awn_x_get_icon_for_launcher (priv->item, 48, 48);
+        priv->icon_width = gdk_pixbuf_get_width(priv->icon);
+	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
+
+	gdk_pixbuf_unref (old);
+}
+
 /********************* DBUS FUNCTIONS *******************/
 
 void

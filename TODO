@@ -22,13 +22,11 @@ Here's a (incomplete) list of features and fixes which need to be implemented in
 * Work with Autogen >= 1.10
 * Change position of bar (#109)
 * Re-enable fade effect (#110)
-* Listen to theme change signals in KDE & GNOME (launchers) (#111)
 * Bar crashes when mouse-over a closing window (#114)
 * Crashes when used with Deskbar (opening/closing windows) (#115)
 * Memory usage when window icons change (i.e. GIMP) (#132)
 * Speed up resizeing of the bar (#133)
 * Auto-hide causing crashes (#134)
-* Make hot-spot a drag-dest (#135)
 * Gtk-theme-Engine for bar (#142)
 * Startup-notification support
 * Allow choosing the font for the title.
@@ -46,3 +44,5 @@ TO-DOne
 * Separator position doesn't update when you add a new launcher (#44)
 * Bar doesn't resize properly when gimp windows are closed (#114)
 * Change linear icon movement to a more 'bouncing' movement (#83)
+* Make hot-spot a drag-dest (#135)
+* Listen to theme change signals in KDE & GNOME (launchers) (#111)
