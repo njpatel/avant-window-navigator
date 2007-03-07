@@ -62,6 +62,7 @@ main (int argc, char* argv[])
 	GError *error = NULL;
 	guint32 ret;
 	
+	g_type_init();	
 	gtk_init (&argc, &argv);
 	gnome_vfs_init ();
 	
