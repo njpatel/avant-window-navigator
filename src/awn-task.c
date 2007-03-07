@@ -37,7 +37,7 @@ G_DEFINE_TYPE (AwnTask, awn_task, GTK_TYPE_DRAWING_AREA);
 
 #define  AWN_TASK_EFFECT_DIR_DOWN		0
 #define  AWN_TASK_EFFECT_DIR_UP			1
-#define  AWN_TASK_EFFECT_DIR_LEFT		2
+#define  AWN_TASK_EFFECT_DIR_LEFT		2 
 #define  AWN_TASK_EFFECT_DIR_RIGHT		3
 #define  M_PI 					3.14159265358979323846
 #define  AWN_CLICK_IDLE_TIME			450
@@ -270,8 +270,6 @@ _task_launched_effect (AwnTask *task)
 	priv = AWN_TASK_GET_PRIVATE (task);
 	static gint max = 14;	
 	
-	static count = 0;
-	
 	if (priv->effect_lock) {
 		if ( priv->current_effect != AWN_TASK_EFFECT_OPENING)
 			return TRUE;
@@ -326,8 +324,9 @@ _task_launched_effect (AwnTask *task)
 static void
 launch_launched_effect (AwnTask *task )
 {
+	/*
 	static guint tag = NULL; // 3v1n0: fix animation on multiple clicks
-	/*if (tag)
+	if (tag)
 		g_source_remove(tag);
 	*/
 	g_timeout_add(30, (GSourceFunc)_task_launched_effect, (gpointer)task);
@@ -390,10 +389,6 @@ _task_hover_effect2 (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	static float max = 1.0;
-	static float min = 0.1;
-		
-
 	if (priv->effect_lock) {
 		if ( priv->current_effect != AWN_TASK_EFFECT_HOVER)
 			return TRUE;
@@ -461,7 +456,7 @@ icon_loader_get_icon_spec( const char *name, int width, int height )
         	icon = gtk_icon_theme_load_icon( theme, name, width, GTK_ICON_LOOKUP_FORCE_SVG, &error);
         else {
         	g_print("Icon theme could not be loaded");
-        	error = 1;  
+        	error = (GError *) 1;  
         }
         if (icon == NULL) {
                 /* lets try and load directly from file */
@@ -524,6 +519,7 @@ icon_loader_get_icon_spec( const char *name, int width, int height )
         return icon;
 }
 
+/*
 static void
 _load_pixbufs (AwnTask *task)
 {
@@ -554,9 +550,7 @@ _task_hover_effect3 (AwnTask *task)
 	if (!AWN_IS_TASK (task)) return FALSE;
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
-	static gint max = 10;	
 	
-
 	if (priv->effect_lock) {
 		if ( priv->current_effect != AWN_TASK_EFFECT_HOVER)
 			return TRUE;
@@ -594,7 +588,7 @@ _task_hover_effect3 (AwnTask *task)
 		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 		//gtk_widget_set_size_request (GTK_WIDGET(task), priv->icon_width + 12, 100);
 		if (priv->count < 1) {
-			/* finished bouncing, back to normal */
+			//finished bouncing, back to normal
 			if (priv->hover) 
 				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 			else {
@@ -616,7 +610,7 @@ _task_hover_effect3 (AwnTask *task)
 	
 	return TRUE;
 }
-
+*/
 static void
 launch_hover_effect (AwnTask *task )
 {
@@ -689,9 +683,7 @@ _task_fade_out_effect (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	static float min = 0.1;
-		
-
+	
 	if (priv->hover) {
 		//priv->alpha = 1.0;
 		return FALSE;
@@ -721,8 +713,6 @@ _task_fade_in_effect (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	static float max = 1.0;
-	
 	priv->alpha+=0.05;
 	
 	if (priv->alpha >= 1.0 ) {
@@ -845,10 +835,12 @@ _launch_name_change_effect (AwnTask *task)
 	//	g_source_remove(tag);
 	//tag = 
 	g_timeout_add(30, (GSourceFunc)_task_change_name_effect, (gpointer)task);
+	return FALSE;
 }
 
 /**********************  CALLBACKS  **********************/
 
+/*
 static void
 _rounded_rectangle (cairo_t *cr, double w, double h, double x, double y)
 {
@@ -877,14 +869,12 @@ _rounded_corners (cairo_t *cr, double w, double h, double x, double y)
 	cairo_arc (cr, x+radius,   y+radius,   radius, M_PI, M_PI * 1.5);
 
 }
-
+*/
 static void
 draw (GtkWidget *task, cairo_t *cr)
 {
 	AwnTaskPrivate *priv;
 	AwnSettings *settings;
-	GdkPixbuf *pixbuf = NULL;
-	double x, y;
 	double width, height;
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
@@ -923,7 +913,7 @@ draw (GtkWidget *task, cairo_t *cr)
 	
 	/* arrows */
 	cairo_save (cr);
-	double x1, y1;
+	double x1;
 	x1 = width/2.0;
 	cairo_set_source_rgba (cr, settings->arrow_color.red, 
 				   settings->arrow_color.green, 
@@ -1104,15 +1094,11 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 					break;
 				case 2:
 					if (priv->is_launcher)
-						awn_task_launch_unique(task, NULL);
-					// 3v1n0 close on middle-click
-					//g_print("Middle click pressed for %s. Closing it... \n",
-					//	wnck_window_get_name(priv->window));
-					//wnck_window_close(priv->window, event->time);
+						awn_task_launch_unique(AWN_TASK (task), NULL);
 					break;
 				case 3:
 					menu = wnck_create_window_action_menu(priv->window);
-					awn_task_create_menu(AWN_TASK(task), menu);
+					awn_task_create_menu(AWN_TASK(task), GTK_MENU (menu));
 					gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
 							NULL, 3, event->time);
 					break;
@@ -1122,8 +1108,8 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 		} else if (priv->is_launcher) {
 			switch (event->button) {
 				case 1:
-					awn_task_launch(task, NULL);
-					launch_launched_effect(task);			   
+					awn_task_launch(AWN_TASK (task), NULL);
+					launch_launched_effect(AWN_TASK (task));			   
 					break;
 // 				case 2:
 // 					// Manage middle click on launchers
@@ -1131,7 +1117,7 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 // 					break;
 				case 3:
 					menu = gtk_menu_new();
-					awn_task_create_menu(AWN_TASK(task), menu);
+					awn_task_create_menu(AWN_TASK(task), GTK_MENU (menu));
 					gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
 							NULL, 3, event->time);
 					break;
@@ -1156,12 +1142,9 @@ _task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
                                               AwnTask *task)
 {
         
-        glong   *_idata;
-        gchar   *_sdata;
         GList      *li;
 	GList      *list;
 	
-        gboolean dnd_success = FALSE;
         gboolean delete_selection_data = FALSE;
         
         AwnTaskPrivate *priv;
@@ -1174,7 +1157,7 @@ _task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 	}
 	
 	char *res = NULL;
-	res = strstr (selection_data->data, ".desktop");
+	res = strstr ((char *)selection_data->data, ".desktop");
 	if (res)
 		return;
 	
@@ -1220,8 +1203,7 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 	settings = priv->settings;
 	
 	if (priv->title) {
-		gint i = (int)event->x_root;
-		gint x, y, x1;
+		gint x, y;
 		gdk_window_get_origin (task->window, &x, &y);
 		
 		awn_title_show (AWN_TITLE (priv->title), awn_task_get_name(AWN_TASK(task)), x+30, 0);
@@ -1241,7 +1223,7 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 		} else {
 			priv->alpha = 1.0;
 			gtk_widget_queue_draw(GTK_WIDGET(task));
-			launch_fade_in_effect(task);
+			launch_fade_in_effect(AWN_TASK (task));
 		}
 	}
 	
@@ -1270,7 +1252,7 @@ awn_task_win_enter_in (GtkWidget *window, GdkEventMotion *event, AwnTask *task)
 	AwnTaskPrivate *priv;
 	AwnSettings *settings;
 	//g_return_if_fail(AWN_IS_TASK(task));
-	if (!AWN_IS_TASK (task)) return;
+	if (!AWN_IS_TASK (task)) return FALSE;
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
 	settings = priv->settings;
@@ -1287,7 +1269,7 @@ awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *tas
 	AwnTaskPrivate *priv;
 	
 	//g_return_if_fail(AWN_IS_TASK(task));
-	if (!AWN_IS_TASK (task)) return;
+	if (!AWN_IS_TASK (task)) return FALSE;
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
 	priv->alpha = 1.0;
@@ -1366,14 +1348,13 @@ _task_wnck_name_hide (AwnTask *task)
 	priv = AWN_TASK_GET_PRIVATE (task);
 	awn_title_show(AWN_TITLE (priv->title), " ", 20, 0);
 	priv->name_changed = FALSE;
-	//return FALSE;
+	return FALSE;
 }
 
 static void
 _task_wnck_name_changed (WnckWindow *window, AwnTask *task)
 {
-	static guint tag = NULL;
-        AwnTaskPrivate *priv;
+    AwnTaskPrivate *priv;
 	
 	g_return_if_fail (AWN_IS_TASK (task));
 	
@@ -1392,7 +1373,7 @@ _task_wnck_name_changed (WnckWindow *window, AwnTask *task)
         //   wnck_window_get_name (priv->window));
 
 	if (!wnck_window_is_active(priv->window)) {
-		gint i, x, y;
+		gint x, y;
 		gdk_window_get_origin (GTK_WIDGET(task)->window, &x, &y);
 
 		if (!priv->needs_attention) {
@@ -1510,7 +1491,7 @@ icon_loader_get_icon( const char *name )
         	icon = gtk_icon_theme_load_icon( theme, name, 48, 0, &error);
         else {
         	g_print("Icon theme could not be loaded");
-        	error = 1;  
+        	error = (GError *) 1;  
         }
         if (error) {
                 /* lets try and load directly from file */
@@ -1577,8 +1558,7 @@ gboolean
 awn_task_set_launcher (AwnTask *task, GnomeDesktopItem *item)
 {
 	AwnTaskPrivate *priv;
-	const char *icon_name;
-	GtkIconTheme *theme = gtk_icon_theme_get_default();
+	gchar *icon_name;
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
 
@@ -1747,7 +1727,7 @@ awn_task_refresh_icon_geometry (AwnTask *task)
 	AwnTaskPrivate *priv;
 	static gint old_x = 0;
 	static gint old_y = 0;
-	gint x, y, width, height;
+	gint x, y;
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
 	if (priv->window == NULL)
@@ -1891,7 +1871,7 @@ _task_choose_custom_icon (AwnTask *task)
 	GtkWidget *dialog;
 
 	dialog = gtk_file_chooser_dialog_new ("Choose Image...",
-				      priv->settings->window,
+				      GTK_WINDOW (priv->settings->window),
 				      GTK_FILE_CHOOSER_ACTION_OPEN,
 				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
@@ -1930,7 +1910,7 @@ _task_choose_custom_icon (AwnTask *task)
 			WnckApplication *app;
 			app = wnck_window_get_application (priv->window);	
 			
-			g_return_val_if_fail (WNCK_IS_APPLICATION (app), NULL);
+			g_return_if_fail (WNCK_IS_APPLICATION (app));
 	
 			name = g_string_new (wnck_application_get_name (app));
 			name = g_string_prepend (name, ".awn/custom-icons/");
@@ -1972,7 +1952,7 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 	GtkWidget *button, *label;
 	
 	dialog = gtk_dialog_new_with_buttons ("Preferences",
-                                                  priv->settings->window,
+                                                  GTK_WINDOW (priv->settings->window),
                                                   GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                                                   "Change Icon...",
                                                   3,
@@ -2037,7 +2017,6 @@ _task_remove_launcher (GtkMenuItem *item, AwnTask *task)
 	AwnSettings *settings;
 	AwnListTerm term;
 	GString *uri;
-	GSList *res;
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
 	settings = priv->settings;
@@ -2088,7 +2067,7 @@ awn_task_create_menu(AwnTask *task, GtkMenu *menu)
 	item = NULL;
 	
 	g_signal_connect (GTK_MENU_SHELL (menu), "selection-done",
-			  _shell_done, (gpointer)task);
+			  G_CALLBACK(_shell_done), (gpointer)task);
 	
 		
 	if (priv->is_launcher && priv->window == NULL) {

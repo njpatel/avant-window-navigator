@@ -32,12 +32,9 @@
 #include "awn-task.h"
 
 static GList *apps		= NULL; /* I know, I know, globals */
-static AwnApp *active		= NULL;
-static GtkWidget *bar		= NULL;
 static GtkWidget *title		= NULL;
 static AwnSettings *settings	= NULL;
 static AwnApp *last_active 	= NULL;
-static GtkWidget *task		= NULL;
 
 static void awn_win_mgr_window_opened (WnckScreen *screen, WnckWindow *window, GtkWidget *hbox);
 static void awn_win_mgr_window_closed (WnckScreen *screen, WnckWindow *window, GtkWidget *hbox);
@@ -109,7 +106,7 @@ awn_win_mgr_window_opened (WnckScreen *screen, WnckWindow *window, GtkWidget *hb
         		  G_CALLBACK (on_proximity_out_event), (gpointer)app);
 	
 	space = wnck_screen_get_active_workspace(screen);
-	g_list_foreach(apps, _refresh, (gpointer)space);
+	g_list_foreach(apps, (GFunc)_refresh, (gpointer)space);
 }
 
 static void
@@ -139,11 +136,11 @@ awn_win_mgr_window_closed (WnckScreen *screen, WnckWindow *window, GtkWidget *hb
 	
 	xid = wnck_window_get_xid(window);
 	space = wnck_screen_get_active_workspace(screen);
-	g_list_foreach(apps, _destroy, GUINT_TO_POINTER(xid) );
+	g_list_foreach(apps, (GFunc)_destroy, GUINT_TO_POINTER(xid) );
 	
 	
 	space = wnck_screen_get_active_workspace(screen);
-	g_list_foreach(apps, _refresh, (gpointer)space);
+	g_list_foreach(apps, (GFunc)_refresh, (gpointer)space);
 }
 
 
@@ -181,10 +178,10 @@ awn_win_mgr_window_activate (WnckScreen *screen, GtkWidget *hbox)
 	g_return_if_fail (WNCK_IS_WINDOW (window));
 	
 	xid = wnck_window_get_xid(window);
-	g_list_foreach(apps, _activate, GUINT_TO_POINTER(xid) );
+	g_list_foreach(apps, (GFunc)_activate, GUINT_TO_POINTER(xid) );
 	
 	space = wnck_screen_get_active_workspace(screen);
-	g_list_foreach(apps, _refresh, (gpointer)space);
+	g_list_foreach(apps, (GFunc)_refresh, (gpointer)space);
 }
 
 static void 
@@ -193,7 +190,7 @@ awn_win_mgr_workspace_changed (WnckScreen *screen, GtkWidget *hbox)
 	WnckWorkspace *space = NULL;
 	
 	space = wnck_screen_get_active_workspace(screen);
-	g_list_foreach(apps, _refresh, (gpointer)space);
+	g_list_foreach(apps, (GFunc)_refresh, (gpointer)space);
 }
 
 static void
@@ -230,7 +227,7 @@ on_state_changed (WnckWindow *window, WnckWindowState  old,
 	if ( wnck_window_is_skip_tasklist( window ) ){
 		WnckWorkspace *space = NULL;
 	        space = wnck_window_get_workspace(window);
-	        g_list_foreach(apps, _refresh, (gpointer)space);
+	        g_list_foreach(apps, (GFunc)_refresh, (gpointer)space);
 	
 	} 
 	
@@ -253,7 +250,7 @@ on_workspace_changed (WnckWindow *window, AwnApp *app)
 static gboolean 
 on_proximity_in_event (GtkWidget *eb, GdkEventCrossing *event, AwnApp *app)
 {
-	g_return_if_fail (WNCK_IS_WINDOW (app->window));
+	g_return_val_if_fail (WNCK_IS_WINDOW (app->window), FALSE);
 	
 	//g_print("Co-ords : %f , %f\n", event->x_root, event->y_root);
 	gint i = (int)event->x_root;

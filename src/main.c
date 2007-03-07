@@ -56,8 +56,6 @@ main (int argc, char* argv[])
 	AwnSettings* settings;
 	GtkWidget *box = NULL;
 	GtkWidget *task_manager = NULL;
-	GtkWidget *lab = NULL;
-	GtkWidget *eb = NULL;
 	
 	DBusGConnection *connection;
 	DBusGProxy *proxy;
@@ -145,6 +143,8 @@ main (int argc, char* argv[])
 					     G_OBJECT (task_manager));
 	
 	gtk_main ();
+	
+	return 0;
 }
 
 static gboolean
@@ -162,13 +162,6 @@ expose (GtkWidget *widget, GdkEventExpose *event, GtkWindow *window)
 
 static gboolean mouse_over_window = FALSE;
 
-static gboolean
-start_drag_animation ( GtkWindow *window) 
-{
-	
-	
-}
-
 static gboolean 
 drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
                                                      gint            x,
@@ -177,10 +170,8 @@ drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
                                                      GtkWidget       *window)
 {
 	mouse_over_window = TRUE;
-	return;
+	return FALSE;
 }
-
-static gboolean HIDDEN = FALSE;
 
 static gboolean 
 enter_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings)
@@ -194,7 +185,6 @@ leave_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *set
 {
 	gint width, height;
 	gint x, y;
-	gint x_container, y_container;
 	
 	if (settings->auto_hide == FALSE) {
 		if (settings->hidden == TRUE)

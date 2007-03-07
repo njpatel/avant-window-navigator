@@ -30,8 +30,9 @@
 
 #include "awn-task-manager.h"
 
-#include "awn-title.h"
+#include "awn-title.h" 
 #include "awn-task.h"
+#include "awn-bar.h"
 
 #define AWN_TASK_MANAGER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), AWN_TYPE_TASK_MANAGER, AwnTaskManagerPrivate))
 
@@ -44,9 +45,6 @@ static void _task_manager_window_closed (WnckScreen *screen, WnckWindow *window,
 						 AwnTaskManager *task_manager);
 static void _task_manager_window_activate (WnckScreen *screen,
 						AwnTaskManager *task_manager);
-static void _task_manager_workspace_changed (WnckScreen *screen, 
-						AwnTaskManager *task_manager);
-
 static void _task_manager_drag_data_recieved (GtkWidget        *widget,
                                               GdkDragContext   *drag_context,
                                               gint              x,
@@ -56,9 +54,7 @@ static void _task_manager_drag_data_recieved (GtkWidget        *widget,
                                               guint             time,
                                               AwnTaskManager    *task_manager);
 
-static gboolean awn_task_manager_test_dbus (AwnTaskManager *task_manager,
-			    gchar    **title,
-			    GError   **error);
+
 static void _refresh_box(AwnTaskManager *task_manager);
 static void _task_manager_load_launchers(AwnTaskManager *task_manager);
 void awn_task_manager_update_separator_position (AwnTaskManager *task_manager);
@@ -102,7 +98,7 @@ _load_launchers_func (const char *uri, AwnTaskManager *task_manager)
 		return;
 	
 	task = awn_task_new(task_manager, priv->settings);
-	awn_task_set_title (AWN_TASK(task), priv->title_window);
+	awn_task_set_title (AWN_TASK (task), AWN_TITLE(priv->title_window));
 	if (awn_task_set_launcher (AWN_TASK (task), item)) {
 		
 		g_signal_connect (G_OBJECT(task), "drag-data-received",
@@ -112,7 +108,7 @@ _load_launchers_func (const char *uri, AwnTaskManager *task_manager)
 		gtk_box_pack_start(GTK_BOX(priv->launcher_box), task, FALSE, FALSE, 0);
 	
 		_refresh_box (task_manager);
-		awn_task_refresh_icon_geometry(task);
+		awn_task_refresh_icon_geometry(AWN_TASK(task));
 		g_print("LOADED : %s\n", uri);
 	} else {
 		gtk_widget_destroy(task);
@@ -125,8 +121,6 @@ static void
 _task_manager_load_launchers(AwnTaskManager *task_manager)
 {
 	AwnTaskManagerPrivate *priv;
-	GtkWidget *task = NULL;
-	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
 	g_slist_foreach (priv->settings->launchers, (GFunc)_load_launchers_func,
@@ -185,9 +179,9 @@ _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 		
 		wnck_app = wnck_window_get_application(term->window);
         	if (WNCK_IS_APPLICATION (wnck_app))
-        	      	app_name = wnck_application_get_name(wnck_app);
+        	      	app_name = (char*)wnck_application_get_name(wnck_app);
 		else
-			app_name = NULL;
+			app_name = (char*)NULL;
 		str = g_string_new (app_name);
 		str = g_string_ascii_down (str);
 		_normalize (str->str);
@@ -251,10 +245,10 @@ _task_manager_window_has_launcher (AwnTaskManager *task_manager,
 	
 	g_list_foreach(priv->launchers, (GFunc)_find_launcher, (gpointer)&term);
 	
-	task = term.task;
+	task = GTK_WIDGET(term.task);
 	
 	if (task != NULL)
-		return term.task;	
+		return GTK_WIDGET(term.task);	
 	return NULL;
 }
 
@@ -286,7 +280,7 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 		if (task != NULL) {
 			//g_print("\n\n\nFound launcher for %s\n\n\n", wnck_window_get_name(window));
 			if (awn_task_set_window (AWN_TASK (task), window))
-				awn_task_refresh_icon_geometry(task);
+				awn_task_refresh_icon_geometry(AWN_TASK(task));
 			else
 				task = NULL;
 		}
@@ -303,7 +297,7 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 		task = awn_task_new(task_manager, priv->settings);
 		if (awn_task_set_window (AWN_TASK (task), window))
 			;//g_print("Created for %s\n", wnck_window_get_name(window));
-		awn_task_set_title (AWN_TASK(task), priv->title_window);
+		awn_task_set_title (AWN_TASK(task), AWN_TITLE(priv->title_window));
 		priv->tasks = g_list_append(priv->tasks, (gpointer)task);
 		gtk_box_pack_start(GTK_BOX(priv->tasks_box), task, FALSE, FALSE, 0);
 		
@@ -327,7 +321,7 @@ _win_reparent (AwnTask *task, AwnTaskManager *task_manager)
 	
 	g_return_if_fail (AWN_IS_TASK(task));
 	window = awn_task_get_window(task);
-	new_task = _task_manager_window_has_launcher(task_manager, window);
+	new_task = AWN_TASK (_task_manager_window_has_launcher(task_manager, window));
 	
 	if (new_task) {
 		if (awn_task_set_window (AWN_TASK (new_task), window)) {
@@ -367,7 +361,7 @@ typedef struct {
 static void
 _task_destroy (AwnTask *task, AwnDestroyTerm *term) 
 {
-	guint window_id, task_id;
+	guint task_id;
 	
 	g_return_if_fail(AWN_IS_TASK(task));
 	
@@ -397,9 +391,9 @@ _task_manager_window_closed (WnckScreen *screen, WnckWindow *window,
 	term.xid = xid;
 	term.was_launcher = 0;
 	term.list = priv->launchers;
-	g_list_foreach (priv->launchers, _task_destroy, (gpointer)&term);
+	g_list_foreach (priv->launchers, (GFunc)_task_destroy, (gpointer)&term);
 	term.list = priv->tasks;
-	g_list_foreach (priv->tasks, _task_destroy, (gpointer)&term);
+	g_list_foreach (priv->tasks, (GFunc)_task_destroy, (gpointer)&term);
 	
 	_reparent_windows(task_manager);	
 	_refresh_box(task_manager);
@@ -412,23 +406,8 @@ _task_manager_window_activate (WnckScreen *screen,
 	_refresh_box(task_manager);
 }
 
-static void 
-_task_manager_workspace_changed (WnckScreen *screen, 
-						AwnTaskManager *task_manager)
-{
-	g_print("\n***AWN-TASK-MANAGER*** - Workspace Changed\n");
-}
 
 /********************************* D&D code *****************************/
-
-enum {
-        TARGET_STRING
-};
-
-/* datatype (string), restrictions on DnD (GtkTargetFlags), datatype (int) */
-static GtkTargetEntry target_list[] = {
-	{ "STRING", 0, 0 },
-};
 
 static void 
 _task_manager_drag_data_recieved (GtkWidget *widget, GdkDragContext *context, 
@@ -436,8 +415,7 @@ _task_manager_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 				  guint target_type, guint time,
                                               AwnTaskManager *task_manager)
 {
-        glong   *_idata;
-        gchar   *_sdata;
+        gchar   *_sdata = NULL;
         
         gboolean dnd_success = FALSE;
         gboolean delete_selection_data = FALSE;
@@ -488,7 +466,7 @@ _task_manager_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 		return;
 	
 	task = awn_task_new(task_manager, priv->settings);
-	awn_task_set_title (AWN_TASK(task), priv->title_window);
+	awn_task_set_title (AWN_TASK(task), AWN_TITLE(priv->title_window));
 	if (awn_task_set_launcher (AWN_TASK (task), item)) {
 		
 		g_signal_connect (G_OBJECT(task), "drag-data-received",
@@ -522,13 +500,6 @@ _task_manager_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 }
 
 /*****************  END OF D&D *************************************/
-
-static int
-_task_fails (AwnTask *task)
-{
-	
-	return 0;
-}
 
 static int num_tasks = 0;
 
@@ -604,10 +575,10 @@ _refresh_box(AwnTaskManager *task_manager)
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
 	space = wnck_screen_get_active_workspace(priv->screen);
-	g_list_foreach(priv->launchers, _task_refresh, (gpointer)task_manager);
+	g_list_foreach(priv->launchers, (GFunc)_task_refresh, (gpointer)task_manager);
 	
 	num_tasks = 0;
-	g_list_foreach(priv->tasks, _task_refresh, (gpointer)task_manager);
+	g_list_foreach(priv->tasks, (GFunc)_task_refresh, (gpointer)task_manager);
 	if (num_tasks == 0) {
 		gtk_widget_hide (priv->eb);		
 	} else {
@@ -674,12 +645,12 @@ _dbus_find_task (AwnTask *task, AwnDBusTerm *term)
 	gchar *temp;
 	
 	if (term->name) {
-		temp = awn_task_get_application (task);
+		temp = (gchar *)awn_task_get_application (task);
 		if (strcmp (term->name, temp) == 0) {
 			term->task = task;
 			return;
 		}
-		temp = awn_task_get_name (task);
+		temp = (gchar *)awn_task_get_name (task);
 		if (strcmp (term->name, temp) == 0) {
 			term->task = task;
 			return;
@@ -707,14 +678,14 @@ _dbus_find_task (AwnTask *task, AwnDBusTerm *term)
 static void
 __find_by_name (AwnTaskManagerPrivate *priv, AwnDBusTerm *term, const gchar *name)
 {
-	term->name = name;
-	term->xid = NULL;
+	term->name = (char *)name;
+	term->xid = 0;
 	term->pid = 0;
 	term->task = NULL;
 	
-	g_list_foreach(priv->launchers, _dbus_find_task, (gpointer)term);
+	g_list_foreach(priv->launchers, (GFunc)_dbus_find_task, (gpointer)term);
 	if (term->task == NULL) {
-		g_list_foreach(priv->tasks, _dbus_find_task, (gpointer)term);
+		g_list_foreach(priv->tasks, (GFunc)_dbus_find_task, (gpointer)term);
 	}
 }
 
@@ -726,9 +697,9 @@ __find_by_xid (AwnTaskManagerPrivate *priv, AwnDBusTerm *term, glong xid)
 	term->pid = 0;
 	term->task = NULL;
 	
-	g_list_foreach(priv->launchers, _dbus_find_task, (gpointer)term);
+	g_list_foreach(priv->launchers, (GFunc)_dbus_find_task, (gpointer)term);
 	if (term->task == NULL) {
-		g_list_foreach(priv->tasks, _dbus_find_task, (gpointer)term);
+		g_list_foreach(priv->tasks, (GFunc)_dbus_find_task, (gpointer)term);
 	}
 }
 
@@ -740,9 +711,9 @@ __find_by_pid (AwnTaskManagerPrivate *priv, AwnDBusTerm *term, gint pid)
 	term->pid = pid;
 	term->task = NULL;
 	
-	g_list_foreach(priv->launchers, _dbus_find_task, (gpointer)term);
+	g_list_foreach(priv->launchers, (GFunc)_dbus_find_task, (gpointer)term);
 	if (term->task == NULL) {
-		g_list_foreach(priv->tasks, _dbus_find_task, (gpointer)term);
+		g_list_foreach(priv->tasks, (GFunc)_dbus_find_task, (gpointer)term);
 	}
 }
 
@@ -792,7 +763,7 @@ awn_task_manager_set_task_icon (AwnTaskManager *task_manager,
 	/* Try and load icon from path */
 	if (icon_path == NULL) {
 		awn_task_unset_custom_icon (term.task);
-		return;
+		return TRUE;
 	}
 	icon = gdk_pixbuf_new_from_file_at_scale (icon_path,
                                                   46,
@@ -802,7 +773,7 @@ awn_task_manager_set_task_icon (AwnTaskManager *task_manager,
 	if (icon)
 		awn_task_set_custom_icon (term.task, icon);
 	else
-		g_print("%s Not Found\n");                                                
+		g_print("%s Not Found\n", name);                                                
 	//g_free (icon_path);
 	return TRUE;
 }
@@ -815,7 +786,6 @@ awn_task_manager_set_task_progress (AwnTaskManager *task_manager,
 {
 	AwnTaskManagerPrivate *priv;
 	AwnDBusTerm term;
-	GdkPixbuf *icon;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
@@ -838,7 +808,6 @@ awn_task_manager_set_task_info (AwnTaskManager *task_manager,
 {
 	AwnTaskManagerPrivate *priv;
 	AwnDBusTerm term;
-	GdkPixbuf *icon;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
@@ -927,7 +896,6 @@ awn_task_manager_unset_task_icon_by_name (AwnTaskManager *task_manager,
 {
 	AwnTaskManagerPrivate *priv;
 	AwnDBusTerm term;
-	GdkPixbuf *icon;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
@@ -950,7 +918,6 @@ awn_task_manager_unset_task_icon_by_xid (AwnTaskManager *task_manager,
 {
 	AwnTaskManagerPrivate *priv;
 	AwnDBusTerm term;
-	GdkPixbuf *icon;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
@@ -974,7 +941,6 @@ awn_task_manager_set_progress_by_name (AwnTaskManager *task_manager,
 {
 	AwnTaskManagerPrivate *priv;
 	AwnDBusTerm term;
-	GdkPixbuf *icon;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
@@ -998,7 +964,6 @@ awn_task_manager_set_progress_by_xid (AwnTaskManager *task_manager,
 {
 	AwnTaskManagerPrivate *priv;
 	AwnDBusTerm term;
-	GdkPixbuf *icon;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
@@ -1020,7 +985,6 @@ awn_task_manager_set_info_by_name (AwnTaskManager *task_manager,
 {
 	AwnTaskManagerPrivate *priv;
 	AwnDBusTerm term;
-	GdkPixbuf *icon;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
@@ -1043,7 +1007,6 @@ awn_task_manager_set_info_by_xid (AwnTaskManager *task_manager,
 {
 	AwnTaskManagerPrivate *priv;
 	AwnDBusTerm term;
-	GdkPixbuf *icon;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
@@ -1064,7 +1027,6 @@ awn_task_manager_unset_info_by_name (AwnTaskManager *task_manager,
 {
 	AwnTaskManagerPrivate *priv;
 	AwnDBusTerm term;
-	GdkPixbuf *icon;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
@@ -1086,7 +1048,6 @@ awn_task_manager_unset_info_by_xid (AwnTaskManager *task_manager,
 {
 	AwnTaskManagerPrivate *priv;
 	AwnDBusTerm term;
-	GdkPixbuf *icon;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	
@@ -1164,11 +1125,11 @@ awn_task_manager_new (AwnSettings *settings)
 		
 	priv->title_window = awn_title_new(priv->settings);
 	settings->title = priv->title_window;
-	awn_title_show(priv->title_window, " ", 0, 0);
+	awn_title_show(AWN_TITLE(priv->title_window), " ", 0, 0);
 	gtk_widget_show(priv->title_window);
 	
 	
-	_task_manager_load_launchers(task_manager);
+	_task_manager_load_launchers(AWN_TASK_MANAGER (task_manager));
 	
 	/* LIBWNCK SIGNALS */
 	g_signal_connect (G_OBJECT(priv->screen), "window_opened",

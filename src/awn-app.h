@@ -28,6 +28,7 @@
 
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE 1
 #include <libwnck/libwnck.h>
+#include <libwnck/window-action-menu.h>
 
 #include "awn-gconf.h"
 
@@ -85,7 +86,7 @@ AwnApp* awn_app_new (WnckWindow *window, AwnSettings *sets);
 void awn_app_close (AwnApp *app);
 void awn_app_set_needs_attention(AwnApp *app, gboolean needs_attention);
 
-void awn_app_set_active(AwnApp *app, gboolean active);
+void awn_app_set_active(AwnApp *app, gboolean active); 
 
 
 

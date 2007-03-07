@@ -45,8 +45,7 @@ AwnApp*
 awn_app_new (WnckWindow *window, AwnSettings *sets)
 {
 	settings = sets;
-	GdkPixbuf *icon = NULL;
-	AwnApp *app = g_new0 (AwnApp, 1);
+	AwnApp *app = g_new0 (AwnApp, 1); 
 	
 	app->window = window;
 	app->xid =wnck_window_get_xid(app->window);
@@ -153,7 +152,7 @@ on_button_press_event  (GtkWidget *widget, GdkEventButton *event, WnckWindow *wi
 			break;
 		
 		case 3:
-			menu = wnck_create_window_action_menu(win);
+			menu = ( GTK_WIDGET(wnck_create_window_action_menu(win)) );
 			gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
 						       NULL, 3, event->time);
 			break;

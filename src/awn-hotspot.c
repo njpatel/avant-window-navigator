@@ -31,7 +31,7 @@
 
 G_DEFINE_TYPE (AwnHotspot, awn_hotspot, GTK_TYPE_WINDOW)
 
-#define M_PI		3.14159265358979323846 
+#define M_PI		3.14159265358979323846  
 
 static gint AWN_HOTSPOT_DEFAULT_WIDTH		= 1024;
 static gint AWN_HOTSPOT_DEFAULT_HEIGHT		= 2;
@@ -82,7 +82,7 @@ awn_hotspot_new( AwnSettings *sets )
         
         
         
-        gtk_window_resize (GTK_WIDGET(this), settings->monitor.width, AWN_HOTSPOT_DEFAULT_HEIGHT);
+        gtk_window_resize (GTK_WINDOW(this), settings->monitor.width, AWN_HOTSPOT_DEFAULT_HEIGHT);
         
         g_signal_connect (G_OBJECT (this),"destroy",
 			  G_CALLBACK (gtk_main_quit), NULL);
@@ -110,8 +110,6 @@ awn_hotspot_destroy       (GtkObject   *object)
   g_print("Destroyed\n");
   g_return_if_fail(object != NULL);
   g_return_if_fail(IS_AWN_HOTSPOT(object));
-
-  AwnHotspot *hotspot = AWN_HOTSPOT(object);
 
 }
 

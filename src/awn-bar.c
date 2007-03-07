@@ -36,11 +36,10 @@ G_DEFINE_TYPE (AwnBar, awn_bar, GTK_TYPE_WINDOW)
 
 static AwnSettings *settings		= NULL;
 static gint dest_width			= 0;
-static current_width 			= 400;
-static gint screen_width		= 1024;
+static gint current_width 		= 400;
 static int separator			= 0;
+static GtkWidgetClass *parent_class = NULL;
 
-static void awn_bar_destroy (GtkObject *object);
 static void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
 
 static void _update_input_shape (GtkWidget* window, int width, int height);
@@ -81,7 +80,7 @@ awn_bar_new( AwnSettings *set )
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);
         
-        _position_window(GTK_WINDOW(this));
+        _position_window(GTK_WIDGET(this));
         
         g_signal_connect (G_OBJECT (this), "expose-event",
 			  G_CALLBACK (_on_expose), NULL);
@@ -306,8 +305,6 @@ render (cairo_t *cr, gint x_width, gint height)
 gboolean 
 _on_expose (GtkWidget *widget, GdkEventExpose *expose)
 {
-	static oWidth;
-	static oHeight;
 	gint width;
 	gint height;
 	cairo_t *cr = NULL;
@@ -457,22 +454,6 @@ static gint resizing = 0;
 
 static gint step     = 2;
 
-static void
-redraw (GtkWidget *widget, gint width, gint height)
-{
-	cairo_t *cr = NULL;
-
-	cr = gdk_cairo_create (widget->window);
-	if (!cr)
-		return ;
-
-	render (cr, width, height);
-	//render3 (cr, width, height);
-	cairo_destroy (cr);
-	
-	return ;
-}
-
 static gboolean
 resize( GtkWindow *window)
 {
@@ -505,7 +486,7 @@ awn_bar_resize(GtkWindow *window, gint width)
                              
         } else {
                 resizing = 1;
-                g_timeout_add(18, (GSourceFunc*)resize, (gpointer)window);
+                g_timeout_add(18, (GSourceFunc)resize, (gpointer)window);
         }
                 
 }

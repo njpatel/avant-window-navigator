@@ -23,7 +23,7 @@
 */
 
 
-#include "config.h"
+#include "config.h" 
 #include "awn-x.h"
 
 #include <X11/Xlib.h>
@@ -114,7 +114,6 @@ awn_x_get_icon_for_window (WnckWindow *window, gint width, gint height)
 	
 	WnckApplication *app;
 	GString *name = NULL;
-	gchar *home = NULL;
 	gchar *uri = NULL;
 	GdkPixbuf *icon = NULL;
 		
@@ -173,7 +172,7 @@ icon_loader_get_icon_spec( const char *name, int width, int height )
         	icon = gtk_icon_theme_load_icon( theme, name, width, GTK_ICON_LOOKUP_FORCE_SVG, &error);
         else {
         	g_print("Icon theme could not be loaded");
-        	error = 1;  
+        	error = (GError *) 1;  
         }
         if (icon == NULL) {
                 /* lets try and load directly from file */

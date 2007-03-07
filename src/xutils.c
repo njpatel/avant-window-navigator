@@ -27,7 +27,7 @@
 
 
 
-static WnckClientType client_type = 0;
+static WnckClientType client_type = 0; 
 
 
 
@@ -329,7 +329,7 @@ _wnck_get_string_property_latin1 (Window  xwindow,
       return NULL;
     }
 
-  retval = g_strdup (str);
+  retval = g_strdup ( (gchar *)str );
   
   XFree (str);
   
@@ -376,7 +376,7 @@ _wnck_get_utf8_property (Window  xwindow,
       return NULL;
     }
 
-  if (!g_utf8_validate (val, nitems, NULL))
+  if (!g_utf8_validate ( (gchar *)val, nitems, NULL))
     {
       g_warning ("Property %s contained invalid UTF-8\n",
                  _wnck_atom_name (atom));
@@ -384,7 +384,7 @@ _wnck_get_utf8_property (Window  xwindow,
       return NULL;
     }
   
-  retval = g_strndup (val, nitems);
+  retval = g_strndup ( (gchar *)val, nitems);
   
   XFree (val);
   
@@ -638,7 +638,7 @@ _wnck_set_utf8_list (Window   xwindow,
 		   xwindow,
                    atom,
 		   utf8_string, 8, PropModeReplace,
-		   flattened->str, flattened->len);
+		   (guchar *) flattened->str, flattened->len);
   
   _wnck_error_trap_pop ();
 
@@ -1847,27 +1847,6 @@ _wnck_icon_cache_get_is_fallback (WnckIconCache *icon_cache)
   return icon_cache->origin == USING_FALLBACK_ICON;
 }
 
-static void
-replace_cache (WnckIconCache *icon_cache,
-               IconOrigin     origin,
-               GdkPixbuf     *new_icon,
-               GdkPixbuf     *new_mini_icon)
-{
-  clear_icon_cache (icon_cache, FALSE);
-  
-  icon_cache->origin = origin;
-
-  if (new_icon)
-    g_object_ref (G_OBJECT (new_icon));
-
-  icon_cache->icon = new_icon;
-
-  if (new_mini_icon)
-    g_object_ref (G_OBJECT (new_mini_icon));
-
-  icon_cache->mini_icon = new_mini_icon;
-}
-
 static GdkPixbuf*
 scaled_from_pixdata (guchar *pixdata,
                      int     w,
@@ -1945,7 +1924,8 @@ _wnck_get_window_geometry (Screen *screen,
                            int    *widthp,
                            int    *heightp)
 {
-  int x, y, width, height, bw, depth;
+  int x, y;
+  unsigned int width, height, bw, depth;
   Window root_window;
 
   width = 1;

@@ -36,7 +36,7 @@ G_DEFINE_TYPE (AwnTitle, awn_title, GTK_TYPE_WINDOW)
 static gint AWN_TITLE_DEFAULT_WIDTH		= 1024;
 static gint AWN_TITLE_DEFAULT_HEIGHT		= 50;
 
-static AwnSettings *settings = NULL;
+static AwnSettings *settings = NULL; 
 
 
 static void awn_title_destroy (GtkObject *object);
@@ -82,7 +82,7 @@ awn_title_new( AwnSettings *sets )
         
         
         
-        gtk_window_resize (GTK_WIDGET(this), settings->monitor.width, AWN_TITLE_DEFAULT_HEIGHT);
+        gtk_window_resize (GTK_WINDOW(this), settings->monitor.width, AWN_TITLE_DEFAULT_HEIGHT);
         
         g_signal_connect (G_OBJECT (this),"destroy",
 			  G_CALLBACK (gtk_main_quit), NULL);
@@ -113,8 +113,6 @@ awn_title_destroy       (GtkObject   *object)
   g_print("Destroyed\n");
   g_return_if_fail(object != NULL);
   g_return_if_fail(IS_AWN_TITLE(object));
-
-  AwnTitle *title = AWN_TITLE(object);
 
 }
 
@@ -157,37 +155,6 @@ _rounded_corners (cairo_t *cr, double w, double h, double x, double y)
 	cairo_arc (cr, x+radius,   y+h-radius, radius, M_PI * 0.5, M_PI);
 	cairo_arc (cr, x+radius,   y+radius,   radius, M_PI, M_PI * 1.5);
 
-}
-
-static void
-render_bg (cairo_t *cr, double width, double height, double x, double y )
-{
-	/* a custom shape, that could be wrapped in a function */
-	double x0  = x +0.5,   /*< parameters like cairo_rectangle */	
-	y0	   = y +0.5,
-	rect_width  = width,
-	rect_height = height,
-	radius = height/2.0;   /*< and an approximate curvature radius */
-
-	double x1,y1;
-
-	x1=x0+rect_width;
-	y1=y0+rect_height;
-	
-	cairo_move_to  (cr, x0, y0 + radius);
-	cairo_curve_to (cr, x0 , y0, x0 , y0, x0 + radius, y0);
-	cairo_line_to (cr, x1 - radius, y0);
-	cairo_curve_to (cr, x1, y0, x1, y0, x1, y0 + radius);
-	cairo_line_to (cr, x1 , y1 - radius);
-	cairo_curve_to (cr, x1, y1, x1, y1, x1 - radius, y1);
-	cairo_line_to (cr, x0 + radius, y1);
-	cairo_curve_to (cr, x0, y1, x0, y1, x0, y1- radius);
-	
-
-	cairo_close_path (cr);
-
-	//cairo_set_source_rgb (cr, 0.5,0.5,1);
-	cairo_fill_preserve (cr);
 }
 
 static void 
@@ -368,8 +335,8 @@ _update_input_shape (GtkWidget* window, int width, int height)
 static gboolean 
 _on_expose (GtkWidget *widget, GdkEventExpose *expose, AwnTitle *title)
 {
-	static oWidth;
-	static oHeight;
+	static gint oWidth;
+	static gint oHeight;
 	gint width;
 	gint height;
 	cairo_t *cr = NULL;
@@ -432,45 +399,8 @@ awn_title_resize(AwnTitle *title)
 	gtk_window_resize(GTK_WINDOW(title), 1, 100);
 }
 
-static char * name		= NULL;
-static gint current_x		= 0;
+
 static gint dest_x		= 0;
-static gint step		= 100;
-
-static gboolean
-show_text( AwnTitle *title)
-{
-	/*
-	if ( strcmp(name, title->text) != 0 )
-		return FALSE;
-	*/
-	if (current_x == dest_x) {
-		return FALSE;
-	}
-	
-	if (current_x < dest_x) {
-		if ( (dest_x - current_x) < step) 
-			current_x += step/4;
-		else
-			current_x += step;
-	} else {
-		if ( (current_x - dest_x) < step) 
-			current_x -= step/4;
-		else
-			current_x -= step;
-	}
-		
-	if ( current_x > dest_x ) {
-		title->x_pos = dest_x;
-		current_x = dest_x;
-	} else 
-		title->x_pos = current_x;
-	
-	_on_expose(GTK_WIDGET(title), NULL, title);
-	return TRUE;
-}
-
-
 
 void 
 awn_title_show (AwnTitle *title, const char *name, gint x, gint y)

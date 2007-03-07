@@ -33,7 +33,7 @@
 #include "awn-x.h"
 
 
-G_DEFINE_TYPE (AwnWindow, awn_window, GTK_TYPE_WINDOW)
+G_DEFINE_TYPE (AwnWindow, awn_window, GTK_TYPE_WINDOW) 
 
 #define AWN_WINDOW_DEFAULT_WIDTH		300
 #define AWN_WINDOW_DEFAULT_HEIGHT		100
@@ -43,7 +43,7 @@ static gboolean stop_position = TRUE;
 static gboolean is_positioning = FALSE;
 static gint x_pos = 0;
 static gint y_pos = 0;
-static current_pos = 0;
+static gint current_pos = 0;
 
 static const GtkTargetEntry drop_types[] = {
 	{ "STRING", 0, 0 }
@@ -51,7 +51,6 @@ static const GtkTargetEntry drop_types[] = {
 static const gint n_drop_types = G_N_ELEMENTS (drop_types);
 
 
-static void awn_window_destroy (GtkObject *object);
 static void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
 
 static void _update_input_shape (GtkWidget* window, int width, int height);
@@ -105,7 +104,7 @@ awn_window_new( AwnSettings *set )
         
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);
-        gtk_window_resize (GTK_WIDGET(this), AWN_WINDOW_DEFAULT_WIDTH, AWN_WINDOW_DEFAULT_HEIGHT);
+        gtk_window_resize (GTK_WINDOW(this), AWN_WINDOW_DEFAULT_WIDTH, AWN_WINDOW_DEFAULT_HEIGHT);
         g_signal_connect (G_OBJECT (this), "expose-event",
 			  G_CALLBACK (_on_expose), NULL);
 	
@@ -145,8 +144,8 @@ render (cairo_t *cr, gint width, gint height)
 static gboolean 
 _on_expose (GtkWidget *widget, GdkEventExpose *expose)
 {
-	static oWidth;
-	static oHeight;
+	static gint oWidth;
+	static gint oHeight;
 	gint width;
 	gint height;
 	cairo_t *cr = NULL;
@@ -234,7 +233,6 @@ do_shape_combine_mask (GdkWindow* window, GdkBitmap* mask, gint x, gint y)
 static void 
 _update_input_shape (GtkWidget* window, int width, int height)
 {
-	Pixmap pixmap;
 	static GdkBitmap* pShapeBitmap = NULL;
 	static cairo_t* pCairoContext = NULL;
 	g_return_if_fail (GTK_IS_WINDOW (window));
@@ -291,15 +289,13 @@ _position_func (GtkWidget *window)
 		current_pos--;
 	}
 	gtk_window_move(GTK_WINDOW(window), current_pos, y_pos);
+	return FALSE;
 }
 
 static void
 _position_window (GtkWidget *window)
 {
 	gint ww, wh;
-	gint x, y;
-	
-	
 	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
 	
 	x_pos = (int) ((settings->monitor.width - ww) / 2);

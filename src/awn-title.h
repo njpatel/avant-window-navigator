@@ -24,6 +24,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <string.h>
 
 #include "awn-gconf.h"
 

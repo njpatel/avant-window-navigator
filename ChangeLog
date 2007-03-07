@@ -1,3 +1,10 @@
+2007-03-07  Christian Kirbach  <christian.kirbach@googlemail.com>
+
+	reviewed by: Neil J. Patel
+
+	* Patch fixed 80+ compiler warnings.
+	* njpatel fixed the rest, now about 2-3 warnings when compiling.
+	
 2007-03-07  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	* Updated TODO

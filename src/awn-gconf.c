@@ -69,7 +69,6 @@
 /* globals */
 static AwnSettings *settings		= NULL;
 static GConfClient *client 		= NULL;
-static GtkWidget *update_window		= NULL;
 
 /* prototypes */
 static void awn_load_bool(GConfClient *client, const gchar* key, gboolean *data, gboolean def);
@@ -159,12 +158,6 @@ awn_gconf_new()
 	return s;
 }
 
-static void
-awn_update_window ()
-{
-	/* TODO : Force an update of the bar */
-}
-
 static void 
 awn_notify_bool (GConfClient *client, guint cid, GConfEntry *entry, gboolean* data)
 {
@@ -183,7 +176,7 @@ awn_notify_string (GConfClient *client, guint cid, GConfEntry *entry, gchar** da
 	GConfValue *value = NULL;
 	
 	value = gconf_entry_get_value(entry);
-	*data = gconf_value_get_string(value);
+	*data = (gchar *) gconf_value_get_string(value);
 	
 	//g_print("%s is %s\n", gconf_entry_get_key(entry), *data);
 }
@@ -215,7 +208,7 @@ awn_notify_color (GConfClient *client, guint cid, GConfEntry *entry, AwnColor* c
 	float colors[4];
 	
 	value = gconf_entry_get_value(entry);
-	hex2float(gconf_value_get_string(value), colors);
+	hex2float( (gchar *)gconf_value_get_string(value), colors);
 	
 	color->red = colors[0];
 	color->green = colors[1];
@@ -237,7 +230,7 @@ awn_load_bool(GConfClient *client, const gchar* key, gboolean *data, gboolean de
 		gconf_client_set_bool (client, key, def, NULL);
 		*data = def;
 	}
-	gconf_client_notify_add (client, key, awn_notify_bool, data, NULL, NULL);
+	gconf_client_notify_add (client, key, (GConfClientNotifyFunc)awn_notify_bool, data, NULL, NULL);
 }
 
 static void
@@ -254,7 +247,7 @@ awn_load_string(GConfClient *client, const gchar* key, gchar **data, const char 
 		*data = g_strdup(def);
 	}
 	
-	gconf_client_notify_add (client, key, awn_notify_string, data, NULL, NULL);
+	gconf_client_notify_add (client, key, (GConfClientNotifyFunc)awn_notify_string, data, NULL, NULL);
 }
 
 static void
@@ -271,7 +264,7 @@ awn_load_float(GConfClient *client, const gchar* key, gfloat *data, float def)
 		*data = def;
 	}
 	
-	gconf_client_notify_add (client, key, awn_notify_float, data, NULL, NULL);
+	gconf_client_notify_add (client, key, (GConfClientNotifyFunc)awn_notify_float, data, NULL, NULL);
 }
 
 static void
@@ -288,7 +281,7 @@ awn_load_int(GConfClient *client, const gchar* key, int *data, int def)
 		*data = def;
 	}
 	
-	gconf_client_notify_add (client, key, awn_notify_float, data, NULL, NULL);
+	gconf_client_notify_add (client, key, (GConfClientNotifyFunc)awn_notify_int, data, NULL, NULL);
 }
 
 static void
@@ -307,21 +300,21 @@ awn_load_color(GConfClient *client, const gchar* key, AwnColor *color, const cha
 	} else {
 		g_print("%s unset, setting now\n", key);
 		gconf_client_set_string (client, key, def, NULL);
-		hex2float (def, colors);
+		hex2float ( (gchar*)def, colors);
 		color->red = colors[0];
 		color->green = colors[1];
 		color->blue = colors[2];
 		color->alpha = colors[3];
 	}
 		
-	gconf_client_notify_add (client, key, awn_notify_color, color, NULL, NULL);
+	gconf_client_notify_add (client, key, (GConfClientNotifyFunc)awn_notify_color, color, NULL, NULL);
 }
 
 static void
 awn_load_string_list(GConfClient *client, const gchar* key, GSList **data, GSList *def)
 {
 	GConfValue *value = NULL;
-	GSList *slist = def;
+	//GSList *slist = def;
 	
 	value = gconf_client_get(client, key, NULL);
 	if (value) {

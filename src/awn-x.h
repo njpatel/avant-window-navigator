@@ -17,7 +17,7 @@
  *
  *  Author : Neil Jagdish Patel <njpatel@gmail.com>
  *
- *  Notes : Contains functions allowing Awn to get a icon from XOrg using the
+ *  Notes : Contains functions allowing Awn to get an icon from XOrg using the
  *          xid. Please note that all icon reading code  has been lifted from
  *	    libwnck (XUtils.c), so track bugfixes in libwnck.
 */
@@ -25,11 +25,13 @@
 #ifndef	_AWN_X_H
 #define	_AWN_X_H
 
+#include <string.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE 1
 #include <libwnck/libwnck.h>
+
 #include <libgnome/gnome-desktop-item.h>
 #include <libgnomevfs/gnome-vfs.h>
 

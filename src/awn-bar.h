@@ -48,8 +48,6 @@ struct _AwnBarClass {
         GtkWindowClass parent_class;
 };
 
-static GtkWidgetClass *parent_class = NULL;
-
 GType awn_bar_get_type(void);
 
 GtkWidget *awn_bar_new(AwnSettings *settings);
