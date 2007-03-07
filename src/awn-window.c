@@ -43,7 +43,7 @@ static gboolean stop_position = TRUE;
 static gboolean is_positioning = FALSE;
 static gint x_pos = 0;
 static gint y_pos = 0;
-static gint current_pos = 0;
+static current_pos = 0;
 
 static const GtkTargetEntry drop_types[] = {
 	{ "STRING", 0, 0 }
@@ -144,8 +144,8 @@ render (cairo_t *cr, gint width, gint height)
 static gboolean 
 _on_expose (GtkWidget *widget, GdkEventExpose *expose)
 {
-	static gint oWidth;
-	static gint oHeight;
+	static gint oWidth = 0;
+	static gint oHeight = 0;
 	gint width;
 	gint height;
 	cairo_t *cr = NULL;
@@ -289,7 +289,7 @@ _position_func (GtkWidget *window)
 		current_pos--;
 	}
 	gtk_window_move(GTK_WINDOW(window), current_pos, y_pos);
-	return FALSE;
+	return TRUE;
 }
 
 static void
@@ -313,8 +313,10 @@ _position_window (GtkWidget *window)
 		gtk_window_move(GTK_WINDOW(window), x_pos, y_pos);
 		return;
 	}
-	if (!is_positioning)
+	if (!is_positioning) {
 		g_timeout_add(20, (GSourceFunc)_position_func, (gpointer)window);
+		is_positioning = TRUE;
+	}
 	//gtk_window_move(GTK_WINDOW(window), x, y);
 }
 

@@ -495,8 +495,9 @@ _task_manager_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 	}
 	
 	g_string_free(uri, TRUE);
+	//awn_task_manager_update_separator_position (task_manager);
        	_refresh_box(task_manager);
-        gtk_drag_finish (context, dnd_success, delete_selection_data, time);
+       	gtk_drag_finish (context, dnd_success, delete_selection_data, time);
 }
 
 /*****************  END OF D&D *************************************/
@@ -584,7 +585,8 @@ _refresh_box(AwnTaskManager *task_manager)
 	} else {
 		gtk_widget_show (priv->eb);
 	}
-	awn_task_manager_update_separator_position (task_manager);
+	//awn_task_manager_update_separator_position (task_manager);
+	gtk_widget_queue_draw (GTK_WIDGET (priv->settings->window));
 }
 
 void
@@ -595,6 +597,7 @@ awn_task_manager_remove_launcher (AwnTaskManager *task_manager, gpointer  task)
 	
 	priv->launchers = g_list_remove(priv->launchers, task);
 	awn_task_manager_update_separator_position (task_manager);
+	gtk_widget_queue_draw (GTK_WIDGET (priv->settings->window));
 }
 
 void
@@ -605,6 +608,7 @@ awn_task_manager_remove_task (AwnTaskManager *task_manager, gpointer task)
 	
 	priv->tasks = g_list_remove(priv->tasks, (gpointer)task);
 	awn_task_manager_update_separator_position (task_manager);
+	gtk_widget_queue_draw (GTK_WIDGET (priv->settings->window));
 }
 
 void

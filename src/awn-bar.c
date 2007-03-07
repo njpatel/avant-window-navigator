@@ -455,29 +455,26 @@ static gint resizing = 0;
 static gint step     = 2;
 
 static gboolean
-resize( GtkWindow *window)
+resize( GtkWidget *window)
 {
         if ( dest_width == current_width ) {
                 resizing = 0;
-                //g_print("resized\n");
                 return FALSE;
         }
         
         if ( dest_width > current_width) {
                 current_width += step;
-                //redraw(GTK_WIDGET(window), current_width, 100);
-                gtk_widget_queue_draw(GTK_WIDGET(window));
+             
         } else {
         	current_width -= step;
-                //redraw(GTK_WIDGET(window), current_width, 100);
-                gtk_widget_queue_draw(GTK_WIDGET(window));
         }
-        //_position_window(window);
+        gtk_widget_queue_draw(GTK_WIDGET(window));
+
         return TRUE;
 }
 
 void 
-awn_bar_resize(GtkWindow *window, gint width)
+awn_bar_resize(GtkWidget *window, gint width)
 {
 	dest_width = width;        
 

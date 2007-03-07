@@ -13,7 +13,6 @@ Here's a (incomplete) list of features and fixes which need to be implemented in
 * Scale Awn down if too many items are present, depends on #16 (#57)
 * Unminimise does nto work sometimes (#61)
 * Doesn't work with enlightenment (#63)
-* Lots of warnings during make (#69) (#141)
 * Rearrange launcher icons (either from menu or d&d) (#72)
 * Clean up autohide (#74)
 * Make text bubble border have a colour (#77)
@@ -34,8 +33,7 @@ Here's a (incomplete) list of features and fixes which need to be implemented in
 * Speed up resizeing of the bar (#133)
 * Auto-hide causing crashes (#134)
 * Make hot-spot a drag-dest (#135)
-* Gtk-Engine (#142)
-* 
+* Gtk-theme-Engine for bar (#142)
 * Startup-notification support
 * Allow choosing the font for the title.
 * Add drawers support. (Icons which are menus)
@@ -48,3 +46,4 @@ TO-DOne
 
 * Dual screen support
 * Let the WM know that Awn is a dock, and there stop windows from expanding behind it.
+* Lots of warnings during make (#69) (#141)

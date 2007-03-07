@@ -39,7 +39,7 @@
 #define AWN_OBJECT_PATH "/com/google/code/Awn"
 
 
-static gboolean expose (GtkWidget *widget, GdkEventExpose *event, GtkWindow *window);
+static gboolean expose (GtkWidget *widget, GdkEventExpose *event, AwnSettings *settings);
 static gboolean drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
                                                      gint            x,
                                                      gint            y,
@@ -74,7 +74,7 @@ main (int argc, char* argv[])
 	
 	gtk_widget_add_events (GTK_WIDGET (settings->window),GDK_ALL_EVENTS_MASK);
 	g_signal_connect(G_OBJECT(settings->window), "expose-event",
-			 G_CALLBACK(expose), settings->bar);
+			 G_CALLBACK(expose), (gpointer)settings);
 	
 
 	box = gtk_hbox_new(FALSE, 2);
@@ -148,13 +148,13 @@ main (int argc, char* argv[])
 }
 
 static gboolean
-expose (GtkWidget *widget, GdkEventExpose *event, GtkWindow *window)
+expose (GtkWidget *widget, GdkEventExpose *event, AwnSettings *settings)
 {
         gint width, height;
         
         gtk_window_get_size (GTK_WINDOW (widget), &width, &height);
         
-        awn_bar_resize(window, width);
+        awn_bar_resize(settings->bar, width);
         //awn_window_resize(window, width);
         return FALSE;
 }
