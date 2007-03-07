@@ -455,20 +455,34 @@ _position_window (GtkWidget *window)
 static gint resizing = 0;
 
 
-static gint step     = 2;
+static gint step     = 3;
 
 static gboolean
 resize( GtkWidget *window)
 {
-        if ( dest_width == current_width ) {
+        if ( dest_width == current_width) {
                 resizing = 0;
                 return FALSE;
         }
         
+        
+        
         if ( dest_width > current_width) {
+                if (dest_width - current_width < 2) {
+               	        dest_width = current_width;
+               	        resizing = 0;
+               	        gtk_widget_queue_draw(GTK_WIDGET(window));
+	                return FALSE;
+        	}
                 current_width += step;
              
         } else {
+                if (current_width - dest_width < 2) {
+               	        dest_width = current_width;
+               	        resizing = 0;
+               	        gtk_widget_queue_draw(GTK_WIDGET(window));
+	                return FALSE;
+        	}        	
         	current_width -= step;
         }
         gtk_widget_queue_draw(GTK_WIDGET(window));
