@@ -1,3 +1,7 @@
+2007-03-07  Neil Jagdish Patel  <njpatel@gmail.com>
+
+	* Auto-hide now supports D&D
+
 2007-03-07  Neil J. Patel  <njpatel@gmail.com>
 
 	* Cleaned up auto-hide somewhat. Needs more testing

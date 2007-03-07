@@ -45,6 +45,14 @@ static gboolean drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
                                                      gint            y,
                                                      guint           time,
                                                      GtkWidget *win);
+static gboolean drag_motion_hot (GtkWidget *widget, GdkDragContext *drag_context,
+                                                     gint            x,
+                                                     gint            y,
+                                                     guint           time,
+            		                        AwnSettings *settings);            
+void drag_leave_hot (GtkWidget      *widget, GdkDragContext *drag_context,
+                                             guint           time,
+                                             AwnSettings *settings);           		                                                                 
 static gboolean enter_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings);
 static gboolean leave_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings);
 static gboolean button_press_event (GtkWidget *window, GdkEventButton *event);
@@ -104,6 +112,12 @@ main (int argc, char* argv[])
 	
 	g_signal_connect (G_OBJECT(settings->window), "drag-motion",
 	                  G_CALLBACK(drag_motion), (gpointer)settings->window);
+	g_signal_connect (G_OBJECT(hot), "drag-motion",
+	                  G_CALLBACK(drag_motion_hot), (gpointer)settings);	      
+	g_signal_connect (G_OBJECT(hot), "drag-leave",
+	                  G_CALLBACK(drag_leave_hot), (gpointer)settings);
+	                  		                              
+	                  
 	
 	g_signal_connect(G_OBJECT(hot), "enter-notify-event",
 			 G_CALLBACK(enter_notify_event), (gpointer)settings);	                  
@@ -172,6 +186,53 @@ drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
 {
 	mouse_over_window = TRUE;
 	return FALSE;
+}
+
+static gboolean 
+drag_motion_hot (GtkWidget *widget, GdkDragContext *drag_context,
+                                                     gint            x,
+                                                     gint            y,
+                                                     guint           time,
+                                                     AwnSettings     *settings)
+{
+	awn_show (settings);	
+	return FALSE;
+}
+
+void 
+drag_leave_hot (GtkWidget *widget, GdkDragContext *drag_context,
+                                             guint           time,
+                                             AwnSettings *settings) 
+{
+	gint width, height;
+	gint x, y;
+	gint x_root, y_root;
+	
+	GdkDisplay *display = gdk_display_get_default ();
+	
+	gdk_display_get_pointer (display,
+                                 NULL,
+                                 &x_root,
+                                 &y_root,
+                                 0);
+                                                         
+	if (settings->auto_hide == FALSE) {
+		if (settings->hidden == TRUE)
+			awn_show (settings);
+		return;
+	}
+	gtk_window_get_position (GTK_WINDOW (settings->window), &x, &y);
+	gtk_window_get_size (GTK_WINDOW (settings->window), &width, &height);
+	
+		
+	if ( (x < x_root) && (x_root < x+width) && ( ( settings->monitor.height - 50) < y_root)) {
+		
+		//g_print ("Do nothing\n", event->y_root);
+	} else {
+		awn_hide (settings);
+	}
+	//g_print ("%d < %f < %d", x, event->x_root, x+width);
+	return;
 }
 
 static gboolean 

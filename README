@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+* Autohide now supports D&D
+
 * Merged patch by James Willcox that makes the hover effect actually 'bounch' rathe rthan just go up and down.
 
 * Fixed LOTS of small errors & warnings (thanks to Chirstian Kirbach). I fixed what was remaining, plus starup errors, separator positioning errors, and a memory leak in awn-x.c

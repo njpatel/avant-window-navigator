@@ -37,7 +37,10 @@ static gint AWN_HOTSPOT_DEFAULT_WIDTH		= 1024;
 static gint AWN_HOTSPOT_DEFAULT_HEIGHT		= 2;
 
 static AwnSettings *settings = NULL;
-
+static const GtkTargetEntry drop_types[] = {
+	{ "STRING", 0, 0 }
+};
+static const gint n_drop_types = G_N_ELEMENTS (drop_types);
 
 static void awn_hotspot_destroy (GtkObject *object);
 static void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
@@ -66,7 +69,15 @@ awn_hotspot_class_init( AwnHotspotClass *this_class )
 static void
 awn_hotspot_init( AwnHotspot *hotspot )
 {
-
+	gtk_widget_add_events (GTK_WIDGET (hotspot),GDK_ALL_EVENTS_MASK);
+	
+	gtk_drag_dest_set (GTK_WIDGET (hotspot),
+                           GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_DROP,
+                           drop_types, n_drop_types,
+                           GDK_ACTION_MOVE | GDK_ACTION_COPY);
+	
+	
+	gtk_drag_dest_add_uri_targets (GTK_WIDGET (hotspot));
 }
 
 GtkWidget *
