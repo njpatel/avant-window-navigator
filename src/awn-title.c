@@ -342,7 +342,7 @@ _on_expose (GtkWidget *widget, GdkEventExpose *expose, AwnTitle *title)
 	cairo_t *cr = NULL;
 
 	if (!GDK_IS_DRAWABLE (widget->window))
-		return;
+		return FALSE;
 	cr = gdk_cairo_create (widget->window);
 	if (!cr)
 		return FALSE;

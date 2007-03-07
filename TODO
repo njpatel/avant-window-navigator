@@ -23,8 +23,7 @@ Here's a (incomplete) list of features and fixes which need to be implemented in
 * Work with Autogen >= 1.10
 * Change position of bar (#109)
 * Re-enable fade effect (#110)
-* Listen to theme chnage signals in KDE & GNOME (launchers) (#111)
-* Bar doesn't resize properly when gimp windows are closed (#114)
+* Listen to theme change signals in KDE & GNOME (launchers) (#111)
 * Bar crashes when mouse-over a closing window (#114)
 * Crashes when used with Deskbar (opening/closing windows) (#115)
 * Memory usage when window icons change (i.e. GIMP) (#132)
@@ -46,3 +45,4 @@ TO-DOne
 * Let the WM know that Awn is a dock, and there stop windows from expanding behind it.
 * Lots of warnings during make (#69) (#141)
 * Separator position doesn't update when you add a new launcher (#44)
+* Bar doesn't resize properly when gimp windows are closed (#114)

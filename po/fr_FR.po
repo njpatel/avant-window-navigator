@@ -1,0 +1,121 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: AVANT-WINDOW-NAVIGATOR\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-02-25 23:17+0000\n"
+"PO-Revision-Date: 2007-02-25 23:17+0000\n"
+"Last-Translator: gilir <bot4gilir@yahoo.fr>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: avant-preferences/window.glade:9
+msgid "Avant Preferences"
+msgstr "Préférences de Avant "
+
+#: avant-preferences/window.glade:83
+msgid "Colour:"
+msgstr "Couleur"
+
+#: avant-preferences/window.glade:135
+msgid "Shadow colour:"
+msgstr "Couleur de l'ombre"
+
+#: avant-preferences/window.glade:187
+msgid "Font size:"
+msgstr "Taille de la Police"
+
+#: avant-preferences/window.glade:284
+msgid "Italic"
+msgstr "Italique"
+
+#: avant-preferences/window.glade:365
+msgid "Bold"
+msgstr "Gras"
+
+#: avant-preferences/window.glade:405
+msgid "<b>Text</b>"
+msgstr "<b>Texte</b>"
+
+#: avant-preferences/window.glade:454 avant-preferences/window.glade:1086
+msgid "Select A File"
+msgstr "Sélectionner un fichier"
+
+#: avant-preferences/window.glade:468
+msgid "<b>Active Icon</b>"
+msgstr "<b>Icon Actif</b>"
+
+#: avant-preferences/window.glade:504
+msgid "General Appearance"
+msgstr "Apparence Générale"
+
+#: avant-preferences/window.glade:565
+msgid "Main border:"
+msgstr "Bordure principale"
+
+#: avant-preferences/window.glade:617
+msgid "Internal border:"
+msgstr "Bordure interne"
+
+#: avant-preferences/window.glade:667
+msgid "<b>Borders</b>"
+msgstr "<b>Bordures</b>"
+
+#: avant-preferences/window.glade:728 avant-preferences/window.glade:891
+msgid "First step colour:"
+msgstr "Couleur de début"
+
+#: avant-preferences/window.glade:780 avant-preferences/window.glade:943
+msgid "Second step colour:"
+msgstr "Couleur de fin"
+
+#: avant-preferences/window.glade:830
+msgid "<b>Gradient</b>"
+msgstr "<b>Dégradé</b>"
+
+#: avant-preferences/window.glade:993
+msgid "<b>Highlight</b>"
+msgstr "<b>Eclairage</b>"
+
+#: avant-preferences/window.glade:1055
+msgid "Enable pattern"
+msgstr "Activé le fond"
+
+#: avant-preferences/window.glade:1116
+msgid "Transparency:"
+msgstr "Transparence"
+
+#: avant-preferences/window.glade:1170
+msgid "<b>Pattern</b>"
+msgstr "<b>Fond</b>"
+
+#: avant-preferences/window.glade:1232
+msgid "Enable rounded corners"
+msgstr "Activé les coin ronds"
+
+#: avant-preferences/window.glade:1261
+msgid "<b>Corners</b>"
+msgstr "<b>Coins</b>"
+
+#: avant-preferences/window.glade:1297
+msgid "Bar Appearance"
+msgstr "Apparence de la barre"
+
+#: avant-preferences/window.glade:1359
+msgid "Show windows from all viewports"
+msgstr "Montrer les fenêtres de tous les bureaux"
+
+#: avant-preferences/window.glade:1388
+msgid "<b>Windows</b>"
+msgstr "<b>Fenêtres</b>"
+
+#: avant-preferences/window.glade:1424
+msgid "Window Management"
+msgstr "Gestion de Fenêtre"

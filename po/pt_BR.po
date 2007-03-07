@@ -1,0 +1,121 @@
+# Tradução do AWN para Português do Brasil.
+# Copyright (C) 2007
+# This file is distributed under the same license as the AWN package.
+# MARCO A S RIBEIRO (SalsichaD2) <salsichad2@hotmail.com>, 2007.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: avant-window-navigator 0.1.1-svn\n"
+"Report-Msgid-Bugs-To: salsichad2@hotmail.com\n"
+"POT-Creation-Date: 2007-01-25 16:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: MARCO A S RIBEIRO (SalsichaD2) <EMAIL@ADDRESS>\n"
+"Language-Team: PORTUGUÊS DO BRASIL <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: avant-preferences/window.glade:9
+msgid "Avant Preferences"
+msgstr "Preferências do Avant"
+
+#: avant-preferences/window.glade:83
+msgid "Colour:"
+msgstr "Cor:"
+
+#: avant-preferences/window.glade:135
+msgid "Shadow colour:"
+msgstr "Cor da Sombra"
+
+#: avant-preferences/window.glade:187
+msgid "Font size:"
+msgstr "Tamanho da Fonte:"
+
+#: avant-preferences/window.glade:284
+msgid "Italic"
+msgstr "Itálico"
+
+#: avant-preferences/window.glade:365
+msgid "Bold"
+msgstr "Realce"
+
+#: avant-preferences/window.glade:405
+msgid "<b>Text</b>"
+msgstr "<b>Texto</b>"
+
+#: avant-preferences/window.glade:454 avant-preferences/window.glade:1086
+msgid "Select A File"
+msgstr "Selecione um Arquivo"
+
+#: avant-preferences/window.glade:468
+msgid "<b>Active Icon</b>"
+msgstr "<b>Icone Ativo</b>"
+
+#: avant-preferences/window.glade:504
+msgid "General Appearance"
+msgstr "Aparência Geral"
+
+#: avant-preferences/window.glade:565
+msgid "Main border:"
+msgstr "Borda principal:"
+
+#: avant-preferences/window.glade:617
+msgid "Internal border:"
+msgstr "Borda interna:"
+
+#: avant-preferences/window.glade:667
+msgid "<b>Borders</b>"
+msgstr "<b>Bordas</b>"
+
+#: avant-preferences/window.glade:728 avant-preferences/window.glade:891
+msgid "First step colour:"
+msgstr "Cor do primeiro nível:"
+
+#: avant-preferences/window.glade:780 avant-preferences/window.glade:943
+msgid "Second step colour:"
+msgstr "Cor do segundo nível"
+
+#: avant-preferences/window.glade:830
+msgid "<b>Gradient</b>"
+msgstr "<b>Gradiente</b>"
+
+#: avant-preferences/window.glade:993
+msgid "<b>Highlight</b>"
+msgstr "<b>Destaque</b>"
+
+#: avant-preferences/window.glade:1055
+msgid "Enable pattern"
+msgstr "Ativar pano de fundo"
+
+#: avant-preferences/window.glade:1116
+msgid "Transparency:"
+msgstr "Transparência:"
+
+#: avant-preferences/window.glade:1170
+msgid "<b>Pattern</b>"
+msgstr "<b>Pano de Fundo</b>"
+
+#: avant-preferences/window.glade:1232
+msgid "Enable rounded corners"
+msgstr "Ativas cantos arredondados"
+
+#: avant-preferences/window.glade:1261
+msgid "<b>Corners</b>"
+msgstr "<b>Cantos</b>"
+
+#: avant-preferences/window.glade:1297
+msgid "Bar Appearance"
+msgstr "Aparência da Barra "
+
+#: avant-preferences/window.glade:1359
+msgid "Show windows from all viewports"
+msgstr "Mostrar janelas de todas as áreas de trabalho"
+
+#: avant-preferences/window.glade:1388
+msgid "<b>Windows</b>"
+msgstr "<b>Janelas</b>"
+
+#: avant-preferences/window.glade:1424
+msgid "Window Management"
+msgstr "Administração da Janela"

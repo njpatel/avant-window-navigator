@@ -1,0 +1,118 @@
+# German translation file. 
+# This file is distributed under the same license as the PACKAGE package.
+# Christian Stangier <chris.stangier@gmail.com>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: avant-window-navigator svn\n"
+"Report-Msgid-Bugs-To: chris.stangier@gmail.com\n"
+"POT-Creation-Date: 2007-01-25 22:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: CHRISTIAN STANGIER <chris.stangier@gmail.com>\n"
+"Language-Team: GERMAN<LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: avant-preferences/window.glade:9
+msgid "Avant Preferences"
+msgstr "Avant Eigenschaften"
+
+#: avant-preferences/window.glade:83
+msgid "Colour:"
+msgstr "Farbe:"
+
+#: avant-preferences/window.glade:135
+msgid "Shadow colour:"
+msgstr "Farbe des Schattens:"
+
+#: avant-preferences/window.glade:187
+msgid "Font size:"
+msgstr "Schriftgröße:"
+
+#: avant-preferences/window.glade:284
+msgid "Italic"
+msgstr "Kursiv"
+
+#: avant-preferences/window.glade:365
+msgid "Bold"
+msgstr "Fett"
+
+#: avant-preferences/window.glade:405
+msgid "<b>Text</b>"
+msgstr "<b>Text</b>"
+
+#: avant-preferences/window.glade:454 avant-preferences/window.glade:1086
+msgid "Select A File"
+msgstr "Datei auswählen"
+
+#: avant-preferences/window.glade:468
+msgid "<b>Active Icon</b>"
+msgstr "<b>Aktives Icon</b>"
+
+#: avant-preferences/window.glade:504
+msgid "General Appearance"
+msgstr "Allgemeines Design"
+
+#: avant-preferences/window.glade:565
+msgid "Main border:"
+msgstr "Äußerer Rahmen:"
+
+#: avant-preferences/window.glade:617
+msgid "Internal border:"
+msgstr "Innerer Rahmen:"
+
+#: avant-preferences/window.glade:667
+msgid "<b>Borders</b>"
+msgstr "<b>Rahmen</b>"
+
+#: avant-preferences/window.glade:728 avant-preferences/window.glade:891
+msgid "First step colour:"
+msgstr "Farbe 1:"
+
+#: avant-preferences/window.glade:780 avant-preferences/window.glade:943
+msgid "Second step colour:"
+msgstr "Farbe 2:"
+
+#: avant-preferences/window.glade:830
+msgid "<b>Gradient</b>"
+msgstr "<b>Farbverlauf</b>"
+
+#: avant-preferences/window.glade:993
+msgid "<b>Highlight</b>"
+msgstr "<b>Ausgewähltes Fenster</b>"
+
+#: avant-preferences/window.glade:1055
+msgid "Enable pattern"
+msgstr "Hintergrundbild benutzen"
+
+#: avant-preferences/window.glade:1116
+msgid "Transparency:"
+msgstr "Transparenz"
+
+#: avant-preferences/window.glade:1170
+msgid "<b>Pattern</b>"
+msgstr "<b>Hintergrundbild</b>"
+
+#: avant-preferences/window.glade:1232
+msgid "Enable rounded corners"
+msgstr "Abgerundete Ecken benutzen"
+
+#: avant-preferences/window.glade:1261
+msgid "<b>Corners</b>"
+msgstr "<b>Ecken</b>"
+
+#: avant-preferences/window.glade:1297
+msgid "Bar Appearance"
+msgstr "Design der Leiste"
+
+#: avant-preferences/window.glade:1359
+msgid "Show windows from all viewports"
+msgstr "Zeige Fenster aller Arbeitsflächen"
+
+#: avant-preferences/window.glade:1388
+msgid "<b>Windows</b>"
+msgstr "<b>Fenster</b>"
+
+#: avant-preferences/window.glade:1424
+msgid "Window Management"
+msgstr "Fensterverwaltung"

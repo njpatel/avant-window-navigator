@@ -52,7 +52,7 @@ INTLTOOL_EXTRACT = $(top_builddir)/intltool-extract
 MSGMERGE = INTLTOOL_EXTRACT=$(INTLTOOL_EXTRACT) srcdir=$(srcdir) $(INTLTOOL_UPDATE) --gettext-package $(GETTEXT_PACKAGE) --dist
 GENPOT   = INTLTOOL_EXTRACT=$(INTLTOOL_EXTRACT) srcdir=$(srcdir) $(INTLTOOL_UPDATE) --gettext-package $(GETTEXT_PACKAGE) --pot
 
-ALL_LINGUAS = en_GB fr_FR
+ALL_LINGUAS = en_GB fr_FR de_DE
 
 PO_LINGUAS=$(shell if test -r $(srcdir)/LINGUAS; then grep -v "^\#" $(srcdir)/LINGUAS; fi)
 
@@ -63,7 +63,7 @@ EXTRA_DISTFILES = POTFILES.skip Makevars LINGUAS
 
 POTFILES = \
 	../avant-preferences/window.glade \
-	../avant-preferences/avant-preferences.py \
+	../avant-preferences/avant-preferences.py.in \
 	../data/avant-window-navigator.schemas.in
 
 CATALOGS=$(shell if test -n "$(PO_LINGUAS)"; then LINGUAS="$(PO_LINGUAS)"; else LINGUAS="$(ALL_LINGUAS)"; fi; for lang in $$LINGUAS; do printf "$$lang.gmo "; done)
