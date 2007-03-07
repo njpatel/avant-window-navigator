@@ -663,7 +663,7 @@ awn_task_manager_update_separator_position (AwnTaskManager *task_manager)
 typedef struct {
 	AwnTaskManager *task_manager;
 	gchar *name;
-	gint xid;
+	glong xid;
 	gint pid;
 	AwnTask *task;
 } AwnDBusTerm;
@@ -672,7 +672,6 @@ static void
 _dbus_find_task (AwnTask *task, AwnDBusTerm *term)
 {
 	gchar *temp;
-	gulong id;
 	
 	if (term->name) {
 		temp = awn_task_get_application (task);
@@ -686,12 +685,14 @@ _dbus_find_task (AwnTask *task, AwnDBusTerm *term)
 			return;
 		}
 	} else if (term->xid) {
+		glong id;
 		id = awn_task_get_xid (task);
 		if (term->xid == id) {
 			term->task = task;
 			return;
 		}
 	} else if (term->pid) {
+		gint id;
 		id = awn_task_get_pid (task);
 		if (term->pid == id) {
 			term->task = task;
@@ -718,7 +719,7 @@ __find_by_name (AwnTaskManagerPrivate *priv, AwnDBusTerm *term, const gchar *nam
 }
 
 static void
-__find_by_xid (AwnTaskManagerPrivate *priv, AwnDBusTerm *term, gulong xid)
+__find_by_xid (AwnTaskManagerPrivate *priv, AwnDBusTerm *term, glong xid)
 {
 	term->name = NULL;
 	term->xid = xid;
@@ -731,6 +732,130 @@ __find_by_xid (AwnTaskManagerPrivate *priv, AwnDBusTerm *term, gulong xid)
 	}
 }
 
+static void
+__find_by_pid (AwnTaskManagerPrivate *priv, AwnDBusTerm *term, gint pid)
+{
+	term->name = NULL;
+	term->xid = 0;
+	term->pid = pid;
+	term->task = NULL;
+	
+	g_list_foreach(priv->launchers, _dbus_find_task, (gpointer)term);
+	if (term->task == NULL) {
+		g_list_foreach(priv->tasks, _dbus_find_task, (gpointer)term);
+	}
+}
+
+static gboolean
+awn_task_manager_get_task_by_pid (AwnTaskManager	*task_manager,
+				  gint	 		pid,
+				  gchar			**name,
+				   GError		**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_pid (priv, &term, pid);
+	g_print ("%d\n", pid);
+	if (term.task == NULL) {
+		//*task_id = 10;
+		g_print ("No match\n");
+		return TRUE;
+	} else {
+		*name = g_strdup (awn_task_get_application (term.task));
+		return TRUE;
+	}
+}				   
+
+static gboolean
+awn_task_manager_set_task_icon (AwnTaskManager *task_manager,
+			    	gchar		*name,
+			    	gchar 	  	*icon_path,
+			        GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_name (priv, &term, name); 
+
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 
+		
+	g_print ("icon_path = %s\n", icon_path);
+	/* Try and load icon from path */
+	if (icon_path == NULL) {
+		awn_task_unset_custom_icon (term.task);
+		return;
+	}
+	icon = gdk_pixbuf_new_from_file_at_scale (icon_path,
+                                                  46,
+                                                  46,
+                                                  TRUE,
+                                                  NULL);
+	if (icon)
+		awn_task_set_custom_icon (term.task, icon);
+	else
+		g_print("%s Not Found\n");                                                
+	//g_free (icon_path);
+	return TRUE;
+}
+
+static gboolean
+awn_task_manager_set_task_progress (AwnTaskManager *task_manager,
+			    	    gchar		*name,
+			    	    gint		progress,
+			    	    GError	   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_name (priv, &term, name); 
+	g_print ("%d\n", progress);
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 
+
+	awn_task_set_progress (term.task, progress);
+	return TRUE;
+}
+
+static gboolean
+awn_task_manager_set_task_info (AwnTaskManager *task_manager,
+			    	gchar		*name,
+			    	gchar		*info,
+			    	GError   	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	GdkPixbuf *icon;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_name (priv, &term, name); 
+	
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	}
+	if (info == NULL)
+		 awn_task_unset_info (term.task);
+	else
+		awn_task_set_info (term.task, info);
+	return TRUE;
+}
+
+/* Depreciated calls */
 static gboolean
 awn_task_manager_set_task_icon_by_name (AwnTaskManager *task_manager,
 			    		gchar 		*name,

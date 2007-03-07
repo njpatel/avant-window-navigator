@@ -1,13 +1,50 @@
 Here's a (incomplete) list of features and fixes which need to be implemented in Awn.
 
+
+* Add beryl thumbnailer support (#4).
+* User-configurable icon sizes (#16)
+* Better launcher to task matching (#27)
+* Add python widget support (#29)
+* Fix Active Image glow (#33)
+* Add launchers through a right-click menu (#43)
+* Separator position doesn't update when you add a new launcher (#44)
+* Use Awn as a launcher bar only (#45)
+* Allow Awn to ignore certain window types (#48)
+* Scale Awn down if too many items are present, depends on #16 (#57)
+* Unminimise does nto work sometimes (#61)
+* Doesn't work with enlightenment (#63)
+* Lots of warnings during make (#69) (#141)
+* Rearrange launcher icons (either from menu or d&d) (#72)
+* Clean up autohide (#74)
+* Make text bubble border have a colour (#77)
+* Metacity support, add workspace as well as viewport. (#81)
+* Change linear icon movement to a more 'bouncing' movement (#83)
+* Labels should not go off screen (x shouldn't be > screen.width) (#88)
+* Turn off bouncing effect (#89)
+* Fix translation support in avant-preferences. (#93)
+* Work with libwnck >= 2.17 (#107)
+* Work with Autogen >= 1.10
+* Change position of bar (#109)
+* Re-enable fade effect (#110)
+* Listen to theme chnage signals in KDE & GNOME (launchers) (#111)
+* Bar doesn't resize properly when gimp windows are closed (#114)
+* Bar crashes when mouse-over a closing window (#114)
+* Crashes when used with Deskbar (opening/closing windows) (#115)
+* Memory usage when window icons change (i.e. GIMP) (#132)
+* Speed up resizeing of the bar (#133)
+* Auto-hide causing crashes (#134)
+* Make hot-spot a drag-dest (#135)
+* Gtk-Engine (#142)
+* 
 * Startup-notification support
-* Dual screen support
-* User-configurable icon sizes
-* Let the WM know that Awn is a dock, and there stop windows from expanding behind it.
 * Allow choosing the font for the title.
 * Add drawers support. (Icons which are menus)
-* Allow applications to manipulate their icons.
-* Add beryl thumbnailer support.
-* Add python widget support
+* Allow applications to manipulate their icons (in progress).
 * Add vertical bar support
 * Redesign avant-preferences with support for new options
+
+
+TO-DOne
+
+* Dual screen support
+* Let the WM know that Awn is a dock, and there stop windows from expanding behind it.

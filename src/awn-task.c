@@ -25,7 +25,7 @@
 #include <libgnome/libgnome.h>
 
 #include "awn-task.h"
-
+#include "awn-x.h"
 
 #include "awn-utils.h"
 
@@ -541,7 +541,7 @@ _load_pixbufs (AwnTask *task)
 			priv->pixbufs[i] = icon_loader_get_icon_spec (icon_name, 48+i, 48+i) ;
 			g_free (icon_name);
 		} else {
-			priv->pixbufs[i] = awn_x_get_icon (priv->window, 48+i, 48+i);
+			priv->pixbufs[i] = awn_x_get_icon_for_window (priv->window, 48+i, 48+i);
 		}
 	}
 }
@@ -1352,7 +1352,7 @@ _task_wnck_icon_changed (WnckWindow *window, AwnTask *task)
         
         GdkPixbuf *old = NULL;
         old = priv->icon;
-        priv->icon = gdk_pixbuf_copy (awn_x_get_icon (priv->window, 48, 48));
+        priv->icon = awn_x_get_icon_for_window (priv->window, 48, 48);
 	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
         gdk_pixbuf_unref(old);
@@ -1631,6 +1631,9 @@ awn_task_get_pid (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	if (priv->window != NULL) 
+		return wnck_window_get_pid (priv->window);
 	return priv->pid;
 }
 void 
@@ -1805,12 +1808,12 @@ awn_task_unset_custom_icon (AwnTask *task)
 	if (priv->is_launcher) {
 		icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
 		if (!icon_name)
-			priv->icon = awn_x_get_icon (priv->window, 48, 48);
+			priv->icon = awn_x_get_icon_for_window (priv->window, 48, 48);
 		
 		priv->icon = icon_loader_get_icon(icon_name);
 		g_free (icon_name);
         } else {
-        	priv->icon = awn_x_get_icon (priv->window, 48, 48);
+        	priv->icon = awn_x_get_icon_for_window (priv->window, 48, 48);
         }
         priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
@@ -1875,12 +1878,7 @@ awn_task_unset_info (AwnTask *task)
 /********************* MISC FUNCTIONS *******************/
 
 static void
-_task_choose_custom_icon (GtkMenuItem *item, AwnTask *task)
-{
-}	
-
-static void
-_task_show_prefs (GtkMenuItem *item, AwnTask *task)
+_task_choose_custom_icon (AwnTask *task)
 {
 	g_print("Preferences for %s\n", awn_task_get_name(task));
 	/*
@@ -1892,7 +1890,7 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 	
 	GtkWidget *dialog;
 
-	dialog = gtk_file_chooser_dialog_new ("Open File",
+	dialog = gtk_file_chooser_dialog_new ("Choose Image...",
 				      priv->settings->window,
 				      GTK_FILE_CHOOSER_ACTION_OPEN,
 				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1920,7 +1918,8 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 			uri = gnome_util_prepend_user_home(name->str);
 			g_string_printf (name, "cp %s %s", filename, uri);
 			g_spawn_command_line_async (name->str, NULL);
-
+			
+			sleep (1);
 			priv->icon = awn_x_get_icon_for_launcher (priv->item, 48, 48);		
 		        priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 			priv->icon_height = gdk_pixbuf_get_height(priv->icon);	
@@ -1944,7 +1943,7 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 			uri = gnome_util_prepend_user_home(name->str);
 			g_string_printf (name, "cp %s %s", filename, uri);
 			g_spawn_command_line_async (name->str, NULL);
-
+			sleep (1);
 			priv->icon = awn_x_get_icon_for_window (priv->window, 48, 48);		
 		        priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 			priv->icon_height = gdk_pixbuf_get_height(priv->icon);	
@@ -1959,6 +1958,56 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 	} 
 
 	gtk_widget_destroy (dialog);
+}	
+
+static void
+_task_show_prefs (GtkMenuItem *item, AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	priv = AWN_TASK_GET_PRIVATE (task);	
+	
+	GtkWidget *dialog;
+	GtkWidget *hbox;
+	GtkWidget *image;
+	GtkWidget *button, *label;
+	
+	dialog = gtk_dialog_new_with_buttons ("Preferences",
+                                                  priv->settings->window,
+                                                  GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                                  "Change Icon...",
+                                                  3,
+                                                  GTK_STOCK_CANCEL,
+                                                  GTK_RESPONSE_REJECT,
+                                                  GTK_STOCK_OK,
+                                                  GTK_RESPONSE_ACCEPT,
+                                                  NULL);
+	hbox = gtk_hbox_new (FALSE, 10);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG(dialog)->vbox), hbox, TRUE, TRUE, 0);
+	
+	image = gtk_image_new_from_pixbuf (priv->icon);
+	
+	button = gtk_button_new_with_label ("Change Image...");
+	gtk_button_set_image (GTK_BUTTON (button), image);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, TRUE, 0);
+	
+	label = gtk_label_new (" ");
+	char *markup = g_strdup_printf ("<span size='larger' weight='bold'>%s</span>", awn_task_get_application (task));
+	gtk_label_set_markup (GTK_LABEL (label), markup);
+	g_free (markup);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, TRUE, 0);
+	
+	gtk_widget_show_all (hbox);
+
+	gint res = gtk_dialog_run (GTK_DIALOG (dialog));
+	
+	switch (res) {
+		case 3:
+			_task_choose_custom_icon (task);
+			break;
+		default:
+			break;
+	}
+	gtk_widget_destroy (dialog);	                                                                                                  
 }
 
 

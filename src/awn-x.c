@@ -133,7 +133,7 @@ awn_x_get_icon_for_window (WnckWindow *window, gint width, gint height)
 			
 	uri = gnome_util_prepend_user_home(name->str);
 	
-	g_print ("%s\n", uri);
+	//g_print ("%s\n", uri);
 	
 	icon = gdk_pixbuf_new_from_file_at_scale (uri, width, height, TRUE, NULL);
 	
@@ -252,7 +252,7 @@ awn_x_get_icon_for_launcher (GnomeDesktopItem *item, gint width, gint height)
 	}	
 	uri = gnome_util_prepend_user_home(name->str);
 	
-	g_print ("%s\n", uri);
+	//g_print ("%s\n", uri);
 	
 	icon = gdk_pixbuf_new_from_file_at_scale (uri, width, height, TRUE, NULL);
 	

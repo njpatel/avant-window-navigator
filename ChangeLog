@@ -1,4 +1,8 @@
-2007-02-25  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+2007-03-07  Neil Jagdish Patel  <njpatel@gmail.com>
+
+	* Updated TODO
+ 
+2007-02-25  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	Added autohide support
 
@@ -18,7 +22,7 @@
 	* src/awn-utils.h:
 	* src/main.c: (main), (enter_notify_event), (leave_notify_event):
 
-2007-02-25  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+2007-02-25  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	reviewed by: <delete if not using a buddy>
 
@@ -37,7 +41,7 @@
 	* src/awn-utils.h:
 	* src/main.c: (main), (enter_notify_event), (leave_notify_event):
 
-2007-02-24  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+2007-02-24  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	Added Dbus support
 
@@ -74,7 +78,7 @@
 	* src/awn-task.h:
 	* src/main.c: (main):
 
-2007-02-21  Neil Jagdish Patel,,,01923 820 124  <njp@Fedora>
+2007-02-21  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	Added a fade_effect to the hover effects
 
@@ -86,7 +90,7 @@
 	* src/awn-task.c: (_task_hover_effect2), (launch_hover_effect),
 	(draw):
 
-2007-02-20  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+2007-02-20  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	Cleaned up a few things, separator should vanish whent there are no tasks.
 
@@ -95,7 +99,7 @@
 	* src/awn-task.c: (_task_hover_effect2), (launch_hover_effect),
 	(draw):
 
-2007-02-20  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+2007-02-20  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	Applied patch from trevi55 for better click-control. Changed middle-click of a launcher to launch a new instance of that application.
 
@@ -103,13 +107,13 @@
 	(awn_task_button_press):
 	* src/main.c: (button_press_event):
 
-2007-02-20  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+2007-02-20  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	Applyed patch by trevi55 to fix separator size
 
 	* src/awn-bar.c: (render):
 
-2007-02-20  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
+2007-02-20  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	Added patche by trevi55 to have notifcation on window title change.
 

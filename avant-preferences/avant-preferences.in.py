@@ -35,7 +35,7 @@ except:
 import gconf
 
 APP = 'avant-window-navigator'
-DIR = '/usr/share/locale/'
+DIR = 'locale'
 
 import locale
 import gettext
@@ -126,6 +126,8 @@ class main:
 		self.client.add_dir(TITLE_PATH, gconf.CLIENT_PRELOAD_NONE)
 		
 		#Set the Glade file
+		gtk.glade.bindtextdomain(APP, DIR)
+		gtk.glade.textdomain(APP)
 		self.gladefile = os.path.join(DATA_DIR, "window.glade") 
 		print self.gladefile 
 	        self.wTree = gtk.glade.XML(self.gladefile, domain=APP) 

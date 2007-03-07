@@ -3,6 +3,35 @@
 <interface name="com.google.code.Awn">
 <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="awn_task_manager"/>
 	
+	<method name="GetTaskByPid">
+		<arg name="pid" type="i" direction="in" />
+		<arg name="name" type="s" direction="out" />
+	</method>
+	
+	<method name="SetTaskIcon">
+		<arg name="name" type="s" direction="in" />
+		<arg name="icon_path" type="s" direction="in" />
+	</method>
+	<!--
+	<method name="UnsetTaskIcon">
+		<arg name="xid" type="x" direction="in" />
+	</method>
+	-->
+	<method name="SetTaskProgress">
+		<arg name="name" type="s" direction="in" />
+		<arg name="progress" type="i" direction="in" />
+	</method>
+	<method name="SetTaskInfo">
+		<arg name="name" type="s" direction="in" />
+		<arg name="info" type="s" direction="in" />
+	</method>
+	<!--
+	<method name="UnsetTaskInfo">
+		<arg name="xid" type="x" direction="in" />
+	</method>
+	-->
+		
+	<!-- Depreciated -->
 	<method name="SetTaskIconByName">
 		<arg name="name" type="s" direction="in" />
 		<arg name="icon_path" type="s" direction="in" />
