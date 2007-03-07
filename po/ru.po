@@ -1,0 +1,121 @@
+# Russian translation of avant-window-navigator.
+# Copyright (C) 2007 Neil Jagdish Patel
+# This file is distributed under the same license as the avant-window-navigator package.
+# Andrey Fedoseev <andrey.fedoseev@gmail.com>, 2007.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: avant-window-navigator-svn\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-01-23 23:17+0000\n"
+"PO-Revision-Date: 2007-03-07 22:00+0500\n"
+"Last-Translator: Andrey Fedoseev <andrey.fedoseev@gmail.com>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: avant-preferences/window.glade:9
+msgid "Avant Preferences"
+msgstr "Настройка Avant"
+
+#: avant-preferences/window.glade:83
+msgid "Colour:"
+msgstr "Цвет:"
+
+#: avant-preferences/window.glade:135
+msgid "Shadow colour:"
+msgstr "Цвет тени:"
+
+#: avant-preferences/window.glade:187
+msgid "Font size:"
+msgstr "Цвет шрифта"
+
+#: avant-preferences/window.glade:284
+msgid "Italic"
+msgstr "Курсив"
+
+#: avant-preferences/window.glade:365
+msgid "Bold"
+msgstr "Жирный"
+
+#: avant-preferences/window.glade:405
+msgid "<b>Text</b>"
+msgstr "<b>Текст</b>"
+
+#: avant-preferences/window.glade:454 avant-preferences/window.glade:1086
+msgid "Select A File"
+msgstr "Выберите файл"
+
+#: avant-preferences/window.glade:468
+msgid "<b>Active Icon</b>"
+msgstr "<b>Активный значок</b>"
+
+#: avant-preferences/window.glade:504
+msgid "General Appearance"
+msgstr "Общий внешний вид"
+
+#: avant-preferences/window.glade:565
+msgid "Main border:"
+msgstr "Основная граница:"
+
+#: avant-preferences/window.glade:617
+msgid "Internal border:"
+msgstr "Внутренняя граница:"
+
+#: avant-preferences/window.glade:667
+msgid "<b>Borders</b>"
+msgstr "<b>Границы</b>"
+
+#: avant-preferences/window.glade:728 avant-preferences/window.glade:891
+msgid "First step colour:"
+msgstr "Начальный цвет:"
+
+#: avant-preferences/window.glade:780 avant-preferences/window.glade:943
+msgid "Second step colour:"
+msgstr "Конечный цвет:"
+
+#: avant-preferences/window.glade:830
+msgid "<b>Gradient</b>"
+msgstr "<b>Градиент</b>"
+
+#: avant-preferences/window.glade:993
+msgid "<b>Highlight</b>"
+msgstr "<b>Подсветка</b>"
+
+#: avant-preferences/window.glade:1055
+msgid "Enable pattern"
+msgstr "Включить фоновый рисунок"
+
+#: avant-preferences/window.glade:1116
+msgid "Transparency:"
+msgstr "Прозрачность:"
+
+#: avant-preferences/window.glade:1170
+msgid "<b>Pattern</b>"
+msgstr "<b>Фоновый рисунок</b>"
+
+#: avant-preferences/window.glade:1232
+msgid "Enable rounded corners"
+msgstr "Включить сруглённые углы"
+
+#: avant-preferences/window.glade:1261
+msgid "<b>Corners</b>"
+msgstr "<b>Углы</b>"
+
+#: avant-preferences/window.glade:1297
+msgid "Bar Appearance"
+msgstr "Внешний вид панели"
+
+#: avant-preferences/window.glade:1359
+msgid "Show windows from all viewports"
+msgstr "Показывать окна со всех рабочих мест"
+
+#: avant-preferences/window.glade:1388
+msgid "<b>Windows</b>"
+msgstr "<b>Окна</b>"
+
+#: avant-preferences/window.glade:1424
+msgid "Window Management"
+msgstr "Управление окнами"
