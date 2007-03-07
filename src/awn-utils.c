@@ -46,6 +46,12 @@ show_window (GtkWindow *window)
 void 
 awn_hide (AwnSettings *settings)
 {
+	gtk_widget_hide (settings->window);
+	//gtk_widget_hide (settings->bar);
+	hide_window (GTK_WINDOW (settings->bar));
+	gtk_widget_hide (settings->title);
+	settings->hidden = TRUE;		
+	return;
 	hide_window (GTK_WINDOW (settings->bar));
 	hide_window (GTK_WINDOW (settings->window));
 	gtk_widget_hide (settings->title);
@@ -56,6 +62,14 @@ void
 awn_show (AwnSettings *settings)
 {
 	gint x, y;
+	gtk_widget_show (settings->window);
+	
+	gtk_window_get_position (GTK_WINDOW (settings->bar), &x, &y);
+	gtk_window_move (GTK_WINDOW (settings->bar), x, settings->monitor.height-100);	
+	gtk_widget_show (settings->title);
+	settings->hidden = FALSE;	
+	return;
+	//gint x, y;
 	
 	gtk_window_get_position (GTK_WINDOW (settings->bar), &x, &y);
 	gtk_window_move (GTK_WINDOW (settings->bar), x, settings->monitor.height-100);

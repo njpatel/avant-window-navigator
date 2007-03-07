@@ -411,7 +411,8 @@ _update_input_shape (GtkWidget* window, int width, int height)
 			gtk_widget_input_shape_combine_mask (window, pShapeBitmap, 0, 0);
 #endif
 		}
-		g_object_unref ((gpointer) pShapeBitmap);
+		if (pShapeBitmap)
+			g_object_unref ((gpointer) pShapeBitmap);
 	}
 }
 
@@ -485,7 +486,7 @@ awn_bar_resize(GtkWidget *window, gint width)
                              
         } else {
                 resizing = 1;
-                g_timeout_add(18, (GSourceFunc)resize, (gpointer)window);
+                g_timeout_add(10, (GSourceFunc)resize, (gpointer)window);
         }
                 
 }

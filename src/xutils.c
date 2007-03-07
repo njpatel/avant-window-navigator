@@ -1884,7 +1884,8 @@ scaled_from_pixdata (guchar *pixdata,
 				tmp,
 				(size - w) / 2, (size - h) / 2);
 	  
-	  g_object_unref (src);
+	  if (src)
+	  	g_object_unref (src);
 	  src = tmp;
 	}
     }

@@ -255,7 +255,10 @@ _update_input_shape (GtkWidget* window, int width, int height)
 			gtk_widget_input_shape_combine_mask (window, pShapeBitmap, 0, 0);
 #endif
 		}
-		g_object_unref ((gpointer) pShapeBitmap);
+
+		if (pShapeBitmap)
+			g_object_unref ((gpointer) pShapeBitmap);
+
 	}
 }
 
