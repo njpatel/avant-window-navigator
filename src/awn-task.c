@@ -20,6 +20,7 @@
 
 #include <gtk/gtk.h>
 #include <string.h>
+#include <math.h>
 #include <libgnome/gnome-desktop-item.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnome/libgnome.h>
@@ -340,7 +341,7 @@ _task_hover_effect (AwnTask *task)
 	if (!AWN_IS_TASK (task)) return FALSE;
 	
 	priv = AWN_TASK_GET_PRIVATE (task);
-	static gint max = 10;	
+	static gint max = 15;	
 	
 
 	if (priv->effect_lock) {
@@ -354,19 +355,19 @@ _task_hover_effect (AwnTask *task)
 	}
 	
 	if (priv->effect_direction) {
-		priv->y_offset +=1;
+		priv->y_offset = log10 (++priv->count) * 15.0;
 		
-		if (priv->y_offset >= max) 
+		if (priv->y_offset >= max)
 			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
-	
 	} else {
-		priv->y_offset-=1;
+		priv->y_offset = log10 (--priv->count) * 15.0;
 		
 		if (priv->y_offset < 1) {
 			/* finished bouncing, back to normal */
-			if (priv->hover) 
+			if (priv->hover)  {
 				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
-			else {
+				priv->count = 0;
+			} else {
 				priv->effect_lock = FALSE;
 				priv->current_effect = AWN_TASK_EFFECT_NONE;
 				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
@@ -374,7 +375,7 @@ _task_hover_effect (AwnTask *task)
 			}
 		}
 	}
-	
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 	
 	
@@ -620,7 +621,7 @@ launch_hover_effect (AwnTask *task )
 	if (priv->settings->fade_effect)
 		g_timeout_add(25, (GSourceFunc)_task_hover_effect2, (gpointer)task);
 	else
-		g_timeout_add(25, (GSourceFunc)_task_hover_effect, (gpointer)task);
+		g_timeout_add(40, (GSourceFunc)_task_hover_effect, (gpointer)task);
 }
 
 static gboolean

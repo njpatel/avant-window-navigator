@@ -1,5 +1,11 @@
 2007-03-07  Neil Jagdish Patel  <njpatel@gmail.com>
 
+	* Merged an excellant patch by James Willcox (snorp_AT_snorp_DOT_net)
+	  that makes the hover-bouncing algorithm much better
+	
+
+2007-03-07  Neil Jagdish Patel  <njpatel@gmail.com>
+
 	* Cleaned up positioning code in awn-window.c
 	* Fixed memory leak in awn-x.c
 	* Fixed starup errors (GDK_IS_DRAWABLE)

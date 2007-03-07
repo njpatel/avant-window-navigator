@@ -36,6 +36,7 @@ import gconf
 
 APP = 'avant-window-navigator'
 DIR = 'locale'
+I18N_DOMAIN = "avant-window-navigator"
 
 import locale
 import gettext
@@ -117,8 +118,6 @@ class main:
 
 	def __init__(self):
 		
-
-		
 		self.client = gconf.client_get_default()
 		self.client.add_dir(BAR_PATH, gconf.CLIENT_PRELOAD_NONE)
 		self.client.add_dir(WINMAN_PATH, gconf.CLIENT_PRELOAD_NONE)
@@ -130,7 +129,7 @@ class main:
 		gtk.glade.textdomain(APP)
 		self.gladefile = os.path.join(DATA_DIR, "window.glade") 
 		print self.gladefile 
-	        self.wTree = gtk.glade.XML(self.gladefile, domain=APP) 
+	        self.wTree = gtk.glade.XML(self.gladefile, domain=I18N_DOMAIN) 
 		
 		#Get the Main Window, and connect the "destroy" event
 		self.window = self.wTree.get_widget("main_window")
@@ -263,6 +262,8 @@ class main:
 
 
 if __name__ == "__main__":
+	gettext.textdomain(I18N_DOMAIN)
+	gtk.glade.bindtextdomain(I18N_DOMAIN, "/usr/share/locale")
 	app = main()
 	gtk.main()
 
