@@ -341,7 +341,8 @@ _on_expose (GtkWidget *widget, GdkEventExpose *expose, AwnTitle *title)
 	gint height;
 	cairo_t *cr = NULL;
 
-
+	if (!GDK_IS_DRAWABLE (widget->window))
+		return;
 	cr = gdk_cairo_create (widget->window);
 	if (!cr)
 		return FALSE;

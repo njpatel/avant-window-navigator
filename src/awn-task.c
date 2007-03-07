@@ -1954,8 +1954,8 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 	dialog = gtk_dialog_new_with_buttons ("Preferences",
                                                   GTK_WINDOW (priv->settings->window),
                                                   GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                  "Change Icon...",
-                                                  3,
+                                                  //"Change Icon...",
+                                                  //3,
                                                   GTK_STOCK_CANCEL,
                                                   GTK_RESPONSE_REJECT,
                                                   GTK_STOCK_OK,
@@ -1987,7 +1987,8 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 		default:
 			break;
 	}
-	gtk_widget_destroy (dialog);	                                                                                                  
+	gtk_widget_destroy (dialog);                                                                   
+
 }
 
 

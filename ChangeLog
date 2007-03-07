@@ -1,3 +1,11 @@
+2007-03-07  Neil Jagdish Patel  <njpatel@gmail.com>
+
+	* Cleaned up positioning code in awn-window.c
+	* Fixed memory leak in awn-x.c
+	* Fixed starup errors (GDK_IS_DRAWABLE)
+	* Fixed separator positon errorsi
+
+
 2007-03-07  Christian Kirbach  <christian.kirbach@googlemail.com>
 
 	reviewed by: Neil J. Patel

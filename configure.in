@@ -3,7 +3,7 @@ AC_INIT([avant-window-navigator], [0.1.1], [])
 AC_CONFIG_SRCDIR([.])
 AC_CONFIG_HEADERS([config.h])
 
-AM_INIT_AUTOMAKE([1.9 tar-ustar])
+AM_INIT_AUTOMAKE([tar-ustar])
 AM_MAINTAINER_MODE
 
 AC_SUBST([ACLOCAL_AMFLAGS], ["\${ACLOCAL_FLAGS}"])
@@ -41,23 +41,6 @@ COMMON_MODULES="glib-2.0 gobject-2.0 gtk+-2.0 gdk-2.0"
 PKG_CHECK_MODULES(AWN, [ $COMMON_MODULES libwnck-1.0 gnome-desktop-2.0 libgnome-2.0 gnome-vfs-2.0 gconf-2.0 x11 xproto dbus-glib-1])
 AC_SUBST(AWN_CFLAGS)
 AC_SUBST(AWN_LIBS)
-
-dnl ==============================================
-dnl Gconf
-dnl ==============================================
-
-AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
-
-if test x"$GCONFTOOL" = xno; then
-  AC_MSG_ERROR([gconftool-2 executable was not found in your path - should be install with gconf])
-fi
-
-AM_GCONF_SOURCE_2
-
-dnl ==============================================
-dnl End: Gconf
-dnl ==============================================
-
 
 dnl ==============================================
 dnl DBUS

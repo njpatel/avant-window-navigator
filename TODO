@@ -1,17 +1,15 @@
 Here's a (incomplete) list of features and fixes which need to be implemented in Awn.
 
-
 * Add beryl thumbnailer support (#4).
 * User-configurable icon sizes (#16)
 * Better launcher to task matching (#27)
 * Add python widget support (#29)
 * Fix Active Image glow (#33)
 * Add launchers through a right-click menu (#43)
-* Separator position doesn't update when you add a new launcher (#44)
 * Use Awn as a launcher bar only (#45)
 * Allow Awn to ignore certain window types (#48)
 * Scale Awn down if too many items are present, depends on #16 (#57)
-* Unminimise does nto work sometimes (#61)
+* Unminimise does not work sometimes (#61)
 * Doesn't work with enlightenment (#63)
 * Rearrange launcher icons (either from menu or d&d) (#72)
 * Clean up autohide (#74)
@@ -47,3 +45,4 @@ TO-DOne
 * Dual screen support
 * Let the WM know that Awn is a dock, and there stop windows from expanding behind it.
 * Lots of warnings during make (#69) (#141)
+* Separator position doesn't update when you add a new launcher (#44)

@@ -55,16 +55,17 @@ awn_x_get_icon (WnckWindow *window, gint width, gint height)
                         &icon,
                         width, width,
                         &mini_icon,
-                        64,
-                        64) ) {
-                        
+                        24,
+                        24) ) {
+	  	if (mini_icon)
+  		gdk_pixbuf_unref (mini_icon);                        
         	if (icon)
         		return icon;
   	}
-  	g_print("**AWN-X** : Getting icon from X failed for %s\n",
-  		wnck_application_get_name(
-  			wnck_window_get_application(window)));
-	return wnck_window_get_icon (window);
+  	if (mini_icon)
+  		gdk_pixbuf_unref (mini_icon);
+        
+        return wnck_window_get_icon (window);
 
 }
 
@@ -112,6 +113,7 @@ GdkPixbuf *
 awn_x_get_icon_for_window (WnckWindow *window, gint width, gint height)
 {
 	
+	return awn_x_get_icon (window, width, height);
 	WnckApplication *app;
 	GString *name = NULL;
 	gchar *uri = NULL;

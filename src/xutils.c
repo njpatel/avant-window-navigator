@@ -2334,8 +2334,8 @@ _wnck_read_icons_ (Window         xwindow,
         {
           *iconp = scaled_from_pixdata (pixdata, w, h, ideal_width, ideal_height);
           
-          *mini_iconp = scaled_from_pixdata (mini_pixdata, mini_w, mini_h,
-                                             ideal_mini_width, ideal_mini_height);
+          //*mini_iconp = scaled_from_pixdata (mini_pixdata, mini_w, mini_h,
+           //                                  ideal_mini_width, ideal_mini_height);
 
           return TRUE;
         }
@@ -2408,7 +2408,10 @@ xutils_set_strut (GdkWindow        *gdk_window,
 	Window   window;
 	gulong   struts [12] = { 0, };
 
-	g_return_if_fail (GDK_IS_WINDOW (gdk_window));
+	if (!GDK_IS_DRAWABLE (gdk_window))
+		return;
+	if (!GDK_IS_WINDOW (gdk_window))
+		return;
 
 	display = GDK_WINDOW_XDISPLAY (gdk_window);
 	window  = GDK_WINDOW_XWINDOW (gdk_window);
