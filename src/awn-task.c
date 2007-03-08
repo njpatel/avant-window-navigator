@@ -131,7 +131,17 @@ struct _AwnTaskPrivate
 	gulong win_leave;
 };
 
+enum
+{
+	MENU_ITEM_CLICKED,
+	LAST_SIGNAL
+};
+
+static guint awn_task_signals[LAST_SIGNAL] = { 0 };
+
 /* GLOBALS */
+
+static menu_item_id = 100;
 
 static const GtkTargetEntry drop_types[] = {
 	{ "STRING", 0, 0 }
@@ -156,6 +166,17 @@ awn_task_class_init (AwnTaskClass *class)
 	widget_class->drag_leave = awn_task_drag_leave;
 	
 	g_type_class_add_private (obj_class, sizeof (AwnTaskPrivate));
+
+	awn_task_signals[MENU_ITEM_CLICKED] =
+		g_signal_new ("menu_item_clicked",
+			      G_OBJECT_CLASS_TYPE (obj_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (AwnTaskClass, menu_item_clicked),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__UINT,
+			      G_TYPE_NONE,
+			      1,
+			      G_TYPE_UINT);	
 }
 
 static void
@@ -1872,6 +1893,16 @@ awn_task_unset_info (AwnTask *task)
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 }
 
+gint 
+awn_task_add_menu_item (AwnTask *task, GtkMenuItem *item)
+{
+	AwnTaskPrivate *priv;
+	
+	g_return_if_fail (AWN_IS_TASK (task));
+	
+	priv = AWN_TASK_GET_PRIVATE (task);
+}
+
 /********************* MISC FUNCTIONS *******************/
 
 static void
@@ -2006,6 +2037,8 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 	}
 	gtk_widget_destroy (dialog);                                                                   
 
+	g_signal_emit (G_OBJECT (task), awn_task_signals[MENU_ITEM_CLICKED], 0,
+		       (guint) 69);
 }
 
 

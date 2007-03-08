@@ -58,6 +58,7 @@ static void _task_manager_drag_data_recieved (GtkWidget        *widget,
 static void _refresh_box(AwnTaskManager *task_manager);
 static void _task_manager_load_launchers(AwnTaskManager *task_manager);
 void awn_task_manager_update_separator_position (AwnTaskManager *task_manager);
+static void _task_manager_menu_item_clicked (AwnTask *task, guint id, AwnTaskManager *task_manager);
 
 /* STRUCTS & ENUMS */
 
@@ -79,6 +80,14 @@ struct _AwnTaskManagerPrivate
 	
 	GtkWidget *eb;
 };
+
+enum
+{
+	MENU_ITEM_CLICKED,
+	LAST_SIGNAL
+};
+
+static guint awn_task_manager_signals[LAST_SIGNAL] = { 0 };
 
 /* GLOBALS */
 
@@ -103,6 +112,10 @@ _load_launchers_func (const char *uri, AwnTaskManager *task_manager)
 		
 		g_signal_connect (G_OBJECT(task), "drag-data-received",
 				  G_CALLBACK(_task_manager_drag_data_recieved), (gpointer)task_manager);
+
+		g_signal_connect (G_OBJECT(task), "menu_item_clicked",
+			  G_CALLBACK(_task_manager_menu_item_clicked), (gpointer)
+			  task_manager);				  
 		
 		priv->launchers = g_list_append(priv->launchers, (gpointer)task);
 		gtk_box_pack_start(GTK_BOX(priv->launcher_box), task, FALSE, FALSE, 0);
@@ -303,6 +316,9 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 		
 		g_signal_connect (G_OBJECT(task), "drag-data-received",
 				  G_CALLBACK(_task_manager_drag_data_recieved), (gpointer)task_manager);
+		g_signal_connect (G_OBJECT(task), "menu_item_clicked",
+			  G_CALLBACK(_task_manager_menu_item_clicked), (gpointer)
+			  task_manager);				  
 		_refresh_box (task_manager);
 		awn_task_manager_update_separator_position (task_manager);
 	}
@@ -406,6 +422,13 @@ _task_manager_window_activate (WnckScreen *screen,
 	_refresh_box(task_manager);
 }
 
+static void 
+_task_manager_menu_item_clicked (AwnTask *task, guint id, AwnTaskManager *task_manager)
+{
+	g_signal_emit (G_OBJECT (task_manager), awn_task_manager_signals[MENU_ITEM_CLICKED], 0,
+	               (guint) id);
+}
+
 
 /********************************* D&D code *****************************/
 
@@ -471,6 +494,9 @@ _task_manager_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 		
 		g_signal_connect (G_OBJECT(task), "drag-data-received",
 				  G_CALLBACK(_task_manager_drag_data_recieved), (gpointer)task_manager);
+		g_signal_connect (G_OBJECT(task), "menu_item_clicked",
+			  G_CALLBACK(_task_manager_menu_item_clicked), (gpointer)
+			  task_manager);				  
 		
 		priv->launchers = g_list_append(priv->launchers, (gpointer)task);
 		gtk_box_pack_start(GTK_BOX(priv->launcher_box), task, FALSE, FALSE, 0);
@@ -1080,6 +1106,44 @@ awn_task_manager_unset_info_by_xid (AwnTaskManager *task_manager,
 	return TRUE;
 }
 
+static gboolean
+awn_task_manager_add_task_menu_item_by_name (AwnTaskManager *task_manager,
+			    		     gchar		*name,
+			    		     gchar		*stock_id,
+			    		     gchar		*item_name,
+			    		     guint		**id,
+			    		     GError      	**error)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnDBusTerm term;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	
+	__find_by_name (priv, &term, name); 
+	
+	if (term.task == NULL) {
+		g_print (" task not found\n");
+		return TRUE;
+	} 
+	GtkWidget *item;
+	item = NULL;
+	
+	if (stock_id) {
+		item = gtk_image_menu_item_new_from_stock (stock_id, NULL);
+	
+	} else if (item_name) {
+		item = gtk_menu_item_new_with_label (item_name);
+	
+	} else {
+		;
+	}
+	if (item) 
+		*id = (int) awn_task_add_menu_item (term.task, GTK_MENU_ITEM (item));
+	else
+		*id = 0;
+
+	return TRUE;
+}
 /********************* /DBUS   ********************************/
 
 /********************* awn_task_manager_new * *******************/
@@ -1097,9 +1161,19 @@ awn_task_manager_class_init (AwnTaskManagerClass *class)
 
 	g_type_class_add_private (obj_class, sizeof (AwnTaskManagerPrivate));
 	
+	awn_task_manager_signals[MENU_ITEM_CLICKED] =
+		g_signal_new ("menu_item_clicked",
+			      G_OBJECT_CLASS_TYPE (obj_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (AwnTaskManagerClass, menu_item_clicked),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__UINT,
+			      G_TYPE_NONE,
+			      1,
+			      G_TYPE_UINT);						 
+
 	dbus_g_object_type_install_info (G_TYPE_FROM_CLASS (class),
 					 &dbus_glib_awn_task_manager_object_info);
-
 }
 
 static void
@@ -1172,8 +1246,9 @@ awn_task_manager_new (AwnSettings *settings)
 	GtkIconTheme *theme = gtk_icon_theme_get_default ();
 	
 	g_signal_connect (G_OBJECT(theme), "changed",
-			  G_CALLBACK(_task_manager_icon_theme_changed), (gpointer)task_manager); 	                
-	
+			  G_CALLBACK(_task_manager_icon_theme_changed), (gpointer)task_manager);
+
+	                
 	return task_manager;
 }
 

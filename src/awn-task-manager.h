@@ -49,6 +49,8 @@ struct _AwnTaskManagerClass
 {
 	GtkHBoxClass parent_class;
 
+	void (*menu_item_clicked) (AwnTaskManager *task, guint id);	
+
 };
 
 GtkWidget *awn_task_manager_new (AwnSettings *settings);

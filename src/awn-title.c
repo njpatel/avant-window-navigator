@@ -160,9 +160,11 @@ _rounded_corners (cairo_t *cr, double w, double h, double x, double y)
 static void 
 render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 {
-	cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, 0.0f);
-	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint (cr);
+	/* task back */
+	cairo_set_source_rgba (cr, 1, 0, 0, 0.0);
+	cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
+	cairo_rectangle(cr, -1, -1, width+1, height+1);
+	cairo_fill (cr);
 	
 	if (!utf8)
 		return;

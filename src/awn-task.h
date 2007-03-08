@@ -51,13 +51,14 @@ struct _AwnTask
 {
 	GtkDrawingArea parent;
 
-	/* < private > */
+
 };
 
 struct _AwnTaskClass
 {
 	GtkDrawingAreaClass parent_class;
 
+	void (*menu_item_clicked) (AwnTask *task, guint id);
 };
 
 GtkWidget *awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings);
@@ -100,6 +101,8 @@ void awn_task_set_progress (AwnTask *task, gint progress);
 
 void awn_task_set_info (AwnTask *task, const char *info);
 void awn_task_unset_info (AwnTask *task);
+
+gint awn_task_add_menu_item (AwnTask *task, GtkMenuItem *item);
 
 G_END_DECLS
 

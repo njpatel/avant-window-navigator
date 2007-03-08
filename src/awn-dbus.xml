@@ -71,7 +71,21 @@
 	</method>
 	<method name="UnsetInfoByXid">
 		<arg name="xid" type="x" direction="in" />
-	</method>	
+	</method>
+	<!--
+	<method name="AddTaskMenuItemByName">
+		<arg name="name" type="s" direction="in" />
+		<arg name="stock_id" type="s" direction="in"/>
+		<arg name="stock_icon" type="s" direction="in" />
+		<arg name="file_icon" type="s" direction="in" />
+		<arg name="item_name" type="s" direction="in"
+		<arg name="id" type="u" direction="out" />
+	</method>		
+
+	 signals -->
+	<signal name="MenuItemClicked">
+		<arg type="u" name="id"/>
+	</signal>	
 		
 </interface>
 </node>
