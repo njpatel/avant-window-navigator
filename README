@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+* You can now add menu's through dbus! Check out the new Rhythmbox plugin in /plugins/Rhythmbox. Installation is the same as before!
+
 * Awn catches theme-changes signals and updates the launcher icons (window icons are automatic)
 
 * Autohide now supports D&D

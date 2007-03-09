@@ -1,3 +1,7 @@
+2007-03-09  Neil Jagdish Patel  <njpatel@gmail.com>
+
+	* Has support for adding menu items through D-Bus. 
+
 2007-03-07  Neil Jagdish Patel   <njpatel@gmail.com>
 
 	* Listens to theme change signals and updates the bar as required.

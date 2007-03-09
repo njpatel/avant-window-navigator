@@ -2,12 +2,12 @@
 <node name="/com/google/code/Awn">
 <interface name="com.google.code.Awn">
 <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="awn_task_manager"/>
-	
+
 	<method name="GetTaskByPid">
 		<arg name="pid" type="i" direction="in" />
 		<arg name="name" type="s" direction="out" />
 	</method>
-	
+
 	<method name="SetTaskIcon">
 		<arg name="name" type="s" direction="in" />
 		<arg name="icon_path" type="s" direction="in" />
@@ -19,9 +19,9 @@
 	-->
 	<method name="SetTaskProgress">
 		<arg name="name" type="s" direction="in" />
-		<arg name="progress" type="i" direction="in" />
+		<arg name="progress" type="i" direction="in" />#000000
 	</method>
-	<method name="SetTaskInfo">
+	<method name="SetTaskInfo">#000000
 		<arg name="name" type="s" direction="in" />
 		<arg name="info" type="s" direction="in" />
 	</method>
@@ -30,7 +30,7 @@
 		<arg name="xid" type="x" direction="in" />
 	</method>
 	-->
-		
+
 	<!-- Depreciated -->
 	<method name="SetTaskIconByName">
 		<arg name="name" type="s" direction="in" />
@@ -39,14 +39,14 @@
 	<method name="SetTaskIconByXid">
 		<arg name="xid" type="x" direction="in" />
 		<arg name="icon_path" type="s" direction="in" />
-	</method>	
-	
+	</method>
+
 	<method name="UnsetTaskIconByName">
 		<arg name="name" type="s" direction="in" />
 	</method>
 	<method name="UnsetTaskIconByXid">
 		<arg name="xid" type="x" direction="in" />
-	</method>		
+	</method>
 
 	<method name="SetProgressByName">
 		<arg name="name" type="s" direction="in" />
@@ -56,7 +56,7 @@
 		<arg name="xid" type="x" direction="in" />
 		<arg name="progress" type="i" direction="in" />
 	</method>
-	
+
 	<method name="SetInfoByName">
 		<arg name="name" type="s" direction="in" />
 		<arg name="info" type="s" direction="in" />
@@ -64,28 +64,44 @@
 	<method name="SetInfoByXid">
 		<arg name="xid" type="x" direction="in" />
 		<arg name="info" type="s" direction="in" />
-	</method>	
-	
+	</method>
+
 	<method name="UnsetInfoByName">
 		<arg name="name" type="s" direction="in" />
 	</method>
 	<method name="UnsetInfoByXid">
 		<arg name="xid" type="x" direction="in" />
 	</method>
-	<!--
+
 	<method name="AddTaskMenuItemByName">
 		<arg name="name" type="s" direction="in" />
 		<arg name="stock_id" type="s" direction="in"/>
-		<arg name="stock_icon" type="s" direction="in" />
-		<arg name="file_icon" type="s" direction="in" />
-		<arg name="item_name" type="s" direction="in"
-		<arg name="id" type="u" direction="out" />
-	</method>		
+		<arg name="item_name" type="s" direction="in"/>
+		<arg name="id" type="i" direction="out" />
+	</method>
 
-	 signals -->
+
+	<method name="AddTaskCheckItemByName">
+		<arg name="name" type="s" direction="in" />
+		<arg name="item_name" type="s" direction="in" />
+		<arg name="active" type="b" direction="in" />
+		<arg name="id" type="i" direction="out"/>
+	</method>
+
+	<method name="SetTaskCheckItemByName">
+		<arg name="name" type="s" direction="in" />
+		<arg name="id" type="i" direction="in" />
+		<arg name="active" type="b" direction="in" />
+	</method>
+
+
 	<signal name="MenuItemClicked">
-		<arg type="u" name="id"/>
-	</signal>	
-		
+		<arg type="i" name="id"/>
+	</signal>
+	<signal name="CheckItemClicked">
+		<arg type="i" name="id" />
+		<arg type="b" name="active" />
+	</signal>
+
 </interface>
 </node>

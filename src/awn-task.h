@@ -30,7 +30,7 @@
 #include <libwnck/window-action-menu.h>
 
 #include "awn-gconf.h"
-#include "awn-utils.h" 
+#include "awn-utils.h"
 #include "awn-title.h"
 #include "awn-task-manager.h"
 #include "awn-x.h"
@@ -59,6 +59,7 @@ struct _AwnTaskClass
 	GtkDrawingAreaClass parent_class;
 
 	void (*menu_item_clicked) (AwnTask *task, guint id);
+	void (*check_item_clicked) (AwnTask *task, guint id, gboolean active);
 };
 
 GtkWidget *awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings);
@@ -103,6 +104,8 @@ void awn_task_set_info (AwnTask *task, const char *info);
 void awn_task_unset_info (AwnTask *task);
 
 gint awn_task_add_menu_item (AwnTask *task, GtkMenuItem *item);
+gint awn_task_add_check_item (AwnTask *task, GtkMenuItem *item);
+void awn_task_set_check_item (AwnTask *task, gint id, gboolean active);
 
 G_END_DECLS
 

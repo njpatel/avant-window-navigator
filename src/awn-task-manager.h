@@ -49,7 +49,8 @@ struct _AwnTaskManagerClass
 {
 	GtkHBoxClass parent_class;
 
-	void (*menu_item_clicked) (AwnTaskManager *task, guint id);	
+	void (*menu_item_clicked) (AwnTaskManager *task, guint id);
+	void (*check_item_clicked) (AwnTaskManager *task, guint id, gboolean active);		
 
 };
 

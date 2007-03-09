@@ -29,6 +29,7 @@
 #include "awn-x.h"
 
 #include "awn-utils.h"
+#include "awn-marshallers.h"
 
 #define AWN_TASK_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), AWN_TYPE_TASK, AwnTaskPrivate))
 
@@ -38,12 +39,12 @@ G_DEFINE_TYPE (AwnTask, awn_task, GTK_TYPE_DRAWING_AREA);
 
 #define  AWN_TASK_EFFECT_DIR_DOWN		0
 #define  AWN_TASK_EFFECT_DIR_UP			1
-#define  AWN_TASK_EFFECT_DIR_LEFT		2 
+#define  AWN_TASK_EFFECT_DIR_LEFT		2
 #define  AWN_TASK_EFFECT_DIR_RIGHT		3
 #define  M_PI 					3.14159265358979323846
 #define  AWN_CLICK_IDLE_TIME			450
 
-#define M_PI		3.14159265358979323846 
+#define M_PI		3.14159265358979323846
 
 /* FORWARD DECLERATIONS */
 
@@ -54,7 +55,7 @@ static gboolean awn_task_proximity_out (GtkWidget *task, GdkEventCrossing *event
 static gboolean awn_task_win_enter_in (GtkWidget *window, GdkEventMotion *event, AwnTask *task);
 static gboolean awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *task);
 
-static gboolean awn_task_drag_motion (GtkWidget *task, 
+static gboolean awn_task_drag_motion (GtkWidget *task,
 		GdkDragContext *context, gint x, gint y, guint t);
 static void
 awn_task_drag_leave (GtkWidget *widget, GdkDragContext *drag_context,
@@ -74,53 +75,70 @@ typedef enum {
 
 } AwnTaskEffect;
 
+typedef enum {
+	AWN_TASK_MENU_TYPE_NORMAL,
+	AWN_TASK_MENU_TYPE_CHECK
+} AwnTaskMenuType;
+
+typedef struct {
+	AwnTaskMenuType		type;
+	GtkWidget		*item;
+	gint 			id;
+	gboolean		active;
+
+
+} AwnTaskMenuItem;
+
 typedef struct _AwnTaskPrivate AwnTaskPrivate;
 
 struct _AwnTaskPrivate
 {
-	AwnTaskManager *task_manager;
-	AwnSettings *settings;
-	
+	AwnTaskManager 	 *task_manager;
+	AwnSettings 	 *settings;
+
 	GnomeDesktopItem *item;
 	gint pid;
-	
+
 	gchar *application;
-	
+
 	gboolean is_launcher;
 	AwnSmartLauncher launcher;
 	gboolean is_starter;
 
 	WnckWindow *window;
 	AwnTitle *title;
-	
+
 	gboolean is_active;
 	gboolean needs_attention;
 	gboolean is_closing;
 	gboolean hover;
-	
+
 	GdkPixbuf *icon;
 	gint icon_width;
 	gint icon_height;
-	
+
 	gint progress;
-	
+
 	gboolean info;
 	gchar *info_text;
-	
+
 	/* EFFECT VARIABLES */
 	gboolean effect_lock;
 	AwnTaskEffect current_effect;
 	gint effect_direction;
 	gint count;
 	GdkPixbuf *pixbufs[15];
-	
+
 	gdouble x_offset;
 	gdouble y_offset;
 	gint width;
 	gint height;
 	gdouble rotate_degrees;
 	gfloat alpha;
-	
+
+	/* MenuItems */
+	AwnTaskMenuItem *menu_items[5];
+
 	/* random */
 	guint timestamp;
 	/* signal handler ID's, for clean close */
@@ -134,6 +152,7 @@ struct _AwnTaskPrivate
 enum
 {
 	MENU_ITEM_CLICKED,
+	CHECK_ITEM_CLICKED,
 	LAST_SIGNAL
 };
 
@@ -141,7 +160,7 @@ static guint awn_task_signals[LAST_SIGNAL] = { 0 };
 
 /* GLOBALS */
 
-static menu_item_id = 100;
+static gint menu_item_id = 100;
 
 static const GtkTargetEntry drop_types[] = {
 	{ "STRING", 0, 0 }
@@ -164,7 +183,7 @@ awn_task_class_init (AwnTaskClass *class)
 	widget_class->leave_notify_event = awn_task_proximity_out;
 	widget_class->drag_motion = awn_task_drag_motion;
 	widget_class->drag_leave = awn_task_drag_leave;
-	
+
 	g_type_class_add_private (obj_class, sizeof (AwnTaskPrivate));
 
 	awn_task_signals[MENU_ITEM_CLICKED] =
@@ -176,22 +195,33 @@ awn_task_class_init (AwnTaskClass *class)
 			      g_cclosure_marshal_VOID__UINT,
 			      G_TYPE_NONE,
 			      1,
-			      G_TYPE_UINT);	
+			      G_TYPE_UINT);
+
+	awn_task_signals[CHECK_ITEM_CLICKED] =
+		g_signal_new ("check_item_clicked",
+			      G_OBJECT_CLASS_TYPE (obj_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (AwnTaskClass, check_item_clicked),
+			      NULL, NULL,
+			      _awn_marshal_VOID__UINT_BOOLEAN,
+			      G_TYPE_NONE,
+			      2,
+			      G_TYPE_UINT, G_TYPE_BOOLEAN);
 }
 
 static void
 awn_task_init (AwnTask *task)
 {
 	gtk_widget_add_events (GTK_WIDGET (task),GDK_ALL_EVENTS_MASK);
-	
+
 	gtk_widget_set_size_request(GTK_WIDGET(task), 60, 100);
-	
+
 	gtk_drag_dest_set (GTK_WIDGET (task),
                            GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_DROP,
                            drop_types, n_drop_types,
                            GDK_ACTION_MOVE | GDK_ACTION_COPY);
-	
-	
+
+
 #if !GTK_CHECK_VERSION(2,9,0)
 			/* TODO: equivalent of following function: */
 #else
@@ -201,7 +231,7 @@ awn_task_init (AwnTask *task)
 	/* set all priv variables */
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	priv->item = FALSE;
 	priv->pid = -1;
 	priv->application = NULL;
@@ -228,6 +258,11 @@ awn_task_init (AwnTask *task)
 	priv->rotate_degrees = 0.0;
 	priv->alpha = 1.0;
 	priv->name_changed = FALSE;
+	priv->menu_items[0] = NULL;
+	priv->menu_items[1] = NULL;
+	priv->menu_items[2] = NULL;
+	priv->menu_items[3] = NULL;
+	priv->menu_items[4] = NULL;
 }
 
 
@@ -238,7 +273,7 @@ _task_opening_effect (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	static gint max = 10;	
+	static gint max = 10;
 
 	if (priv->effect_lock) {
 		if ( priv->current_effect != AWN_TASK_EFFECT_OPENING)
@@ -249,32 +284,32 @@ _task_opening_effect (AwnTask *task)
 		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 		priv->y_offset = -48;
 	}
-	
+
 	if (priv->effect_direction) {
 		priv->y_offset +=1;
-		
-		if (priv->y_offset >= max) 
-			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
-	
+
+		if (priv->y_offset >= max)
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;
+
 	} else {
 		priv->y_offset-=1;
-		
+
 		if (priv->y_offset < 1) {
 			/* finished bouncing, back to normal */
 			priv->effect_lock = FALSE;
 			priv->current_effect = AWN_TASK_EFFECT_NONE;
 			priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 			priv->y_offset = 0;
-			
+
 		}
 	}
-	
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
-	
-	
+
+
 	if (priv->effect_lock == FALSE)
 		return FALSE;
-	
+
 	return TRUE;
 }
 
@@ -290,8 +325,8 @@ _task_launched_effect (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	static gint max = 14;	
-	
+	static gint max = 14;
+
 	if (priv->effect_lock) {
 		if ( priv->current_effect != AWN_TASK_EFFECT_OPENING)
 			return TRUE;
@@ -302,18 +337,18 @@ _task_launched_effect (AwnTask *task)
 		priv->y_offset = 0;
 		priv->count = 0;
 	}
-	
+
 	if (priv->effect_direction) {
 		priv->y_offset +=1;
-		
-		if (priv->y_offset >= max) 
-			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
-	
+
+		if (priv->y_offset >= max)
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;
+
 	} else {
 		priv->y_offset-=1;
-		
+
 		if (priv->y_offset < 1) {
-			priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;	
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 			priv->count++;
 		}
 		if (priv->y_offset < 1 && (priv->window != NULL)) {
@@ -332,13 +367,13 @@ _task_launched_effect (AwnTask *task)
 			priv->count = 0;
 		}
 	}
-	
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
-	
-	
+
+
 	if (priv->effect_lock == FALSE)
 		return FALSE;
-	
+
 	return TRUE;
 }
 
@@ -360,10 +395,10 @@ _task_hover_effect (AwnTask *task)
 	AwnTaskPrivate *priv;
 
 	if (!AWN_IS_TASK (task)) return FALSE;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
-	static gint max = 15;	
-	
+	static gint max = 15;
+
 
 	if (priv->effect_lock) {
 		if ( priv->current_effect != AWN_TASK_EFFECT_HOVER)
@@ -374,15 +409,15 @@ _task_hover_effect (AwnTask *task)
 		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 		priv->y_offset = 0;
 	}
-	
+
 	if (priv->effect_direction) {
 		priv->y_offset = log10 (++priv->count) * 15.0;
-		
+
 		if (priv->y_offset >= max)
-			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;
 	} else {
 		priv->y_offset = log10 (--priv->count) * 15.0;
-		
+
 		if (priv->y_offset < 1) {
 			/* finished bouncing, back to normal */
 			if (priv->hover)  {
@@ -398,11 +433,11 @@ _task_hover_effect (AwnTask *task)
 	}
 
 	gtk_widget_queue_draw(GTK_WIDGET(task));
-	
-	
+
+
 	if (priv->effect_lock == FALSE)
 		return FALSE;
-	
+
 	return TRUE;
 }
 
@@ -420,19 +455,19 @@ _task_hover_effect2 (AwnTask *task)
 		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 		priv->alpha = 1.0;
 	}
-	
+
 	if (priv->effect_direction) {
 		priv->alpha -=0.05;
-		
-		if (priv->alpha <= 0.1) 
-			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
-	
+
+		if (priv->alpha <= 0.1)
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;
+
 	} else {
 		priv->alpha+=0.05;
-		
+
 		if (priv->alpha >= 1.0) {
 			/* finished bouncing, back to normal */
-			if (priv->hover) 
+			if (priv->hover)
 				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 			else {
 				priv->effect_lock = FALSE;
@@ -442,28 +477,28 @@ _task_hover_effect2 (AwnTask *task)
 			}
 		}
 	}
-	
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
-	
-	
+
+
 	if (priv->effect_lock == FALSE)
 		return FALSE;
-	
+
 	return TRUE;
 }
-GdkPixbuf * 
+GdkPixbuf *
 icon_loader_get_icon_spec( const char *name, int width, int height )
 {
         GdkPixbuf *icon = NULL;
         GdkScreen *screen = gdk_screen_get_default();
         GtkIconTheme *theme = NULL;
         theme = gtk_icon_theme_get_for_screen (screen);
-        
+
         if (!name)
                 return NULL;
-        
+
         GError *error = NULL;
-        
+
         GtkIconInfo *icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (),
                                 name, width, 0);
 	if (icon_info != NULL) {
@@ -472,63 +507,63 @@ icon_loader_get_icon_spec( const char *name, int width, int height )
                                       width, -1, &error);
 		gtk_icon_info_free(icon_info);
 	}
-	  
+
         /* first we try gtkicontheme */
         if (icon == NULL)
         	icon = gtk_icon_theme_load_icon( theme, name, width, GTK_ICON_LOOKUP_FORCE_SVG, &error);
         else {
         	g_print("Icon theme could not be loaded");
-        	error = (GError *) 1;  
+        	error = (GError *) 1;
         }
         if (icon == NULL) {
                 /* lets try and load directly from file */
                 error = NULL;
                 GString *str;
-                
+
                 if ( strstr(name, "/") != NULL )
                         str = g_string_new(name);
                 else {
                         str = g_string_new("/usr/share/pixmaps/");
                         g_string_append(str, name);
                 }
-                
-                icon = gdk_pixbuf_new_from_file_at_scale(str->str, 
+
+                icon = gdk_pixbuf_new_from_file_at_scale(str->str,
                                                          width,
                                                          height,
                                                          TRUE, &error);
                 g_string_free(str, TRUE);
         }
-        
+
         if (icon == NULL) {
                 /* lets try and load directly from file */
                 error = NULL;
                 GString *str;
-                
+
                 if ( strstr(name, "/") != NULL )
                         str = g_string_new(name);
                 else {
                         str = g_string_new("/usr/local/share/pixmaps/");
                         g_string_append(str, name);
                 }
-                
-                icon = gdk_pixbuf_new_from_file_at_scale(str->str, 
+
+                icon = gdk_pixbuf_new_from_file_at_scale(str->str,
                                                          width,
                                                          -1,
                                                          TRUE, &error);
                 g_string_free(str, TRUE);
         }
-        
+
         if (icon == NULL) {
                 error = NULL;
                 GString *str;
-                
+
                 str = g_string_new("/usr/share/");
                 g_string_append(str, name);
                 g_string_erase(str, (str->len - 4), -1 );
                 g_string_append(str, "/");
 		g_string_append(str, "pixmaps/");
 		g_string_append(str, name);
-		
+
 		icon = gdk_pixbuf_new_from_file_at_scale
        		                             (str->str,
                                              width,
@@ -537,7 +572,7 @@ icon_loader_get_icon_spec( const char *name, int width, int height )
                                              &error);
                 g_string_free(str, TRUE);
         }
-        
+
         return icon;
 }
 
@@ -548,12 +583,12 @@ _load_pixbufs (AwnTask *task)
 	AwnTaskPrivate *priv;
 
 	if (!AWN_IS_TASK (task)) return;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	int i = 0;
 	for (i = 0; i < 15; i++) {
-		
+
 		if (priv->is_launcher) {
 			char *icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
 			priv->pixbufs[i] = icon_loader_get_icon_spec (icon_name, 48+i, 48+i) ;
@@ -570,9 +605,9 @@ _task_hover_effect3 (AwnTask *task)
 	AwnTaskPrivate *priv;
 
 	if (!AWN_IS_TASK (task)) return FALSE;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (priv->effect_lock) {
 		if ( priv->current_effect != AWN_TASK_EFFECT_HOVER)
 			return TRUE;
@@ -583,25 +618,25 @@ _task_hover_effect3 (AwnTask *task)
 		priv->y_offset = 0;
 		priv->count = 0;
 	}
-	
+
 	if (priv->pixbufs[0] == NULL)
 		_load_pixbufs (task);
-	
+
 	if (priv->hover && (priv->count == 13) )
 		return TRUE;
-	
+
 	if (priv->effect_direction) {
 		priv->count++;
 		priv->y_offset +=0.5;
 		priv->icon = priv->pixbufs[priv->count];
 		priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
-		
+
 		//gtk_widget_set_size_request (GTK_WIDGET(task), priv->icon_width + 12, 100);
-		
-		if (priv->count >= 14) 
-			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
-		
+
+		if (priv->count >= 14)
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;
+
 	} else {
 		priv->count--;
 		priv->y_offset -=0.5;
@@ -611,7 +646,7 @@ _task_hover_effect3 (AwnTask *task)
 		//gtk_widget_set_size_request (GTK_WIDGET(task), priv->icon_width + 12, 100);
 		if (priv->count < 1) {
 			//finished bouncing, back to normal
-			if (priv->hover) 
+			if (priv->hover)
 				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 			else {
 				priv->effect_lock = FALSE;
@@ -623,13 +658,13 @@ _task_hover_effect3 (AwnTask *task)
 			}
 		}
 	}
-	
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
-	
-	
+
+
 	if (priv->effect_lock == FALSE)
 		return FALSE;
-	
+
 	return TRUE;
 }
 */
@@ -638,7 +673,7 @@ launch_hover_effect (AwnTask *task )
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (priv->settings->fade_effect)
 		g_timeout_add(25, (GSourceFunc)_task_hover_effect2, (gpointer)task);
 	else
@@ -650,7 +685,7 @@ _task_attention_effect (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	static gint max = 20;	
+	static gint max = 20;
 
 	if (priv->effect_lock) {
 		if ( priv->current_effect != AWN_TASK_EFFECT_ATTENTION)
@@ -662,18 +697,18 @@ _task_attention_effect (AwnTask *task)
 		priv->y_offset = 0;
 		priv->rotate_degrees = 0.0;
 	}
-	
+
 	if (priv->effect_direction) {
 		priv->y_offset +=1;
-		
-		if (priv->y_offset >= max) 
-			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
-	
+
+		if (priv->y_offset >= max)
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;
+
 	} else {
 		priv->y_offset-=1;
 		if (priv->y_offset < 1) {
 			/* finished bouncing, back to normal */
-			if (priv->needs_attention) 
+			if (priv->needs_attention)
 				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 			else {
 				priv->effect_lock = FALSE;
@@ -684,13 +719,13 @@ _task_attention_effect (AwnTask *task)
 			}
 		}
 	}
-		
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
-	
-	
+
+
 	if (priv->effect_lock == FALSE)
 		return FALSE;
-	
+
 	return TRUE;
 }
 
@@ -705,18 +740,18 @@ _task_fade_out_effect (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (priv->hover) {
 		//priv->alpha = 1.0;
 		return FALSE;
 	}
-	
+
 	priv->alpha-=0.05;
-	
+
 	if (priv->alpha <= 0.2) {
 		return FALSE;
 	}
-	
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 
 	return TRUE;
@@ -736,12 +771,12 @@ _task_fade_in_effect (AwnTask *task)
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
 	priv->alpha+=0.05;
-	
+
 	if (priv->alpha >= 1.0 ) {
 		gtk_widget_queue_draw(GTK_WIDGET(task));
 		return FALSE;
 	}
-	
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 
 	return TRUE;
@@ -759,7 +794,7 @@ _task_destroy (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	const gint max = 48;	
+	const gint max = 48;
 	gfloat i;
 
 	if (priv->effect_lock) {
@@ -771,15 +806,15 @@ _task_destroy (AwnTask *task)
 		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 		priv->y_offset = 0;
 	}
-	
 
-	//g_print("%d, %f\n",priv->y_offset, priv->alpha);	
+
+	//g_print("%d, %f\n",priv->y_offset, priv->alpha);
 	if (priv->y_offset >= max) {
 		if (priv->is_launcher)
 			awn_task_manager_remove_launcher(priv->task_manager, task);
 		else
 			awn_task_manager_remove_task(priv->task_manager, task);
-		
+
 		priv->title = NULL;
 		g_free(priv->application);
 		gdk_pixbuf_unref (priv->icon);
@@ -787,17 +822,17 @@ _task_destroy (AwnTask *task)
 		gtk_object_destroy (GTK_OBJECT(task));
 		task = NULL;
 		return FALSE;
-	
+
 	} else {
-		
+
 		priv->y_offset +=1;
 		i = (float) priv->y_offset / max;
 		priv->alpha = 1.0 - i;
 		gtk_widget_queue_draw(GTK_WIDGET(task));
 	}
-	
+
 	return TRUE;
-	
+
 }
 
 static gboolean				// 3v1n0: Change Name (title) effect
@@ -805,7 +840,7 @@ _task_change_name_effect (AwnTask *task)	// Based on notification effect
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	static gint max = 14;	
+	static gint max = 14;
 
 	if (priv->effect_lock) {
 		if ( priv->current_effect != AWN_TASK_EFFECT_CHANGE_NAME)
@@ -817,18 +852,18 @@ _task_change_name_effect (AwnTask *task)	// Based on notification effect
 		priv->y_offset = 0;
 		priv->rotate_degrees = 0.0;
 	}
-	
+
 	if (priv->effect_direction) {
 		priv->y_offset +=1;
-		
-		if (priv->y_offset >= max) 
-			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;	
-	
+
+		if (priv->y_offset >= max)
+			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;
+
 	} else {
 		priv->y_offset-=1;
 		if (priv->y_offset < 1) {
 			/* finished bouncing, back to normal */
-			if (priv->name_changed) 
+			if (priv->name_changed)
 				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
 			else {
 				priv->effect_lock = FALSE;
@@ -839,13 +874,13 @@ _task_change_name_effect (AwnTask *task)	// Based on notification effect
 			}
 		}
 	}
-		
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
-	
-	
+
+
 	if (priv->effect_lock == FALSE)
 		return FALSE;
-	
+
 	return TRUE;
 }
 
@@ -855,7 +890,7 @@ _launch_name_change_effect (AwnTask *task)
 	//static guint tag = NULL; // 3v1n0: fix animation on multiple clicks
 	//if (tag)
 	//	g_source_remove(tag);
-	//tag = 
+	//tag =
 	g_timeout_add(30, (GSourceFunc)_task_change_name_effect, (gpointer)task);
 	return FALSE;
 }
@@ -898,47 +933,47 @@ draw (GtkWidget *task, cairo_t *cr)
 	AwnTaskPrivate *priv;
 	AwnSettings *settings;
 	double width, height;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	settings = priv->settings;
-	
+
 	width = task->allocation.width;
 	height = task->allocation.height;
-	
+
 	/* task back */
 	cairo_set_source_rgba (cr, 1, 0, 0, 0.0);
 	cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
 	cairo_rectangle(cr, -1, -1, width+1, height+1);
 	cairo_fill (cr);
-	
+
 	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
-	
+
 	/* active */
 	if (priv->window && wnck_window_is_active(priv->window)) {
-		
+
 		cairo_set_source_rgba(cr, 1, 1, 1, 0.2);
 		cairo_rectangle(cr, 0 , 52, 60,48);
 		cairo_fill(cr);
-	}	
+	}
 	/* content */
 	if (priv->icon) {
 		double x1, y1;
-		
+
 		x1 = (width-priv->icon_width)/2;
 		y1 = ((50-priv->icon_height)/2) + 50 + (-1 * priv->y_offset);
-		
+
 		gdk_cairo_set_source_pixbuf (cr, priv->icon, x1, y1);
 		cairo_paint_with_alpha(cr, priv->alpha);
 
-			
+
 	}
-	
+
 	/* arrows */
 	cairo_save (cr);
 	double x1;
 	x1 = width/2.0;
-	cairo_set_source_rgba (cr, settings->arrow_color.red, 
-				   settings->arrow_color.green, 
+	cairo_set_source_rgba (cr, settings->arrow_color.red,
+				   settings->arrow_color.green,
 				   settings->arrow_color.blue,
 				   settings->arrow_color.alpha);
 	cairo_move_to(cr, x1-5, 100);
@@ -947,85 +982,85 @@ draw (GtkWidget *task, cairo_t *cr)
 	cairo_close_path (cr);
 
 	if (settings->tasks_have_arrows) {
-		if (priv->window != NULL) 
-			cairo_fill(cr);				
-	
-	} else if (priv->is_launcher && (priv->window == NULL)) 
+		if (priv->window != NULL)
+			cairo_fill(cr);
+
+	} else if (priv->is_launcher && (priv->window == NULL))
 		cairo_fill(cr);
 	else {
 		;
 	}
 	cairo_restore (cr);
 	/* progress meter */
-	
+
 	if (priv->progress != 100) {
 		/*
 		_rounded_rectangle (cr, width-6, 5, 3, 44);
 		_rounded_corners (cr, width-6, 5, 3, 44);
-		
-		cairo_set_source_rgba (cr, settings->background.red, 
-					   settings->background.green, 
+
+		cairo_set_source_rgba (cr, settings->background.red,
+					   settings->background.green,
 					   settings->background.blue,
 					   settings->background.alpha);
 		cairo_fill (cr);
-		
-		cairo_set_source_rgba (cr, settings->text_color.red, 
-				   settings->text_color.green, 
+
+		cairo_set_source_rgba (cr, settings->text_color.red,
+				   settings->text_color.green,
 				   settings->text_color.blue,
 				   settings->text_color.alpha);
-				   
+
 		cairo_rectangle (cr, 5, 46, ( (double)(priv->progress/100.0) * (width-10) ), 1);
 		cairo_fill (cr);
 		*/
-		cairo_move_to (cr, width/2.0, 75);	
-		cairo_set_source_rgba (cr, settings->background.red, 
-					   settings->background.green, 
+		cairo_move_to (cr, width/2.0, 75);
+		cairo_set_source_rgba (cr, settings->background.red,
+					   settings->background.green,
 					   settings->background.blue,
 					   settings->background.alpha);
-				
+
 		cairo_arc (cr, width/2.0, 75, 15, 0, 360.0 * (M_PI / 180.0) );
 		cairo_fill (cr);
-		
+
 		cairo_move_to (cr, width/2.0, 75);
-		cairo_set_source_rgba (cr, settings->text_color.red, 
-				   settings->text_color.green, 
+		cairo_set_source_rgba (cr, settings->text_color.red,
+				   settings->text_color.green,
 				   settings->text_color.blue,
 				   0.8);
 		cairo_arc (cr, width/2.0, 75, 12, 270.0 * (M_PI / 180.0),  (270.0 + ((double)(priv->progress/100.0) * 360.0))  * (M_PI / 180.0) );
 		cairo_fill (cr);
 	}
-	
+
 	if ( (priv->progress == 100) && priv->info) {
-		
+
 		cairo_text_extents_t extents;
-		cairo_select_font_face (cr, "Sans",CAIRO_FONT_SLANT_NORMAL, 
+		cairo_select_font_face (cr, "Sans",CAIRO_FONT_SLANT_NORMAL,
 					 	   CAIRO_FONT_WEIGHT_BOLD);
-		
+
 		if (strlen (priv->info_text) > 5)
 			cairo_set_font_size (cr, 10);
 		else
 			cairo_set_font_size (cr, 12);
 		cairo_text_extents (cr, priv->info_text, &extents);
-		
-		cairo_move_to (cr, width/2.0, 75);	
-		cairo_set_source_rgba (cr, settings->background.red, 
-					   settings->background.green, 
+
+		cairo_move_to (cr, width/2.0, 75);
+		cairo_set_source_rgba (cr, settings->background.red,
+					   settings->background.green,
 					   settings->background.blue,
 					   settings->background.alpha);
-				
+
 		cairo_arc (cr, width/2.0, 75, (extents.width/2.0) + 4.0, 0, 360.0 * (M_PI / 180.0) );
-		
+
 		/*rounded_rectangle (cr, (double) extents.width+4.0, (double) extents.height+4.0, (width/2.0) - 2.0 - ( (extents.width+extents.x_bearing)/2.0), 75- ( extents.height /2.0)-2.0);
 		_rounded_corners (cr, (double) extents.width+4.0, (double) extents.height+4.0, (width/2.0) - 2.0 - ( (extents.width+extents.x_bearing)/2.0), 75- ( extents.height /2.0)-2.0);
 		*/
-		cairo_fill (cr);		
-		
-		
-		cairo_set_source_rgba (cr, settings->text_color.red, 
-				   settings->text_color.green, 
+		cairo_fill (cr);
+
+
+		cairo_set_source_rgba (cr, settings->text_color.red,
+				   settings->text_color.green,
 				   settings->text_color.blue,
 				   0.8);
-			
+
 		cairo_move_to (cr, (width/2.0) - ((extents.width+ extents.x_bearing)/2.0)-1, 75+ ( extents.height /2.0));
 		cairo_show_text (cr, priv->info_text);
 	}
@@ -1037,14 +1072,14 @@ awn_task_expose (GtkWidget *task, GdkEventExpose *event)
 	AwnTaskPrivate *priv;
 	cairo_t *cr;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	/* get a cairo_t */
 	cr = gdk_cairo_create (task->window);
 
 	draw (task, cr);
 
 	cairo_destroy (cr);
-	
+
 	return FALSE;
 }
 
@@ -1053,7 +1088,7 @@ awn_task_launch_unique (AwnTask *task, const char *arg_str)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);;
-	
+
 	GError *err = NULL;
 	int pid = gnome_desktop_item_launch_on_screen
                                             (priv->item,
@@ -1062,12 +1097,12 @@ awn_task_launch_unique (AwnTask *task, const char *arg_str)
                                              gdk_screen_get_default(),
                                              -1,
                                              &err);
-        
+
         if (err)
         	g_print("Error: %s", err->message);
         else
         	g_print("Launched application : %d\n", pid);
-	
+
 }
 
 static void
@@ -1075,7 +1110,7 @@ awn_task_launch (AwnTask *task, const char *arg_str)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);;
-	
+
 	GError *err = NULL;
 	priv->pid = gnome_desktop_item_launch_on_screen
                                             (priv->item,
@@ -1084,34 +1119,34 @@ awn_task_launch (AwnTask *task, const char *arg_str)
                                              gdk_screen_get_default(),
                                              -1,
                                              &err);
-        
+
         if (err)
         	g_print("Error: %s", err->message);
         else
         	g_print("Launched application : %d\n", priv->pid);
-	
+
 }
 
 static gboolean
 awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 {
-	static guint32 past_time; // 3v1n0 double-click (or more) prevention	
+	static guint32 past_time; // 3v1n0 double-click (or more) prevention
 	AwnTaskPrivate *priv;
 	GtkWidget *menu = NULL;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 
 	if (event->time - past_time > AWN_CLICK_IDLE_TIME) {
 		past_time = event->time;
 		if (priv->window) {
-		
+
 			switch (event->button) {
 				case 1:
 					if ( wnck_window_is_active( priv->window ) ) {
 						wnck_window_minimize( priv->window );
 						return TRUE;
 					}
-					wnck_window_activate( priv->window, 
+					wnck_window_activate( priv->window,
 							event->time );
 					break;
 				case 2:
@@ -1121,7 +1156,7 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 				case 3:
 					menu = wnck_create_window_action_menu(priv->window);
 					awn_task_create_menu(AWN_TASK(task), GTK_MENU (menu));
-					gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
+					gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL,
 							NULL, 3, event->time);
 					break;
 				default:
@@ -1131,7 +1166,7 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 			switch (event->button) {
 				case 1:
 					awn_task_launch(AWN_TASK (task), NULL);
-					launch_launched_effect(AWN_TASK (task));			   
+					launch_launched_effect(AWN_TASK (task));
 					break;
 // 				case 2:
 // 					// Manage middle click on launchers
@@ -1140,7 +1175,7 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 				case 3:
 					menu = gtk_menu_new();
 					awn_task_create_menu(AWN_TASK(task), GTK_MENU (menu));
-					gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, 
+					gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL,
 							NULL, 3, event->time);
 					break;
 				default:
@@ -1157,32 +1192,32 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 	return TRUE;
 }
 
-static void 
-_task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context, 
-				  gint x, gint y, GtkSelectionData *selection_data, 
+static void
+_task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
+				  gint x, gint y, GtkSelectionData *selection_data,
 				  guint target_type, guint time,
                                               AwnTask *task)
 {
-        
+
         GList      *li;
 	GList      *list;
-	
+
         gboolean delete_selection_data = FALSE;
-        
+
         AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
 	gtk_drag_finish (context, TRUE, FALSE, time);
-	
+
 	if (!priv->is_launcher) {
 		gtk_drag_finish (context, FALSE, delete_selection_data, time);
 		return;
 	}
-	
+
 	char *res = NULL;
 	res = strstr ((char *)selection_data->data, ".desktop");
 	if (res)
 		return;
-	
+
 	list = NULL;
         list = gnome_vfs_uri_list_parse ((const char*) selection_data->data);
 	for (li = list; li != NULL; li = li->next) {
@@ -1190,7 +1225,7 @@ _task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 		li->data = gnome_vfs_uri_to_string (uri, 0 /* hide_options */);
 		gnome_vfs_uri_unref (uri);
 	}
-	
+
 	GError *err = NULL;
 	priv->pid = gnome_desktop_item_launch_on_screen
                                             (priv->item,
@@ -1199,7 +1234,7 @@ _task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
                                              gdk_screen_get_default(),
                                              -1,
                                              &err);
-        
+
         if (err)
         	g_print("Error: %s", err->message);
         else
@@ -1207,38 +1242,38 @@ _task_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 
 	g_list_foreach (list, (GFunc)g_free, NULL);
 	g_list_free (list);
-	
+
 	return;
-        
-        
+
+
 }
 
 
 
-static gboolean 
+static gboolean
 awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 {
 	AwnTaskPrivate *priv;
 	AwnSettings *settings;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	settings = priv->settings;
-	
+
 	if (priv->title) {
 		gint x, y;
 		gdk_window_get_origin (task->window, &x, &y);
-		
+
 		awn_title_show (AWN_TITLE (priv->title), awn_task_get_name(AWN_TASK(task)), x+30, 0);
-	
+
 	}
-	
+
 	if (priv->hover)
 		return TRUE;
 	else {
 		if (priv->needs_attention)
 			return FALSE;
 		priv->hover = TRUE;
-		
+
 		if (!settings->fade_effect) {
 			if (priv->current_effect != AWN_TASK_EFFECT_HOVER)
 				launch_hover_effect (AWN_TASK (task));
@@ -1248,17 +1283,17 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 			launch_fade_in_effect(AWN_TASK (task));
 		}
 	}
-	
+
 
 	return TRUE;
 }
 
-static gboolean 
+static gboolean
 awn_task_proximity_out (GtkWidget *task, GdkEventCrossing *event)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (priv->title)
 		awn_title_show(AWN_TITLE (priv->title), " ", 20, 0);
 	priv->hover = FALSE;
@@ -1268,14 +1303,14 @@ awn_task_proximity_out (GtkWidget *task, GdkEventCrossing *event)
 	return FALSE;
 }
 
-static gboolean 
+static gboolean
 awn_task_win_enter_in (GtkWidget *window, GdkEventMotion *event, AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	AwnSettings *settings;
 	//g_return_if_fail(AWN_IS_TASK(task));
 	if (!AWN_IS_TASK (task)) return FALSE;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	settings = priv->settings;
 	//priv->alpha = 0.2;
@@ -1285,14 +1320,14 @@ awn_task_win_enter_in (GtkWidget *window, GdkEventMotion *event, AwnTask *task)
 	return FALSE;
 }
 
-static gboolean 
+static gboolean
 awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *task)
 {
 	AwnTaskPrivate *priv;
-	
+
 	//g_return_if_fail(AWN_IS_TASK(task));
 	if (!AWN_IS_TASK (task)) return FALSE;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	priv->alpha = 1.0;
 	gtk_widget_queue_draw(GTK_WIDGET(task));
@@ -1300,30 +1335,30 @@ awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *tas
 	return FALSE;
 }
 
-static gboolean 
+static gboolean
 activate_window(AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (priv->hover)
 		wnck_window_activate( priv->window, priv->timestamp );
-	
+
 	return FALSE;
 }
 
-static gboolean 
-awn_task_drag_motion (GtkWidget *task, 
+static gboolean
+awn_task_drag_motion (GtkWidget *task,
 		GdkDragContext *context, gint x, gint y, guint t)
 {
         AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (priv->is_closing)
 		return FALSE;
-	
+
 	if (priv->window) {
-		
+
 		if ( wnck_window_is_active( priv->window ) )
 			return FALSE;
 		else {
@@ -1332,7 +1367,7 @@ awn_task_drag_motion (GtkWidget *task,
 			g_timeout_add (1000, (GSourceFunc)activate_window, (gpointer)task);
 		}
 	}
-	
+
 	return FALSE;
 }
 
@@ -1342,18 +1377,18 @@ awn_task_drag_leave (GtkWidget *task, GdkDragContext *drag_context,
 {
  	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	priv->hover = FALSE;                                       
-}                                        
+	priv->hover = FALSE;
+}
 
-static void 
+static void
 _task_wnck_icon_changed (WnckWindow *window, AwnTask *task)
 {
         AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (priv->is_launcher)
 		return;
-        
+
         GdkPixbuf *old = NULL;
         old = priv->icon;
         priv->icon = awn_x_get_icon_for_window (priv->window, 48, 48);
@@ -1377,20 +1412,20 @@ static void
 _task_wnck_name_changed (WnckWindow *window, AwnTask *task)
 {
     AwnTaskPrivate *priv;
-	
+
 	g_return_if_fail (AWN_IS_TASK (task));
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (!priv->window)
 		return;
 	if (!priv->settings->name_change_notify) {
 		return;
 	}
-	
+
 	if (priv->current_effect == AWN_TASK_EFFECT_CHANGE_NAME)
 		return;
-	
+
 	//g_print("Name changed on window '%s'\n",
         //   wnck_window_get_name (priv->window));
 
@@ -1402,29 +1437,29 @@ _task_wnck_name_changed (WnckWindow *window, AwnTask *task)
 			priv->name_changed = TRUE;
 			_launch_name_change_effect(task);
 		}
-		
+
 		awn_title_show (AWN_TITLE (priv->title), awn_task_get_name(AWN_TASK(task)), x+30, 0);
-		
+
 		g_timeout_add(2500, (GSourceFunc)_task_wnck_name_hide, (gpointer)task);
 
 	}
 }
 
 static void
-_task_wnck_state_changed (WnckWindow *window, WnckWindowState  old, 
+_task_wnck_state_changed (WnckWindow *window, WnckWindowState  old,
                                 WnckWindowState  new, AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (priv->window == NULL )
 		return;
-	
+
 	if (wnck_window_is_skip_tasklist(priv->window))
 		gtk_widget_hide (GTK_WIDGET(task));
-	else	
+	else
 		gtk_widget_show (GTK_WIDGET(task));
-	
+
 	if (wnck_window_needs_attention(priv->window)) {
 		if (!priv->needs_attention) {
 			launch_attention_effect(task);
@@ -1436,7 +1471,7 @@ _task_wnck_state_changed (WnckWindow *window, WnckWindowState  old,
 
 /**********************Gets & Sets **********************/
 
-gboolean 
+gboolean
 awn_task_get_is_launcher (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
@@ -1444,126 +1479,126 @@ awn_task_get_is_launcher (AwnTask *task)
 	return priv->is_launcher;
 }
 
-gboolean 
+gboolean
 awn_task_set_window (AwnTask *task, WnckWindow *window)
 {
 	g_return_val_if_fail(WNCK_IS_WINDOW(window), 0);
-	
+
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
 
 	if (priv->window != NULL)
 		return FALSE;
-	
+
 	priv->window = window;
 	if (!priv->is_launcher) {
 		priv->icon = awn_x_get_icon_for_window (priv->window, 48, 48);
 		priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
-	
+
 	}
 	priv->icon_changed = g_signal_connect (G_OBJECT (priv->window), "icon_changed",
-        		  G_CALLBACK (_task_wnck_icon_changed), (gpointer)task); 
-        
+        		  G_CALLBACK (_task_wnck_icon_changed), (gpointer)task);
+
 	priv->state_changed = g_signal_connect (G_OBJECT (priv->window), "state_changed",
         		  G_CALLBACK (_task_wnck_state_changed), (gpointer)task);
 
 	priv->name_changed = g_signal_connect (G_OBJECT (priv->window), "name_changed",
         		  G_CALLBACK (_task_wnck_name_changed), (gpointer)task);
-        
+
         /* if launcher, set a launch_sequence
         else if starter, stop the launch_sequence, disable starter flag*/
-        
+
         //awn_task_refresh_icon_geometry(task);
         if (wnck_window_is_skip_tasklist(window))
         	return TRUE;
-        
+
         if (priv->is_launcher)
         	return TRUE;
-        	
+
         launch_opening_effect(task);
 	return TRUE;
 }
 
 /******************************************************************************
-	This function takes a icon name, and searchs through know directories 
-	for th icon. 
-	
-	TODO: There _has_ to be a better way than this, may something I am 
+	This function takes a icon name, and searchs through know directories
+	for th icon.
+
+	TODO: There _has_ to be a better way than this, may something I am
 	missing?
 */
 
 
 
-GdkPixbuf * 
+GdkPixbuf *
 icon_loader_get_icon( const char *name )
 {
         GdkPixbuf *icon = NULL;
         GdkScreen *screen = gdk_screen_get_default();
         GtkIconTheme *theme = NULL;
         theme = gtk_icon_theme_get_for_screen (screen);
-        
+
         if (!name)
                 return NULL;
-        
+
         GError *error = NULL;
-          
+
         /* first we try gtkicontheme */
         if (theme)
         	icon = gtk_icon_theme_load_icon( theme, name, 48, 0, &error);
         else {
         	g_print("Icon theme could not be loaded");
-        	error = (GError *) 1;  
+        	error = (GError *) 1;
         }
         if (error) {
                 /* lets try and load directly from file */
                 error = NULL;
                 GString *str;
-                
+
                 if ( strstr(name, "/") != NULL )
                         str = g_string_new(name);
                 else {
                         str = g_string_new("/usr/share/pixmaps/");
                         g_string_append(str, name);
                 }
-                
-                icon = gdk_pixbuf_new_from_file_at_scale(str->str, 
+
+                icon = gdk_pixbuf_new_from_file_at_scale(str->str,
                                                          48,
                                                          48,
                                                          TRUE, &error);
                 g_string_free(str, TRUE);
         }
-        
+
         if (icon == NULL) {
                 /* lets try and load directly from file */
                 error = NULL;
                 GString *str;
-                
+
                 if ( strstr(name, "/") != NULL )
                         str = g_string_new(name);
                 else {
                         str = g_string_new("/usr/local/share/pixmaps/");
                         g_string_append(str, name);
                 }
-                
-                icon = gdk_pixbuf_new_from_file_at_scale(str->str, 
+
+                icon = gdk_pixbuf_new_from_file_at_scale(str->str,
                                                          48,
                                                          48,
                                                          TRUE, &error);
                 g_string_free(str, TRUE);
         }
-        
+
         if (icon == NULL) {
                 error = NULL;
                 GString *str;
-                
+
                 str = g_string_new("/usr/share/");
                 g_string_append(str, name);
                 g_string_erase(str, (str->len - 4), -1 );
                 g_string_append(str, "/");
 		g_string_append(str, "pixmaps/");
 		g_string_append(str, name);
-		
+
 		icon = gdk_pixbuf_new_from_file_at_scale
        		                             (str->str,
                                              48,
@@ -1572,16 +1607,16 @@ icon_loader_get_icon( const char *name )
                                              &error);
                 g_string_free(str, TRUE);
         }
-        
+
         return icon;
 }
 
-gboolean 
+gboolean
 awn_task_set_launcher (AwnTask *task, GnomeDesktopItem *item)
 {
 	AwnTaskPrivate *priv;
 	gchar *icon_name;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 
 	priv->is_launcher = TRUE;
@@ -1591,15 +1626,15 @@ awn_task_set_launcher (AwnTask *task, GnomeDesktopItem *item)
 	g_free (icon_name);
 	priv->item = item;
 	priv->icon = awn_x_get_icon_for_launcher (item, 48, 48);
-        
+
 	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 	launch_opening_effect(task);
-	
+
 	return TRUE;
 }
 
-gboolean 
+gboolean
 awn_task_is_launcher (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
@@ -1607,7 +1642,7 @@ awn_task_is_launcher (AwnTask *task)
 	return priv->is_launcher;
 }
 
-WnckWindow * 
+WnckWindow *
 awn_task_get_window (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
@@ -1615,127 +1650,127 @@ awn_task_get_window (AwnTask *task)
 	return priv->window;
 }
 
-gulong 
+gulong
 awn_task_get_xid (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (priv->window == NULL)
 		return 0;
-	
+
 	g_return_val_if_fail(WNCK_IS_WINDOW(priv->window), 0);
 	return wnck_window_get_xid(priv->window);
 }
 
-gint 
+gint
 awn_task_get_pid (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
-	if (priv->window != NULL) 
+
+	if (priv->window != NULL)
 		return wnck_window_get_pid (priv->window);
 	return priv->pid;
 }
-void 
+void
 awn_task_set_is_active (AwnTask *task, gboolean is_active)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (priv->window == NULL)
 		return;
 	priv->is_active = wnck_window_is_active(priv->window);
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 }
 
-void 
+void
 awn_task_set_needs_attention (AwnTask *task, gboolean needs_attention)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (needs_attention == priv->needs_attention)
 		return;
-	
+
 	priv->needs_attention = needs_attention;
 	if (needs_attention)
 		launch_opening_effect(task);
-}	
+}
 
-const char* 
+const char*
 awn_task_get_name (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	const char *name = NULL;
-		
-	
+
+
 	if (priv->window)
 		name =  wnck_window_get_name(priv->window);
-	
+
 	else if (priv->is_launcher)
-		name = gnome_desktop_item_get_localestring (priv->item, 
+		name = gnome_desktop_item_get_localestring (priv->item,
 						       GNOME_DESKTOP_ITEM_NAME);
 	else
 		name =  "No name";
 	return name;
 }
 
-const char* 
+const char*
 awn_task_get_application(AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	WnckApplication *wnck_app;
 	char *app;
 	GString *str;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	app = NULL;
-	
+
 	if (priv->application)
 		return priv->application;
-	
+
 	if (priv->is_launcher) {
-		
-		str = g_string_new(gnome_desktop_item_get_string (priv->item, 
+
+		str = g_string_new(gnome_desktop_item_get_string (priv->item,
 					GNOME_DESKTOP_ITEM_EXEC));
 		int i = 0;
 		for (i=0; i < str->len; i++) {
 			if ( str->str[i] == ' ')
 				break;
 		}
-		
+
 		if (i)
 			str = g_string_truncate (str,i);
 		priv->application = g_strdup(str->str);
 		app = g_string_free (str, TRUE);
-		
+
 	} else if (priv->window) {
 		wnck_app = wnck_window_get_application(priv->window);
 		str = g_string_new (wnck_application_get_name(wnck_app));
 		str = g_string_ascii_down (str);
 		priv->application = g_strdup(str->str);
 		app = g_string_free (str, TRUE);
-	
+
 	} else
 		priv->application = NULL;
-	
+
 	return priv->application;
 }
 
-void 
+void
 awn_task_set_title (AwnTask *task, AwnTitle *title)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	priv->title = title;
 }
 
-AwnSettings* 
+AwnSettings*
 awn_task_get_settings (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
@@ -1750,15 +1785,15 @@ awn_task_refresh_icon_geometry (AwnTask *task)
 	static gint old_x = 0;
 	static gint old_y = 0;
 	gint x, y;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	if (priv->window == NULL)
 		return;
 	gdk_window_get_origin (GTK_WIDGET(task)->window, &x, &y);
-	
+
 	if ( (x != old_x) || (y != old_y) ) {
 		gint res = 0;
-		
+
 		if (x > old_x)
 			res = x - old_x;
 		else
@@ -1773,7 +1808,7 @@ awn_task_refresh_icon_geometry (AwnTask *task)
 
 }
 
-void 
+void
 awn_task_update_icon (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
@@ -1781,7 +1816,7 @@ awn_task_update_icon (AwnTask *task)
 	priv = AWN_TASK_GET_PRIVATE (task);
 
 	old = priv->icon;
-	
+
 	priv->icon = awn_x_get_icon_for_launcher (priv->item, 48, 48);
         priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
@@ -1796,18 +1831,18 @@ awn_task_set_custom_icon (AwnTask *task, GdkPixbuf *icon)
 {
 	AwnTaskPrivate *priv;
 	GdkPixbuf *old_icon;
-	
+
 	g_return_if_fail (AWN_IS_TASK (task));
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	old_icon = priv->icon;
-	
+
 	priv->icon = icon;
 	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
-	
+
 	g_object_unref (G_OBJECT (old_icon));
-	
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 }
 
@@ -1817,17 +1852,17 @@ awn_task_unset_custom_icon (AwnTask *task)
 	AwnTaskPrivate *priv;
 	GdkPixbuf *old_icon;
 	char *icon_name = NULL;
-	
+
 	g_return_if_fail (AWN_IS_TASK (task));
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	old_icon = priv->icon;
-	
+
 	if (priv->is_launcher) {
 		icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
 		if (!icon_name)
 			priv->icon = awn_x_get_icon_for_window (priv->window, 48, 48);
-		
+
 		priv->icon = icon_loader_get_icon(icon_name);
 		g_free (icon_name);
         } else {
@@ -1835,21 +1870,21 @@ awn_task_unset_custom_icon (AwnTask *task)
         }
         priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
-	
+
 	g_object_unref (G_OBJECT (old_icon));
-	
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 }
 
-void 
+void
 awn_task_set_progress (AwnTask *task, gint progress)
 {
 	AwnTaskPrivate *priv;
-	
+
 	g_return_if_fail (AWN_IS_TASK (task));
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if ( (progress < 101) && (progress >= 0))
 		priv->progress = progress;
 	else
@@ -1857,34 +1892,34 @@ awn_task_set_progress (AwnTask *task, gint progress)
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 }
 
-void 
+void
 awn_task_set_info (AwnTask *task, const gchar *info)
 {
 	AwnTaskPrivate *priv;
-	
+
 	g_return_if_fail (AWN_IS_TASK (task));
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	if (priv->info_text) {
 		g_free (priv->info_text);
 		priv->info_text = NULL;
 	}
 	priv->info = TRUE;
 	priv->info_text = g_strdup (info);
-	
+
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 }
 
-void 
+void
 awn_task_unset_info (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
-	
+
 	g_return_if_fail (AWN_IS_TASK (task));
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	priv->info = FALSE;
 	if (priv->info_text) {
 		g_free (priv->info_text);
@@ -1893,14 +1928,78 @@ awn_task_unset_info (AwnTask *task)
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 }
 
-gint 
+gint
 awn_task_add_menu_item (AwnTask *task, GtkMenuItem *item)
 {
 	AwnTaskPrivate *priv;
-	
-	g_return_if_fail (AWN_IS_TASK (task));
-	
+	AwnTaskMenuItem *menu_item;
+
+	g_return_val_if_fail (AWN_IS_TASK (task), 0);
+
 	priv = AWN_TASK_GET_PRIVATE (task);
+
+	int i;
+	for (i = 0; i < 5; i++) {
+		if (priv->menu_items[i] == NULL) {
+			g_object_ref (G_OBJECT (item));
+			menu_item = g_new0 (AwnTaskMenuItem, 1);
+			menu_item->type = AWN_TASK_MENU_TYPE_NORMAL;
+			menu_item->item = item;
+			menu_item->active = FALSE;
+			priv->menu_items[i] = menu_item;
+			menu_item->id =  menu_item_id++;
+			return menu_item->id;
+		}
+	}
+
+	return 0;
+}
+
+gint
+awn_task_add_check_item (AwnTask *task, GtkMenuItem *item)
+{
+	AwnTaskPrivate *priv;
+	AwnTaskMenuItem *menu_item;
+
+	g_return_val_if_fail (AWN_IS_TASK (task), 0);
+
+	priv = AWN_TASK_GET_PRIVATE (task);
+
+	int i;
+	for (i = 0; i < 5; i++) {
+		if (priv->menu_items[i] == NULL) {
+			g_object_ref (G_OBJECT (item));
+			menu_item = g_new0 (AwnTaskMenuItem, 1);
+			menu_item->type = AWN_TASK_MENU_TYPE_CHECK;
+			menu_item->item = item;
+			menu_item->active = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item));
+			priv->menu_items[i] = menu_item;
+			menu_item->id =  menu_item_id++;
+			return menu_item->id;
+		}
+	}
+
+	return 0;
+}
+
+void
+awn_task_set_check_item (AwnTask *task, gint id, gboolean active)
+{
+	AwnTaskPrivate *priv;
+	AwnTaskMenuItem *menu_item;
+
+	g_return_val_if_fail (AWN_IS_TASK (task), 0);
+
+	priv = AWN_TASK_GET_PRIVATE (task);
+	int i;
+	for (i = 0; i < 5; i++) {
+		menu_item = priv->menu_items[i];
+		if (menu_item != NULL) {
+			if (menu_item->id == id) {
+				menu_item->active = active;
+			}
+		}
+	}
 }
 
 /********************* MISC FUNCTIONS *******************/
@@ -1915,7 +2014,7 @@ _task_choose_custom_icon (AwnTask *task)
 	*/
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	GtkWidget *dialog;
 
 	dialog = gtk_file_chooser_dialog_new ("Choose Image...",
@@ -1926,15 +2025,15 @@ _task_choose_custom_icon (AwnTask *task)
 				      NULL);
 
 	int res = gtk_dialog_run (GTK_DIALOG (dialog));
-	
+
 	if ( res == GTK_RESPONSE_ACCEPT) {
 		char *filename;
 
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-		
+
 		GString *name = NULL;
 		gchar *uri = NULL;
-		
+
 		if (priv->is_launcher) {
 			name = g_string_new ( gnome_desktop_item_get_string (priv->item, GNOME_DESKTOP_ITEM_EXEC));
 			name = g_string_prepend (name, ".awn/custom-icons/");
@@ -1946,20 +2045,20 @@ _task_choose_custom_icon (AwnTask *task)
 			uri = gnome_util_prepend_user_home(name->str);
 			g_string_printf (name, "cp %s %s", filename, uri);
 			g_spawn_command_line_async (name->str, NULL);
-			
+
 			sleep (1);
-			priv->icon = awn_x_get_icon_for_launcher (priv->item, 48, 48);		
+			priv->icon = awn_x_get_icon_for_launcher (priv->item, 48, 48);
 		        priv->icon_width = gdk_pixbuf_get_width(priv->icon);
-			priv->icon_height = gdk_pixbuf_get_height(priv->icon);	
-			
-			gtk_widget_queue_draw (GTK_WIDGET (task));			
+			priv->icon_height = gdk_pixbuf_get_height(priv->icon);
+
+			gtk_widget_queue_draw (GTK_WIDGET (task));
 
 		} else if (priv->window != NULL) {
 			WnckApplication *app;
-			app = wnck_window_get_application (priv->window);	
-			
+			app = wnck_window_get_application (priv->window);
+
 			g_return_if_fail (WNCK_IS_APPLICATION (app));
-	
+
 			name = g_string_new (wnck_application_get_name (app));
 			name = g_string_prepend (name, ".awn/custom-icons/");
 			int i = 0;
@@ -1967,38 +2066,85 @@ _task_choose_custom_icon (AwnTask *task)
 				if (name->str[i] == ' ')
 					name->str[i] = '-';
 			}
-			
+
 			uri = gnome_util_prepend_user_home(name->str);
 			g_string_printf (name, "cp %s %s", filename, uri);
 			g_spawn_command_line_async (name->str, NULL);
 			sleep (1);
-			priv->icon = awn_x_get_icon_for_window (priv->window, 48, 48);		
+			priv->icon = awn_x_get_icon_for_window (priv->window, 48, 48);
 		        priv->icon_width = gdk_pixbuf_get_width(priv->icon);
-			priv->icon_height = gdk_pixbuf_get_height(priv->icon);	
+			priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 			gtk_widget_queue_draw (GTK_WIDGET (task));
 
 		} else {
 			return;
 		}
 		g_string_free (name, TRUE);
-		g_free (uri);		
+		g_free (uri);
 		g_free (filename);
-	} 
+	}
 
 	gtk_widget_destroy (dialog);
-}	
+}
+
+static void
+_task_menu_item_clicked (GtkMenuItem *item, AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	AwnTaskMenuItem *menu_item;
+	int i;
+
+	priv = AWN_TASK_GET_PRIVATE (task);
+
+	for (i = 0; i < 5; i++) {
+		menu_item = priv->menu_items[i];
+		if (menu_item != NULL) {
+			if ( GTK_MENU_ITEM (menu_item->item) == item) {
+				g_signal_emit (G_OBJECT (task), awn_task_signals[MENU_ITEM_CLICKED], 0,
+					       (guint) menu_item->id);
+			}
+		}
+	}
+
+}
+
+
+static void
+_task_check_item_clicked (GtkMenuItem *item, AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	AwnTaskMenuItem *menu_item;
+	gboolean active;
+	int i;
+
+	priv = AWN_TASK_GET_PRIVATE (task);
+
+	active = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item));
+
+	for (i = 0; i < 5; i++) {
+		menu_item = priv->menu_items[i];
+		if (menu_item != NULL) {
+			if ( GTK_MENU_ITEM (menu_item->item) == item) {
+				g_signal_emit (G_OBJECT (task), awn_task_signals[CHECK_ITEM_CLICKED], 0,
+					       (guint) menu_item->id, active );
+				menu_item->active  = active;
+			}
+		}
+	}
+
+}
 
 static void
 _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 {
 	AwnTaskPrivate *priv;
-	priv = AWN_TASK_GET_PRIVATE (task);	
-	
+	priv = AWN_TASK_GET_PRIVATE (task);
+
 	GtkWidget *dialog;
 	GtkWidget *hbox;
 	GtkWidget *image;
 	GtkWidget *button, *label;
-	
+
 	dialog = gtk_dialog_new_with_buttons ("Preferences",
                                                   GTK_WINDOW (priv->settings->window),
                                                   GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -2011,23 +2157,23 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
                                                   NULL);
 	hbox = gtk_hbox_new (FALSE, 10);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG(dialog)->vbox), hbox, TRUE, TRUE, 0);
-	
+
 	image = gtk_image_new_from_pixbuf (priv->icon);
-	
+
 	button = gtk_button_new_with_label ("Change Image...");
 	gtk_button_set_image (GTK_BUTTON (button), image);
 	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, TRUE, 0);
-	
+
 	label = gtk_label_new (" ");
 	char *markup = g_strdup_printf ("<span size='larger' weight='bold'>%s</span>", awn_task_get_application (task));
 	gtk_label_set_markup (GTK_LABEL (label), markup);
 	g_free (markup);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, TRUE, 0);
-	
+
 	gtk_widget_show_all (hbox);
 
 	gint res = gtk_dialog_run (GTK_DIALOG (dialog));
-	
+
 	switch (res) {
 		case 3:
 			_task_choose_custom_icon (task);
@@ -2035,10 +2181,7 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 		default:
 			break;
 	}
-	gtk_widget_destroy (dialog);                                                                   
-
-	g_signal_emit (G_OBJECT (task), awn_task_signals[MENU_ITEM_CLICKED], 0,
-		       (guint) 69);
+	gtk_widget_destroy (dialog);
 }
 
 
@@ -2053,11 +2196,11 @@ static void
 _slist_foreach (char *uri, AwnListTerm *term)
 {
 	AwnSettings *settings = term->settings;
-	
+
 	if ( strcmp (uri, term->uri) == 0 ) {
 		//g_print ("URI : %s\n", uri);
 		settings->launchers = g_slist_remove(settings->launchers, uri);
-		//g_slist_foreach(settings->launchers, (GFunc)_slist_print, (gpointer)term);		
+		//g_slist_foreach(settings->launchers, (GFunc)_slist_print, (gpointer)term);
 	}
 }
 
@@ -2068,7 +2211,7 @@ _task_remove_launcher (GtkMenuItem *item, AwnTask *task)
 	AwnSettings *settings;
 	AwnListTerm term;
 	GString *uri;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	settings = priv->settings;
 
@@ -2076,17 +2219,17 @@ _task_remove_launcher (GtkMenuItem *item, AwnTask *task)
 	priv->hover = FALSE;
 	uri = g_string_new (gnome_desktop_item_get_location (priv->item));
 	uri = g_string_erase(uri, 0, 7);
-	
+
 	g_print ("Remove : %s\n", uri->str);
 	term.uri = uri->str;
 	term.settings = settings;
 	g_slist_foreach(settings->launchers, (GFunc)_slist_foreach, (gpointer)&term);
-	
+
 	GConfClient *client = gconf_client_get_default();
 		gconf_client_set_list(client,
 					"/apps/avant-window-navigator/window_manager/launchers",
 					GCONF_VALUE_STRING,settings->launchers,NULL);
-					
+
 	priv->window = NULL;
 	priv->needs_attention = FALSE;
 	/* start closing effect */
@@ -2101,48 +2244,82 @@ _shell_done (GtkMenuShell *shell, AwnTask *task)
 	priv = AWN_TASK_GET_PRIVATE (task);
 	if (priv->settings->auto_hide == FALSE) {
 		if (priv->settings->hidden == TRUE) {
-			awn_show (priv->settings);	
+			awn_show (priv->settings);
 		}
 		return;
 	}
 	awn_hide (priv->settings);
 }
 
-static void 
+static void
 awn_task_create_menu(AwnTask *task, GtkMenu *menu)
 {
 	AwnTaskPrivate *priv;
 	GtkWidget *item;
-	
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	item = NULL;
-	
+
 	g_signal_connect (GTK_MENU_SHELL (menu), "selection-done",
 			  G_CALLBACK(_shell_done), (gpointer)task);
-	
-		
+
+
 	if (priv->is_launcher && priv->window == NULL) {
-		
-		
-		item = gtk_image_menu_item_new_from_stock ("gtk-remove", 
+
+
+		item = gtk_image_menu_item_new_from_stock ("gtk-remove",
 							   NULL);
 		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
 		gtk_widget_show(item);
 		g_signal_connect (G_OBJECT(item), "activate",
 				  G_CALLBACK(_task_remove_launcher), (gpointer)task);
 	}
-	
+
 	item = gtk_separator_menu_item_new ();
 	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show(item);
-	
-	item = gtk_image_menu_item_new_from_stock ("gtk-preferences", 
+
+	item = gtk_image_menu_item_new_from_stock ("gtk-preferences",
 						   NULL);
 	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show(item);
 	g_signal_connect (G_OBJECT(item), "activate",
-			  G_CALLBACK(_task_show_prefs), (gpointer)task);			  
-	
+			  G_CALLBACK(_task_show_prefs), (gpointer)task);
+
+	AwnTaskMenuItem *menu_item;
+	int i = 0;
+	for (i = 0; i < 5; i++) {
+		menu_item = priv->menu_items[i];
+		if ( menu_item != NULL) {
+
+			if (i == 0) {
+				item = gtk_separator_menu_item_new ();
+				gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
+				gtk_widget_show(item);
+			}
+
+
+			g_signal_handlers_disconnect_by_func(G_OBJECT (menu_item->item),
+								       _task_menu_item_clicked, (gpointer)task);
+			g_signal_handlers_disconnect_by_func(G_OBJECT (menu_item->item),
+								       _task_check_item_clicked, (gpointer)task);
+			gtk_widget_unparent (menu_item->item);
+			gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item->item);
+
+			if (menu_item->type == AWN_TASK_MENU_TYPE_CHECK) {
+				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item->item),
+								menu_item->active);
+				g_signal_connect (G_OBJECT(menu_item->item), "activate",
+						G_CALLBACK(_task_check_item_clicked), (gpointer)task);
+			} else {
+				g_signal_connect (G_OBJECT(menu_item->item), "activate",
+				G_CALLBACK(_task_menu_item_clicked), (gpointer) task);
+			}
+			gtk_widget_show(menu_item->item);
+
+		}
+	}
+
 }
 
 /********************* awn_task_new * *******************/
@@ -2154,18 +2331,18 @@ awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings)
 	AwnTaskPrivate *priv;
 	task = g_object_new (AWN_TYPE_TASK, NULL);
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	priv->task_manager = task_manager;
 	priv->settings = settings;
-	
-	/* This is code which I will add later for better hover effects over 
+
+	/* This is code which I will add later for better hover effects over
 	the bar */
 	priv->win_enter = g_signal_connect(G_OBJECT(settings->window), "motion-notify-event",
 			 G_CALLBACK(awn_task_win_enter_in), AWN_TASK(task));
-	
+
 	priv->win_leave = g_signal_connect(G_OBJECT(settings->window), "leave-notify-event",
 			 G_CALLBACK(awn_task_win_enter_out), AWN_TASK(task));
-	
+
 	g_signal_connect (G_OBJECT(task), "drag-data-received",
 		  G_CALLBACK(_task_drag_data_recieved), (gpointer)task);
 	g_signal_connect (G_OBJECT(task), "drag-end",
@@ -2173,19 +2350,33 @@ awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings)
 	return task;
 }
 
-void 
+void
 awn_task_close (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	
+
 	g_signal_handler_disconnect ((gpointer)priv->window, priv->icon_changed);
 	g_signal_handler_disconnect ((gpointer)priv->window, priv->state_changed);
 	g_signal_handler_disconnect ((gpointer)priv->settings->window, priv->win_enter);
 	g_signal_handler_disconnect ((gpointer)priv->settings->window, priv->win_leave);
-	
+
 	priv->window = NULL;
 	priv->needs_attention = FALSE;
+
+	AwnTaskMenuItem *item;
+	int i;
+	for (i = 0; i < 5; i++) {
+		item = priv->menu_items[i];
+		if (item != NULL) {
+			gtk_widget_destroy (item->item);
+			g_free (item);
+			item = priv->menu_items[i] = NULL;
+		}
+
+	}
+
+
 	if (priv->is_launcher) {
 		gtk_widget_queue_draw(GTK_WIDGET(task));
 		return;

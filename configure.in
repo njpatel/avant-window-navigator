@@ -23,7 +23,7 @@ dnl ==============================================
 GETTEXT_PACKAGE=avant-window-navigator
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
-ALL_LINGUAS="en_GB fr_FR de_DE ru"
+ALL_LINGUAS="en_GB fr_FR de_DE"
 
 IT_PROG_INTLTOOL([0.34])
 AM_GLIB_GNU_GETTEXT

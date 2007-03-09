@@ -19,6 +19,8 @@ avant_window_navigator_SOURCES =			\
 	awn-dbus-glue.h			\
 	awn-hotspot.h			\
 	awn-hotspot.c			\
+	awn-marshallers.h		\
+	awn-marshallers.c		\
 	awn-win-manager.h		\
 	awn-win-manager.c    		\
 	awn-title.h			\
@@ -47,8 +49,15 @@ icon_test_LDADD =			\
 awn-dbus-glue.h: awn-dbus.xml Makefile
 	$(LIBTOOL) --mode=execute $(DBUS_GLIB_BIN)/dbus-binding-tool --prefix=awn_task_manager --mode=glib-server --output=$@ $<
 
-BUILT_SOURCES = awn-dbus-glue.h
-EXTRA_DIST = awn-dbus.xml
+
+awn-marshallers.c: awn-marshallers.list
+	glib-genmarshal --prefix _awn_marshal --body $< > $@
+
+awn-marshallers.h: awn-marshallers.list
+	glib-genmarshal --prefix _awn_marshal --header $< > $@
+
+BUILT_SOURCES = awn-dbus-glue.h awn-marshallers.h awn-marshallers.c
+EXTRA_DIST = awn-dbus.xml awn-marshallers.list
 
 noinst_PROGRAMS=		\
 	icon-test		

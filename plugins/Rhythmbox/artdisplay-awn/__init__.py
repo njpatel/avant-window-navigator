@@ -1,12 +1,13 @@
-# -*- Mode: python; coding: utf-8; tab-width: 8; indent-tabs-mode: t; -*- 
+# -*- Mode: python; coding: utf-8; tab-width: 8; indent-tabs-mode: t; -*-
 #
 # Copyright (C) 2006 - James Livingston
+# Copyright (C) 2007 - Neil j Patel (modified for Awn)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or (at your option)
 # any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -34,7 +35,7 @@ SAVE_PATH = "/tmp/rhythmbox.png"
 class ArtDisplayPlugin (rb.Plugin):
 	def __init__ (self):
 		rb.Plugin.__init__ (self)
-		
+
 	def activate (self, shell):
 		self.shell = shell
 		sp = shell.get_player ()
@@ -54,11 +55,11 @@ class ArtDisplayPlugin (rb.Plugin):
 		self.current_entry = None
 		entry = sp.get_playing_entry ()
 		self.playing_entry_changed (sp, entry)
-		
+
 		#dbus stuff
 		self.bus = dbus.SessionBus()
 		self.awn_obj = self.bus.get_object(BUS_NAME, OBJ_PATH)
-			
+
 	def deactivate (self, shell):
 		self.shell = None
 		sp = shell.get_player ()
@@ -126,7 +127,7 @@ class ArtDisplayPlugin (rb.Plugin):
 			nh = new_pixbuf.get_height ()
 
 			# find scale, widget size and alpha
-			ww = self.art_widget.parent.allocation.width 
+			ww = self.art_widget.parent.allocation.width
 			wh = ww * (self.fade_step * (float(nh)/nw) + (1 - self.fade_step) * (float(oh)/ow))
 			sw = float(ww)/nw
 			sh = float(wh)/nh
@@ -167,7 +168,7 @@ class ArtDisplayPlugin (rb.Plugin):
 			except:
 				pass
 		else:
-			width = self.art_widget.parent.allocation.width 
+			width = self.art_widget.parent.allocation.width
 			height = self.current_pixbuf.get_height () * width / self.current_pixbuf.get_width ()
 			if quick:
 				mode = gtk.gdk.INTERP_BILINEAR
@@ -175,10 +176,10 @@ class ArtDisplayPlugin (rb.Plugin):
 				mode = gtk.gdk.INTERP_HYPER
 			self.art_widget.set_from_pixbuf (self.current_pixbuf.scale_simple (width, height, mode))
 			self.art_widget.show ()
-			
+
 			try:
 				self.current_pixbuf.save (SAVE_PATH, "png")
 				self.awn_obj.SetTaskIconByName("rhythmbox", "/tmp/rhythmbox.png")
 			except:
 				pass
-			
+
