@@ -35,7 +35,7 @@ except:
 import gconf
 
 APP = 'avant-window-navigator'
-DIR = 'locale'
+DIR = '/usr/share/locale'
 I18N_DOMAIN = "avant-window-navigator"
 
 import locale

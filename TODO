@@ -1,6 +1,5 @@
 Here's a (incomplete) list of features and fixes which need to be implemented in Awn.
 
-* Add beryl thumbnailer support (#4).
 * User-configurable icon sizes (#16)
 * Better launcher to task matching (#27)
 * Add python widget support (#29)
@@ -46,3 +45,4 @@ TO-DOne
 * Listen to theme change signals in KDE & GNOME (launchers) (#111)
 * Memory usage when window icons change (i.e. GIMP) (#132)
 * Speed up resizeing of the bar (#133)
+* Add Beryl Thumbnailer support (#4)

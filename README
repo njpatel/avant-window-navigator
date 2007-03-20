@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+* Beryl thumbnail works now, thanks to some help from its creator! If it doesn't work straight away, just click a window or launcher on the bar, and everything should work perfectly :).
+
 * You can now add menu's through dbus! Check out the new Rhythmbox plugin in /plugins/Rhythmbox. Installation is the same as before!
 
 * Awn catches theme-changes signals and updates the launcher icons (window icons are automatic)
@@ -18,7 +20,7 @@ New Features In SVN (newest first):
 
 * Merged patch by James Willcox that makes the hover effect actually 'bounch' rathe rthan just go up and down.
 
-* Fixed LOTS of small errors & warnings (thanks to Chirstian Kirbach). I fixed what was remaining, plus starup errors, separator positioning errors, and a memory leak in awn-x.c
+* Fixed LOTS of small errors & warnings (thanks to Chirstian Kirbach). I fixed what was remaining, plus startup errors, separator positioning errors, and a memory leak in awn-x.c
 
 * Elementry autohide support :). set /apps/avant-window-navigator/auto_hide to TRUE. Once hidden, the 'hot spot' is the bottom 2px of you monitor. It doesn't always hide, but I am working on it. Also, I promise to make it look cooler!
 

@@ -1,121 +1,152 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# en_Gb Translation.
+# Copyright (C) 2007 Neil J. Patel
+# This file is distributed under the same license as the avant-window-navigator package.
+# Neil J. Patel <njpatel@gmail.com>, 2007
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-23 23:17+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2007-03-15 13:16+0000\n"
+"PO-Revision-Date: 2007-03-15 13:19+GMT\n"
+"Last-Translator: Neil Patel <njpatel@gmail.com>\n"
+"Language-Team: en_GB <njpatel@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: avant-preferences/window.glade:9
-msgid "Avant Preferences"
-msgstr ""
-
-#: avant-preferences/window.glade:83
-msgid "Colour:"
-msgstr ""
-
-#: avant-preferences/window.glade:135
-msgid "Shadow colour:"
-msgstr "Shadow colour"
-
-#: avant-preferences/window.glade:187
-msgid "Font size:"
-msgstr ""
-
-#: avant-preferences/window.glade:284
-msgid "Italic"
-msgstr ""
-
-#: avant-preferences/window.glade:365
-msgid "Bold"
-msgstr ""
-
-#: avant-preferences/window.glade:405
-msgid "<b>Text</b>"
-msgstr ""
-
-#: avant-preferences/window.glade:454 avant-preferences/window.glade:1086
-msgid "Select A File"
-msgstr ""
-
-#: avant-preferences/window.glade:468
+#: ../avant-preferences/window.glade.h:1
 msgid "<b>Active Icon</b>"
 msgstr ""
 
-#: avant-preferences/window.glade:504
-msgid "General Appearance"
+#: ../avant-preferences/window.glade.h:2
+msgid "<b>Arrows</b>"
 msgstr ""
 
-#: avant-preferences/window.glade:565
-msgid "Main border:"
-msgstr ""
-
-#: avant-preferences/window.glade:617
-msgid "Internal border:"
-msgstr ""
-
-#: avant-preferences/window.glade:667
+#: ../avant-preferences/window.glade.h:3
 msgid "<b>Borders</b>"
 msgstr ""
 
-#: avant-preferences/window.glade:728 avant-preferences/window.glade:891
-msgid "First step colour:"
-msgstr ""
-
-#: avant-preferences/window.glade:780 avant-preferences/window.glade:943
-msgid "Second step colour:"
-msgstr ""
-
-#: avant-preferences/window.glade:830
-msgid "<b>Gradient</b>"
-msgstr ""
-
-#: avant-preferences/window.glade:993
-msgid "<b>Highlight</b>"
-msgstr ""
-
-#: avant-preferences/window.glade:1055
-msgid "Enable pattern"
-msgstr ""
-
-#: avant-preferences/window.glade:1116
-msgid "Transparency:"
-msgstr ""
-
-#: avant-preferences/window.glade:1170
-msgid "<b>Pattern</b>"
-msgstr ""
-
-#: avant-preferences/window.glade:1232
-msgid "Enable rounded corners"
-msgstr ""
-
-#: avant-preferences/window.glade:1261
+#: ../avant-preferences/window.glade.h:4
 msgid "<b>Corners</b>"
 msgstr ""
 
-#: avant-preferences/window.glade:1297
-msgid "Bar Appearance"
+#: ../avant-preferences/window.glade.h:5
+msgid "<b>Gradient</b>"
 msgstr ""
 
-#: avant-preferences/window.glade:1359
-msgid "Show windows from all viewports"
+#: ../avant-preferences/window.glade.h:6
+msgid "<b>Highlight</b>"
 msgstr ""
 
-#: avant-preferences/window.glade:1388
+#: ../avant-preferences/window.glade.h:7
+msgid "<b>Pattern</b>"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:8
+msgid "<b>Separator</b>"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:9
+msgid "<b>Text</b>"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:10
 msgid "<b>Windows</b>"
 msgstr ""
 
-#: avant-preferences/window.glade:1424
-msgid "Window Management"
+#: ../avant-preferences/window.glade.h:11
+msgid "Avant Preferences"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:12
+msgid "Background color:"
+msgstr "Background colour:"
+
+#: ../avant-preferences/window.glade.h:13
+msgid "Bar Appearence"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:14
+msgid "Bold"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:15
+msgid "Color:"
+msgstr "Colour:"
+
+#: ../avant-preferences/window.glade.h:16
+msgid "Enable pattern"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:17
+msgid "Enable rounded corners"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:18
+msgid "First step color:"
+msgstr "First step colour:"
+
+#: ../avant-preferences/window.glade.h:19
+msgid "Font size:"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:20
+msgid "General"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:21
+msgid "Glass Engine"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:22
+msgid "Internal border:"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:23
+msgid "Italic"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:24
+msgid "Main border:"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:25
+msgid "Pattern Engine"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:26
+msgid "Second step color:"
+msgstr "Second step colour:"
+
+#: ../avant-preferences/window.glade.h:27
+msgid "Select A File"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:28
+msgid "Separator color:"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:29
+msgid "Shadow color:"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:30
+msgid "Show separator between launchers and tasks"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:31
+msgid "Show windows from all viewports"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:32
+msgid "Task Appearence"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:33
+msgid "Tasks have arrows"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:34
+msgid "Transparency:"
 msgstr ""

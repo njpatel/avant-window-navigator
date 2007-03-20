@@ -30,6 +30,8 @@
 #include <X11/extensions/shape.h>
 #include <gdk/gdkx.h>
 
+
+
 #include "awn-x.h"
 
 
@@ -93,6 +95,7 @@ _position_timeout (gpointer null)
 	stop_position = FALSE;
 }
 
+
 GtkWidget *
 awn_window_new( AwnSettings *set )
 {
@@ -100,7 +103,7 @@ awn_window_new( AwnSettings *set )
         AwnWindow *this = g_object_new(AWN_WINDOW_TYPE, 
         			    "type", GTK_WINDOW_TOPLEVEL,
         			    "type-hint", GDK_WINDOW_TYPE_HINT_DOCK,
-        			    NULL);
+        			    NULL);     			    
         
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);

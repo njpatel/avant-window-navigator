@@ -1,3 +1,7 @@
+2007-03-20  Neil J. Patel  <njpatel@gmail.com>
+
+	* Beryl Thumbnailer support
+
 2007-03-09  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	* Has support for adding menu items through D-Bus. 

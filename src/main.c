@@ -25,6 +25,16 @@
 
 #include "config.h"
 
+#include <config.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
+
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+
 #include "awn-gconf.h"
 #include "awn-bar.h"
 #include "awn-window.h"
@@ -56,6 +66,33 @@ void drag_leave_hot (GtkWidget      *widget, GdkDragContext *drag_context,
 static gboolean enter_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings);
 static gboolean leave_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings);
 static gboolean button_press_event (GtkWidget *window, GdkEventButton *event);
+
+static Atom
+panel_atom_get (const char *atom_name)
+{
+	static GHashTable *atom_hash;
+	Display           *xdisplay;
+	Atom               retval;
+
+	g_return_val_if_fail (atom_name != NULL, None);
+
+	xdisplay = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
+
+	if (!atom_hash)
+		atom_hash = g_hash_table_new_full (
+				g_str_hash, g_str_equal, g_free, NULL);
+
+	retval = GPOINTER_TO_UINT (g_hash_table_lookup (atom_hash, atom_name));
+	if (!retval) {
+		retval = XInternAtom (xdisplay, atom_name, FALSE);
+
+		if (retval != None)
+			g_hash_table_insert (atom_hash, g_strdup (atom_name),
+					     GUINT_TO_POINTER (retval));
+	}
+
+	return retval;
+}
                                                     
 int 
 main (int argc, char* argv[])
@@ -105,7 +142,17 @@ main (int argc, char* argv[])
 	
 	gtk_widget_show_all(settings->bar);
 	gtk_widget_show_all(settings->window);
-	gtk_window_set_transient_for(GTK_WINDOW(settings->window), GTK_WINDOW(settings->bar));
+	//gtk_window_set_transient_for(GTK_WINDOW(settings->window), GTK_WINDOW(settings->bar));
+        Atom atoms [2] = { None, None };
+        
+	atoms [0] = panel_atom_get ("_NET_WM_WINDOW_TYPE_DOCK");
+
+        XChangeProperty (GDK_WINDOW_XDISPLAY (GTK_WIDGET (settings->window)->window),
+                         GDK_WINDOW_XWINDOW (GTK_WIDGET (settings->window)->window),
+			 panel_atom_get ("_NET_WM_WINDOW_TYPE"),
+                         XA_ATOM, 32, PropModeReplace,
+                         (unsigned char *) atoms, 
+			 1);   
 	
 	GtkWidget *hot = awn_hotspot_new (settings);
 	gtk_widget_show (hot);
