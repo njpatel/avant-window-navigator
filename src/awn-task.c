@@ -684,6 +684,10 @@ static gboolean
 _task_attention_effect (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
+
+	if (!AWN_IS_TASK (task))
+		return FALSE;
+
 	priv = AWN_TASK_GET_PRIVATE (task);
 	static gint max = 20;
 
@@ -817,7 +821,6 @@ _task_destroy (AwnTask *task)
 
 		priv->title = NULL;
 		g_free(priv->application);
-		gdk_pixbuf_unref (priv->icon);
 		gtk_widget_hide (GTK_WIDGET(task));
 		gtk_object_destroy (GTK_OBJECT(task));
 		task = NULL;

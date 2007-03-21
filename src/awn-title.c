@@ -160,6 +160,9 @@ _rounded_corners (cairo_t *cr, double w, double h, double x, double y)
 static void 
 render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 {
+   PangoFontDescription* pDesc = NULL;
+   PangoLayout* pLayout = NULL;
+
 	/* task back */
 	cairo_set_source_rgba (cr, 1, 0, 0, 0.0);
 	cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
@@ -167,36 +170,62 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 	cairo_fill (cr);
 	
 	if (!utf8)
+   		return;
+
+	/* setup a new pango-layout based on the source-context */
+	pLayout = pango_cairo_create_layout (cr);
+	if (!pLayout)
+	{
+		g_print ("demo_textpath(): ");
+		g_print ("Could not create pango-layout!\n");
 		return;
-	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+	}
+
+	/* get a new pango-description */
+	pDesc = pango_font_description_new ();
+	if (!pDesc)
+	{
+		g_print ("demo_textpath(): ");
+		g_print ("Could not create pango-font-description!\n");
+		g_object_unref (pLayout);
+		return;
+	}
+
+	int font_slant = PANGO_STYLE_NORMAL;
+	int font_weight = PANGO_WEIGHT_NORMAL;
+	if (settings->italic)
+		font_slant = PANGO_STYLE_ITALIC;
+	if (settings->bold)
+		font_weight = PANGO_WEIGHT_BOLD;
 	
-	cairo_text_extents_t extents;
+
+	pango_font_description_set_absolute_size (pDesc, PANGO_SCALE*settings->font_size);
+	pango_font_description_set_family_static (pDesc, "Sans");
+	pango_font_description_set_weight (pDesc, font_weight);
+	pango_font_description_set_style (pDesc, font_slant);
+	pango_layout_set_font_description (pLayout, pDesc);
+	pango_font_description_free (pDesc);
+
+	pango_layout_set_text(pLayout, utf8, -1);
+	
+	PangoRectangle extents;
+	PangoRectangle logical_extents;
 
 	double x,y;
 	
-	int font_slant = CAIRO_FONT_SLANT_NORMAL;
-	int font_weight = CAIRO_FONT_WEIGHT_NORMAL;
+	pango_layout_get_pixel_extents(pLayout, &extents, &logical_extents);
+	x = (width/2)-(extents.width/2 + extents.x);
+	y = (height/2)-(extents.height/2 + extents.y);
 	
-	if (settings->italic)
-		font_slant = CAIRO_FONT_SLANT_ITALIC;
-	
-	if (settings->bold)
-		font_weight = CAIRO_FONT_WEIGHT_BOLD;
-	
-	cairo_select_font_face (cr, "Sans",font_slant, font_weight);
-
-	cairo_set_font_size (cr, settings->font_size);
-	
-	cairo_text_extents (cr, utf8, &extents);
-	x = (width/2)-(extents.width/2 + extents.x_bearing);
-	y = (height/2)-(extents.height/2 + extents.y_bearing);
-	
-	x = x_pos - (extents.width/2)+ extents.x_bearing;
+	x = x_pos - (extents.width/2)+ extents.x;
 	x += (settings->corner_radius/2);
 	
 	if (x <0 )
 		x = 0;
 	
+
+	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+
 	/* background */
 	if (strlen (utf8) < 2)
 		cairo_set_source_rgba (cr, 0.0f, 0.0f, 0.0f, 0.0f);
@@ -207,20 +236,21 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 					   settings->background.alpha);
 	
 	_rounded_rectangle (cr, (double) extents.width+19, (double) extents.height+19, 
-		       (double) x-9.5, (double) y-extents.height-9.5 );
+		       (double) x-9.5, (double) y-9.5 );
 	
 	_rounded_corners (cr, (double) extents.width+20, (double) extents.height+20, 
-		       (double) x-9.5, (double) y-extents.height-9.5);
+		       (double) x-9.5, (double) y-9.5);
 	
 	cairo_fill (cr);	      
 	
 	/* shadow */
+	cairo_move_to (cr, x+1, y+1);
+   //pango_cairo_layout_path(cr, pLayout);
 	cairo_set_source_rgba (cr, settings->shadow_color.red, 
 				   settings->shadow_color.green, 
 				   settings->shadow_color.blue,
 				   settings->shadow_color.alpha);
-	cairo_move_to (cr, x+1, y+1);
-	cairo_show_text (cr, utf8);
+   pango_cairo_show_layout(cr, pLayout);
 
 	
 	cairo_move_to (cr, x, y);
@@ -235,12 +265,12 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 	 */
 	/* text */
 	//cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, 1.0f);
+	cairo_move_to (cr, x, y);
 	cairo_set_source_rgba (cr, settings->text_color.red, 
 				   settings->text_color.green, 
 				   settings->text_color.blue,
 				   settings->text_color.alpha);
-	cairo_move_to (cr, x, y);
-	cairo_show_text (cr, utf8);
+   pango_cairo_show_layout(cr, pLayout);
 	
 	/*
 	cairo_text_path (cr, utf8);

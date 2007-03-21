@@ -1,3 +1,11 @@
+2007-03-21  Varun Ratnakar  
+
+	* Support for international fonts in title 
+
+2007-03-21  Neil J. Patel  <njpatel@gmail.com>
+
+	* Heavily debugged auto-hide. Should be a bit better now.
+
 2007-03-20  Neil J. Patel  <njpatel@gmail.com>
 
 	* Beryl Thumbnailer support
