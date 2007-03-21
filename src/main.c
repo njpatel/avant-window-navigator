@@ -134,9 +134,9 @@ main (int argc, char* argv[])
 	if (!task_manager)
 		task_manager = awn_task_manager_new(settings);
 	
-	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("    "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), task_manager, FALSE, TRUE, 0);	
-	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("    "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("  "), FALSE, FALSE, 0);
 
 	gtk_container_add(GTK_CONTAINER(settings->window), box);
 	

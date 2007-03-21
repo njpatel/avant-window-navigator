@@ -1,7 +1,11 @@
 2007-03-21  Neil Jagdish Patel  <njpatel@gmail.com>
 
-	* Additional launcher->window matching code, should now work for most 
- 	  apps.
+	* Better auto-hide animation.
+
+2007-03-21  Neil Jagdish Patel  <njpatel@gmail.com>
+
+	* Additional launcher->window matching code, should now work for most
+	  apps.
 
 2007-03-21  Varun Ratnakar  
 

@@ -20,6 +20,35 @@
 
 #include "awn-utils.h"  
 
+static gboolean effect_lock = FALSE;
+static gint current_y = 0;
+static gint dest_y = 0;
+
+static gboolean
+_move_bar (AwnSettings *settings)
+{
+	if (current_y > dest_y) {
+		current_y-=2;
+	} else if (current_y < dest_y) {
+		current_y+=2;
+	} else {
+		effect_lock = FALSE;
+		return FALSE;
+	}
+
+	gint x, y;
+	
+	gtk_window_get_position (GTK_WINDOW (settings->bar), &x, &y);
+	gtk_window_move (settings->bar, x, settings->monitor.height - 100 + current_y);
+	
+	gtk_window_get_position (GTK_WINDOW (settings->window), &x, &y);
+	gtk_window_move (settings->window, x, settings->monitor.height - 100 + current_y);
+	
+	//g_print ("%d %d %d\n", current_y, dest_y, settings->monitor.height - 100 + current_y);
+	
+	return TRUE;
+	
+}
 
 void
 hide_window (GtkWindow *window)
@@ -48,8 +77,16 @@ awn_hide (AwnSettings *settings)
 {
 	//gtk_widget_hide (settings->window);
 	//gtk_widget_hide (settings->bar);
-	hide_window (GTK_WINDOW (settings->bar));
-	hide_window (GTK_WINDOW (settings->window));
+	//hide_window (GTK_WINDOW (settings->bar));
+	//hide_window (GTK_WINDOW (settings->window));
+	
+	dest_y = 50;
+	
+	if (!effect_lock) {
+		g_timeout_add (20, (GSourceFunc)_move_bar, (gpointer)settings);
+		effect_lock = TRUE;
+	} 
+	
 	gtk_widget_hide (settings->title);
 	settings->hidden = TRUE;
 }
@@ -57,13 +94,20 @@ awn_hide (AwnSettings *settings)
 void 
 awn_show (AwnSettings *settings)
 {
-	gint x, y;
+//	gint x, y;
 	
-	gtk_window_get_position (GTK_WINDOW (settings->bar), &x, &y);
-	gtk_window_move (GTK_WINDOW (settings->bar), x, settings->monitor.height-100);
+//	gtk_window_get_position (GTK_WINDOW (settings->bar), &x, &y);
+//	gtk_window_move (GTK_WINDOW (settings->bar), x, settings->monitor.height-100);
 	
-	gtk_window_get_position (GTK_WINDOW (settings->window), &x, &y);
-	gtk_window_move (GTK_WINDOW (settings->window), x, settings->monitor.height-100);
+//	gtk_window_get_position (GTK_WINDOW (settings->window), &x, &y);
+//	gtk_window_move (GTK_WINDOW (settings->window), x, settings->monitor.height-100);
+	
+	dest_y = 0;
+
+	if (!effect_lock) {
+		g_timeout_add (20, (GSourceFunc)_move_bar, (gpointer)settings);
+		effect_lock = TRUE;
+	}
 	
 	gtk_widget_show (settings->title);
 	settings->hidden = FALSE;
