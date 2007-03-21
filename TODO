@@ -31,6 +31,7 @@ Here's a (incomplete) list of features and fixes which need to be implemented in
 * Allow applications to manipulate their icons (in progress).
 * Add vertical bar support
 * Redesign avant-preferences with support for new options
+* Title text too long
 
 
 TO-DOne

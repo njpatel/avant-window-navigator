@@ -144,7 +144,7 @@ _task_manager_load_launchers(AwnTaskManager *task_manager)
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 
 	g_slist_foreach (priv->settings->launchers, (GFunc)_load_launchers_func,
-								 task_manager);
+								 task_manager); 
 }
 
 typedef struct {
@@ -217,7 +217,7 @@ _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 
 
 	}
-	/* try window name, kind of last resort :/ */
+	/* try window name */
 	if (term->task == NULL) {
 		GString *str1 = g_string_new (awn_task_get_name (task));
 		str1 = g_string_ascii_down (str1);
@@ -237,6 +237,50 @@ _find_launcher (AwnTask *task, AwnLauncherTerm *term)
 		g_string_free (str1, TRUE);
 		g_string_free (str2, TRUE);
 	}
+	/* try and see if the program name contains the launcher name */
+	if (term->task == NULL) {
+		WnckApplication *wnck_app;
+		wnck_app = wnck_window_get_application(term->window);
+		
+		GString *str1 = g_string_new (awn_task_get_name (task));
+		str1 = g_string_ascii_down (str1);
+
+		GString *str2 = g_string_new (wnck_application_get_name(wnck_app));
+		str2 = g_string_ascii_down (str2);
+		
+		gchar *res = NULL;
+		res = g_strstr_len (str2->str, str2->len, str1->str);
+
+		if (res) {
+			term->task = task;
+
+		}
+
+
+		g_string_free (str1, TRUE);
+		g_string_free (str2, TRUE);
+	}
+	
+	/* window title in launcher name. Listen, I'm looking at you  */
+	if (term->task == NULL) {
+		GString *str1 = g_string_new (awn_task_get_name (task));
+		str1 = g_string_ascii_down (str1);
+
+		GString *str2 = g_string_new (wnck_window_get_name (term->window));
+		str2 = g_string_ascii_down (str2);
+		
+		gchar *res = NULL;
+		res = g_strstr_len (str1->str, str1->len, str2->str);
+
+		if (res) {
+			term->task = task;
+
+		}
+
+
+		g_string_free (str1, TRUE);
+		g_string_free (str2, TRUE);
+	}		
 
 }
 
