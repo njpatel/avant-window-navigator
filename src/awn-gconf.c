@@ -154,6 +154,7 @@ awn_gconf_new()
 	
 	
 	load_monitor (s);
+	s->task_width = 60;
 	
 	return s;
 }

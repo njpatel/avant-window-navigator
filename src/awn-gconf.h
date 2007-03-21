@@ -45,6 +45,7 @@ typedef struct {
 	GtkWidget *bar;
 	GtkWidget *window;
 	GtkWidget *title;
+	gint task_width;
 	
 	/* monitor settings */
 	GdkRectangle monitor;

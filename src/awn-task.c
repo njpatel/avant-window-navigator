@@ -1504,7 +1504,7 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
 
 	priv->window = window;
 	if (!priv->is_launcher) {
-		priv->icon = awn_x_get_icon_for_window (priv->window, HEIGHT-2, HEIGHT-2);
+		priv->icon = awn_x_get_icon_for_window (priv->window, priv->settings->task_width-12, priv->settings->task_width-12);
 		priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 
@@ -1637,7 +1637,7 @@ awn_task_set_launcher (AwnTask *task, GnomeDesktopItem *item)
 		return FALSE;
 	g_free (icon_name);
 	priv->item = item;
-	priv->icon = awn_x_get_icon_for_launcher (item, HEIGHT-2, HEIGHT-2);
+	priv->icon = awn_x_get_icon_for_launcher (item, priv->settings->task_width-12, priv->settings->task_width-12);
 
 	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);

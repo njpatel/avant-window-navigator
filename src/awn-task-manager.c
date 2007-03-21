@@ -744,7 +744,7 @@ _task_manager_check_width (AwnTaskManager *task_manager)
 {
 	AwnTaskManagerPrivate *priv;
 	AwnSettings *settings;
-	static gint current_width = 60;
+	priv->settings->task_width = 60;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	settings = priv->settings;
@@ -764,8 +764,8 @@ _task_manager_check_width (AwnTaskManager *task_manager)
 		width -=i;
 	}
 	
-	if (width != current_width) {
-		current_width = width;
+	if (width != priv->settings->task_width) {
+		priv->settings->task_width = width;
 		g_list_foreach(priv->launchers, (GFunc)_task_resize, GINT_TO_POINTER (width));
 		g_list_foreach(priv->tasks, (GFunc)_task_resize, GINT_TO_POINTER (width));
 		g_print ("New width = %d", width);
@@ -926,8 +926,8 @@ awn_task_manager_set_task_icon (AwnTaskManager *task_manager,
 		return TRUE;
 	}
 	icon = gdk_pixbuf_new_from_file_at_scale (icon_path,
-                                                  46,
-                                                  46,
+                                                  priv->settings->task_width-12,
+                                                  priv->settings->task_width-12,
                                                   TRUE,
                                                   NULL);
 	if (icon)
