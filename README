@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+* Better info support for tasks. Swapped big circle for a rounded rectangle. Makes font smaller depending on size of text.
+
 * Bar now resizes when it is too large for screen. Its still under testing, so be nice!
 
 * Additional launcher->window matching code, should be much better now

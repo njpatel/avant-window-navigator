@@ -1,3 +1,7 @@
+2007-03-21  Neil Jagdish Patel  <njpatel@gmail.com>
+
+	* Better info handling on the bar, swapped circle for rectangle.
+
 2007-03-21  Neil J. Patel  <njpatel@gmail.com>
 
 	* Bar now automatically resizes when it is too big for screen

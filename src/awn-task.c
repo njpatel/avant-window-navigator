@@ -903,7 +903,7 @@ _launch_name_change_effect (AwnTask *task)
 
 /**********************  CALLBACKS  **********************/
 
-/*
+
 static void
 _rounded_rectangle (cairo_t *cr, double w, double h, double x, double y)
 {
@@ -932,7 +932,7 @@ _rounded_corners (cairo_t *cr, double w, double h, double x, double y)
 	cairo_arc (cr, x+radius,   y+radius,   radius, M_PI, M_PI * 1.5);
 
 }
-*/
+
 static void
 draw (GtkWidget *task, cairo_t *cr)
 {
@@ -975,7 +975,6 @@ draw (GtkWidget *task, cairo_t *cr)
 	}
 
 	/* arrows */
-	cairo_save (cr);
 	double x1;
 	x1 = width/2.0;
 	cairo_set_source_rgba (cr, settings->arrow_color.red,
@@ -996,9 +995,9 @@ draw (GtkWidget *task, cairo_t *cr)
 	else {
 		;
 	}
-	cairo_restore (cr);
+	
 	/* progress meter */
-
+	cairo_new_path (cr);
 	if (priv->progress != 100) {
 		/*
 		_rounded_rectangle (cr, width-6, 5, 3, 44);
@@ -1041,8 +1040,10 @@ draw (GtkWidget *task, cairo_t *cr)
 		cairo_text_extents_t extents;
 		cairo_select_font_face (cr, "Sans",CAIRO_FONT_SLANT_NORMAL,
 					 	   CAIRO_FONT_WEIGHT_BOLD);
-
-		if (strlen (priv->info_text) > 5)
+		gint len = strlen (priv->info_text);
+		if ( len > 8)
+			cairo_set_font_size (cr, 8);
+		else if (len > 4)
 			cairo_set_font_size (cr, 10);
 		else
 			cairo_set_font_size (cr, 12);
@@ -1054,11 +1055,16 @@ draw (GtkWidget *task, cairo_t *cr)
 					   settings->background.blue,
 					   settings->background.alpha);
 
-		cairo_arc (cr, width/2.0, 75, (extents.width/2.0) + 4.0, 0, 360.0 * (M_PI / 180.0) );
-
-		/*rounded_rectangle (cr, (double) extents.width+4.0, (double) extents.height+4.0, (width/2.0) - 2.0 - ( (extents.width+extents.x_bearing)/2.0), 75- ( extents.height /2.0)-2.0);
-		_rounded_corners (cr, (double) extents.width+4.0, (double) extents.height+4.0, (width/2.0) - 2.0 - ( (extents.width+extents.x_bearing)/2.0), 75- ( extents.height /2.0)-2.0);
-		*/
+		_rounded_rectangle (cr, (double) extents.width+8.0, 
+					(double) extents.height+84.0, 
+					(width/2.0) - 4.0 - ( (extents.width+extents.x_bearing)/2.0), 
+					75- ( extents.height /2.0)-4.0);
+		
+		_rounded_corners (cr, (double) extents.width+8.0, 
+				      (double) extents.height+8.0, 
+				      (width/2.0) - 4.0 - ( (extents.width+extents.x_bearing)/2.0), 
+				      75- ( extents.height /2.0)-4.0);
+		
 		cairo_fill (cr);
 
 
