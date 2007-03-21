@@ -1834,6 +1834,41 @@ awn_task_update_icon (AwnTask *task)
 	gdk_pixbuf_unref (old);
 }
 
+void 
+awn_task_set_width (AwnTask *task, gint width)
+{
+	AwnTaskPrivate *priv;
+	GdkPixbuf *old = NULL;
+	
+	if (!AWN_IS_TASK (task))
+		return;
+		
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	old = priv->icon;
+
+	if (priv->is_launcher) {
+		char * icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
+		if (!icon_name)
+			priv->icon = awn_x_get_icon_for_window (priv->window, width-12, width-12);
+
+		priv->icon = icon_loader_get_icon_spec(icon_name, width-12, width-12);
+		g_free (icon_name);
+        } else {
+        	if (WNCK_IS_WINDOW (priv->window))
+        		priv->icon = awn_x_get_icon_for_window (priv->window, width-12, width-12);
+        }
+        	
+	if (G_IS_OBJECT (priv->icon)) {
+	        priv->icon_width = gdk_pixbuf_get_width(priv->icon);
+		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
+	}
+	if (G_IS_OBJECT (old) && priv->is_launcher)
+		gdk_pixbuf_unref (old);
+
+	gtk_widget_set_size_request (GTK_WIDGET (task), width, 100);		
+}
+
 /********************* DBUS FUNCTIONS *******************/
 
 void

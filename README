@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+* Bar now resizes when it is too large for screen. Its still under testing, so be nice!
+
 * Additional launcher->window matching code, should be much better now
 
 * Beryl thumbnail works now, thanks to some help from its creator! If it doesn't work straight away, just click a window or launcher on the bar, and everything should work perfectly :).

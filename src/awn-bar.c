@@ -514,6 +514,17 @@ awn_bar_set_separator_position (GtkWidget *window, int x)
 }
 
 
+gboolean            
+awn_bar_separator_expose_event  (GtkWidget      *widget,
+                                 GdkEventExpose *event,
+                                 GtkWidget 	*bar)
+{
+	separator = widget->allocation.x;
+	gtk_widget_queue_draw(GTK_WIDGET(bar));
+	
+	return FALSE;
+}                                 
+
 
 
 

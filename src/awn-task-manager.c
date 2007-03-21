@@ -62,6 +62,7 @@ static void _task_manager_load_launchers(AwnTaskManager *task_manager);
 void awn_task_manager_update_separator_position (AwnTaskManager *task_manager);
 static void _task_manager_menu_item_clicked (AwnTask *task, guint id, AwnTaskManager *task_manager);
 static void _task_manager_check_item_clicked (AwnTask *task, guint id, gboolean active, AwnTaskManager *task_manager);
+static void _task_manager_check_width (AwnTaskManager *task_manager);
 
 /* STRUCTS & ENUMS */
 
@@ -377,7 +378,7 @@ _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 		awn_task_manager_update_separator_position (task_manager);
 	}
 
-
+	
 }
 
 static void
@@ -467,6 +468,8 @@ _task_manager_window_closed (WnckScreen *screen, WnckWindow *window,
 
 	_reparent_windows(task_manager);
 	_refresh_box(task_manager);
+	
+	_task_manager_check_width (task_manager);
 }
 
 static void
@@ -593,6 +596,7 @@ _task_manager_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 /*****************  END OF D&D *************************************/
 
 static int num_tasks = 0;
+static int num_launchers = 0;
 
 static void
 _task_refresh (AwnTask *task, AwnTaskManager *task_manager)
@@ -618,18 +622,17 @@ _task_refresh (AwnTask *task, AwnTaskManager *task_manager)
 	if (!space)
 		return;
 
-	if (!window)
-		return;
-
 	if (awn_task_is_launcher (task)) {
 		gtk_widget_show (GTK_WIDGET (task));
 		awn_task_refresh_icon_geometry(task);
 		gtk_widget_queue_draw(GTK_WIDGET(task));
-		num_tasks++;
+		num_launchers++;
 		awn_task_manager_update_separator_position (task_manager);
 		return;
 	}
-
+	
+	if (!window)
+		return;
 	if ( wnck_window_is_skip_tasklist (window)) {
 		gtk_widget_hide (GTK_WIDGET (task));
 		awn_task_manager_update_separator_position (task_manager);
@@ -666,6 +669,8 @@ _refresh_box(AwnTaskManager *task_manager)
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 
 	space = wnck_screen_get_active_workspace(priv->screen);
+	
+	num_launchers = 0;
 	g_list_foreach(priv->launchers, (GFunc)_task_refresh, (gpointer)task_manager);
 
 	num_tasks = 0;
@@ -677,6 +682,8 @@ _refresh_box(AwnTaskManager *task_manager)
 	}
 	//awn_task_manager_update_separator_position (task_manager);
 	gtk_widget_queue_draw (GTK_WIDGET (priv->settings->window));
+	
+	_task_manager_check_width (task_manager);
 }
 
 void
@@ -721,6 +728,50 @@ awn_task_manager_update_separator_position (AwnTaskManager *task_manager)
 	awn_bar_set_separator_position (settings->bar, x+2);
 	x = new_x;
 
+}
+
+
+/*** Resizing code ***/
+
+static void
+_task_resize (AwnTask *task, gpointer width)
+{
+	awn_task_set_width (task, GPOINTER_TO_INT (width));
+}
+
+static void
+_task_manager_check_width (AwnTaskManager *task_manager)
+{
+	AwnTaskManagerPrivate *priv;
+	AwnSettings *settings;
+	static gint current_width = 60;
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+	settings = priv->settings;
+	
+	gint w, h;
+	gtk_window_get_size (GTK_WINDOW (settings->window), &w, &h);
+	
+	gint width = 60;
+	gint i = 0;
+		
+	for (i =0; i < 60; i+=2) {
+		
+		gint res = (settings->monitor.width) / width;
+		if (res > (num_tasks+num_launchers)) {
+			break;
+		}
+		width -=i;
+	}
+	
+	if (width != current_width) {
+		current_width = width;
+		g_list_foreach(priv->launchers, (GFunc)_task_resize, GINT_TO_POINTER (width));
+		g_list_foreach(priv->tasks, (GFunc)_task_resize, GINT_TO_POINTER (width));
+		g_print ("New width = %d", width);
+	}
+	awn_task_manager_update_separator_position (task_manager);
+	
 }
 
 static void
@@ -1384,6 +1435,11 @@ awn_task_manager_new (AwnSettings *settings)
 
 	g_signal_connect (G_OBJECT(theme), "changed",
 			  G_CALLBACK(_task_manager_icon_theme_changed), (gpointer)task_manager);
+
+	/* SEP EXPOSE EVENT */
+
+	g_signal_connect (G_OBJECT(priv->eb), "expose-event",
+			  G_CALLBACK(awn_bar_separator_expose_event), (gpointer)settings->bar);			  
 
 
 	return task_manager;
