@@ -744,8 +744,7 @@ _task_manager_check_width (AwnTaskManager *task_manager)
 {
 	AwnTaskManagerPrivate *priv;
 	AwnSettings *settings;
-	priv->settings->task_width = 60;
-	
+		
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 	settings = priv->settings;
 	
