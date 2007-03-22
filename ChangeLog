@@ -1,3 +1,8 @@
+2007-03-22  Neil Jagdish Patel  <njpatel@gmail.com>
+
+	* Added translations
+	* Fixed some resizing issues
+
 2007-03-21  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	* Better info handling on the bar, swapped circle for rectangle.
