@@ -1,0 +1,119 @@
+# Danish translation of avant-window-navigator
+# Copyright (C) 2007 avant-window-navigator's Neil J. Patel
+# This file is distributed under the same license as the avant-window-navigator package.
+
+msgid ""
+msgstr ""
+"Project-Id-Version: avant-window-navigator 0.1.1-svn\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-03-22 22:48+0100\n"
+"PO-Revision-Date: 2007-03-22 22:48+0100\n"
+"Last-Translator: David Nielsen <david@lovesunix.net>\n"
+"Language-Team: da_DK <dansk@dansk-gruppen.dk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: avant-preferences/window.glade:9
+msgid "Avant Preferences"
+msgstr "Avant indstillinger"
+
+#: avant-preferences/window.glade:83
+msgid "Colour:"
+msgstr "Farve:"
+
+#: avant-preferences/window.glade:135
+msgid "Shadow colour:"
+msgstr "Skygge farve:"
+
+#: avant-preferences/window.glade:187
+msgid "Font size:"
+msgstr "Skrift størrelse:"
+
+#: avant-preferences/window.glade:284
+msgid "Italic"
+msgstr "Kursiv"
+
+#: avant-preferences/window.glade:365
+msgid "Bold"
+msgstr "Fed"
+
+#: avant-preferences/window.glade:405
+msgid "<b>Text</b>"
+msgstr "<b>Tekst</b>"
+
+#: avant-preferences/window.glade:454 avant-preferences/window.glade:1086
+msgid "Select A File"
+msgstr "Vælg en fil"
+
+#: avant-preferences/window.glade:468
+msgid "<b>Active Icon</b>"
+msgstr "<b>Aktivt ikon</b>"
+
+#: avant-preferences/window.glade:504
+msgid "General Appearance"
+msgstr "Generelt udseende"
+
+#: avant-preferences/window.glade:565
+msgid "Main border:"
+msgstr "Hovedkant:"
+
+#: avant-preferences/window.glade:617
+msgid "Internal border:"
+msgstr "Internkant:"
+
+#: avant-preferences/window.glade:667
+msgid "<b>Borders</b>"
+msgstr "<b>Kanter</b>"
+
+#: avant-preferences/window.glade:728 avant-preferences/window.glade:891
+msgid "First step colour:"
+msgstr "Første skridts farve:"
+
+#: avant-preferences/window.glade:780 avant-preferences/window.glade:943
+msgid "Second step colour:"
+msgstr "Andet skridts farve:"
+
+#: avant-preferences/window.glade:830
+msgid "<b>Gradient</b>"
+msgstr "<b>Gradient</b>"
+
+#: avant-preferences/window.glade:993
+msgid "<b>Highlight</b>"
+msgstr "<b>Fremhæv</b>"
+
+#: avant-preferences/window.glade:1055
+msgid "Enable pattern"
+msgstr "Slå mønster til"
+
+#: avant-preferences/window.glade:1116
+msgid "Transparency:"
+msgstr "Gennemsigtighed:"
+
+#: avant-preferences/window.glade:1170
+msgid "<b>Pattern</b>"
+msgstr "<b>Mønster</b>"
+
+#: avant-preferences/window.glade:1232
+msgid "Enable rounded corners"
+msgstr "Slå runde hjørner til"
+
+#: avant-preferences/window.glade:1261
+msgid "<b>Corners</b>"
+msgstr "<b>Hjørner</b>"
+
+#: avant-preferences/window.glade:1297
+msgid "Bar Appearance"
+msgstr "Panel udseende"
+
+#: avant-preferences/window.glade:1359
+msgid "Show windows from all viewports"
+msgstr "Vis vinduer fra alle skriveborder"
+
+#: avant-preferences/window.glade:1388
+msgid "<b>Windows</b>"
+msgstr "<b>Vinduer</b>"
+
+#: avant-preferences/window.glade:1424
+msgid "Window Management"
+msgstr "Vinduehåndtering"
