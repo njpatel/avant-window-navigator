@@ -1158,7 +1158,7 @@ awn_task_button_press (GtkWidget *task, GdkEventButton *event)
 						wnck_window_minimize( priv->window );
 						return TRUE;
 					}
-					wnck_window_activate( priv->window,
+					wnck_window_activate_transient( priv->window,
 							event->time );
 					break;
 				case 2:
@@ -1354,7 +1354,7 @@ activate_window(AwnTask *task)
 	priv = AWN_TASK_GET_PRIVATE (task);
 
 	if (priv->hover)
-		wnck_window_activate( priv->window, priv->timestamp );
+		wnck_window_activate_transient( priv->window, priv->timestamp );
 
 	return FALSE;
 }
@@ -1995,7 +1995,7 @@ awn_task_add_menu_item (AwnTask *task, GtkMenuItem *item)
 			g_object_ref (G_OBJECT (item));
 			menu_item = g_new0 (AwnTaskMenuItem, 1);
 			menu_item->type = AWN_TASK_MENU_TYPE_NORMAL;
-			menu_item->item = item;
+			menu_item->item = GTK_WIDGET (item);
 			menu_item->active = FALSE;
 			priv->menu_items[i] = menu_item;
 			menu_item->id =  menu_item_id++;
@@ -2022,7 +2022,7 @@ awn_task_add_check_item (AwnTask *task, GtkMenuItem *item)
 			g_object_ref (G_OBJECT (item));
 			menu_item = g_new0 (AwnTaskMenuItem, 1);
 			menu_item->type = AWN_TASK_MENU_TYPE_CHECK;
-			menu_item->item = item;
+			menu_item->item = GTK_WIDGET (item);
 			menu_item->active = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item));
 			priv->menu_items[i] = menu_item;
 			menu_item->id =  menu_item_id++;
@@ -2039,7 +2039,7 @@ awn_task_set_check_item (AwnTask *task, gint id, gboolean active)
 	AwnTaskPrivate *priv;
 	AwnTaskMenuItem *menu_item;
 
-	g_return_val_if_fail (AWN_IS_TASK (task), 0);
+	g_return_if_fail (AWN_IS_TASK (task));
 
 	priv = AWN_TASK_GET_PRIVATE (task);
 	int i;

@@ -1253,7 +1253,7 @@ awn_task_manager_add_task_menu_item_by_name (AwnTaskManager *task_manager,
 		;
 	}
 	if (item)
-		*id = (gint) awn_task_add_menu_item (term.task, GTK_MENU_ITEM (item));
+		*id = (gint *) awn_task_add_menu_item (term.task, GTK_MENU_ITEM (item));
 	else
 		*id = 0;
 
@@ -1289,7 +1289,7 @@ awn_task_manager_add_task_check_item_by_name (AwnTaskManager *task_manager,
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), active);
 
 	if (item)
-		*id = (gint) awn_task_add_check_item (term.task, GTK_MENU_ITEM (item));
+		*id = (gint *) awn_task_add_check_item (term.task, GTK_MENU_ITEM (item));
 	else
 		*id = 0;
 

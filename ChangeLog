@@ -1,5 +1,20 @@
 2007-05-12  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-task-manager.c:
+	(awn_task_manager_add_task_menu_item_by_name),
+	(awn_task_manager_add_task_check_item_by_name):
+	* src/awn-task.c: (awn_task_button_press), (activate_window),
+	(awn_task_add_menu_item), (awn_task_add_check_item),
+	(awn_task_set_check_item):
+	Merged patch by Ado Paps which tells wnck to raise the transient
+	window rather than the main window when activating.
+
+	* src/awn-task.h:
+	* src/awn-utils.c: (_move_bar):
+	(All)Merged a warnings patch by Gerd Kohlberger
+
+2007-05-12  Neil J. Patel  <njpatel@gmail.com>
+
 	* configure.in:
 	Added Finish translation.
 

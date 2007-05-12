@@ -62,13 +62,13 @@ struct _AwnTaskClass
 	void (*check_item_clicked) (AwnTask *task, guint id, gboolean active);
 };
 
+GType awn_task_get_type (void);
+
 GtkWidget *awn_task_new (AwnTaskManager *task_manager, AwnSettings *settings);
 
 void awn_task_close (AwnTask *task);
 
 gboolean awn_task_get_is_launcher (AwnTask *task);
-
-void awn_task_set_title_(AwnTitle *title);
 
 gboolean awn_task_set_window (AwnTask *task, WnckWindow *window);
 WnckWindow * awn_task_get_window (AwnTask *task);
