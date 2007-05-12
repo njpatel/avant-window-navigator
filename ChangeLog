@@ -1,5 +1,10 @@
 2007-05-12  Neil J. Patel  <njpatel@gmail.com>
 
+	* configure.in:
+	Added Finish translation.
+
+2007-05-12  Neil J. Patel  <njpatel@gmail.com>
+
 	* intltool-extract.in:
 	* intltool-merge.in:
 	* intltool-update.in:

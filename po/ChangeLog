@@ -1,6 +1,9 @@
-2007-03-22  Neil Jagdish Patel,,,01923 820 124  <njp@Fedora>
+2007-05-12  Neil J. Patel  <njpatel@gmail.com>
 
-	reviewed by: <delete if not using a buddy>
+	* fi_FI.po:
+	Merged Finnish translation by Petri Jarvisalo
+
+2007-03-22  Neil Jagdish Patel,,,01923 820 124  <njp@Fedora>
 
 	* cs.po:
 	* de_DE.po:
@@ -9,20 +12,14 @@
 
 2007-03-20  Neil J. Patel  <njpatel@gmail.com>
 
-	reviewed by: <delete if not using a buddy>
-
 	* POTFILES.in:
 	* en_GB.po:
 
 2007-03-07  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
 
-	reviewed by: <delete if not using a buddy>
-
 	* POTFILES:
 
 2007-03-07  Neil Jagdish Patel,,,01923 820 124  <njpatel@gmail.com>
-
-	reviewed by: <delete if not using a buddy>
 
 	* Makefile:
 

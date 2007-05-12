@@ -1,0 +1,151 @@
+# en_Gb Translation.
+# Copyright (C) 2007 Neil J. Patel
+# This file is distributed under the same license as the avant-window-navigator package.
+# Neil J. Patel <njpatel@gmail.com>, 2007
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-03-15 13:16+0000\n"
+"PO-Revision-Date: 2007-03-30 10:24+0300\n"
+"Last-Translator: Petri Järvisalo <petri.jarvisalo@mbnet.fi>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../avant-preferences/window.glade.h:1
+msgid "<b>Active Icon</b>"
+msgstr "<b>Aktiivinen kuvake</b>"
+
+#: ../avant-preferences/window.glade.h:2
+msgid "<b>Arrows</b>"
+msgstr "<b>Nuolet</b>"
+
+#: ../avant-preferences/window.glade.h:3
+msgid "<b>Borders</b>"
+msgstr "<b>Reunat</b>"
+
+#: ../avant-preferences/window.glade.h:4
+msgid "<b>Corners</b>"
+msgstr "<b>Pyöristys</b>"
+
+#: ../avant-preferences/window.glade.h:5
+msgid "<b>Gradient</b>"
+msgstr "<b>Väriliuku</b>"
+
+#: ../avant-preferences/window.glade.h:6
+msgid "<b>Highlight</b>"
+msgstr "<b>Korostus</b>"
+
+#: ../avant-preferences/window.glade.h:7
+msgid "<b>Pattern</b>"
+msgstr "<b>Kuvio</b>"
+
+#: ../avant-preferences/window.glade.h:8
+msgid "<b>Separator</b>"
+msgstr "<b>Erotin</b>"
+
+#: ../avant-preferences/window.glade.h:9
+msgid "<b>Text</b>"
+msgstr "<b>Teksti</b>"
+
+#: ../avant-preferences/window.glade.h:10
+msgid "<b>Windows</b>"
+msgstr "<b>Ikkunat</b>"
+
+#: ../avant-preferences/window.glade.h:11
+msgid "Avant Preferences"
+msgstr "Avant Asetukset"
+
+#: ../avant-preferences/window.glade.h:12
+msgid "Background color:"
+msgstr "Taustan väri:"
+
+#: ../avant-preferences/window.glade.h:13
+msgid "Bar Appearence"
+msgstr "Palkin ulkoasu"
+
+#: ../avant-preferences/window.glade.h:14
+msgid "Bold"
+msgstr "Lihavoi"
+
+#: ../avant-preferences/window.glade.h:15
+msgid "Color:"
+msgstr "Väri:"
+
+#: ../avant-preferences/window.glade.h:16
+msgid "Enable pattern"
+msgstr "Käytä kuviota"
+
+#: ../avant-preferences/window.glade.h:17
+msgid "Enable rounded corners"
+msgstr "Pyöristä reunat"
+
+#: ../avant-preferences/window.glade.h:18
+msgid "First step color:"
+msgstr "Aloitusväri:"
+
+#: ../avant-preferences/window.glade.h:19
+msgid "Font size:"
+msgstr "Kirjaisimen koko:"
+
+#: ../avant-preferences/window.glade.h:20
+msgid "General"
+msgstr "Yleiset"
+
+#: ../avant-preferences/window.glade.h:21
+msgid "Glass Engine"
+msgstr "Tausta"
+
+#: ../avant-preferences/window.glade.h:22
+msgid "Internal border:"
+msgstr "Sisäreuna:"
+
+#: ../avant-preferences/window.glade.h:23
+msgid "Italic"
+msgstr "Kursivoi"
+
+#: ../avant-preferences/window.glade.h:24
+msgid "Main border:"
+msgstr "Ulkoreuna:"
+
+#: ../avant-preferences/window.glade.h:25
+msgid "Pattern Engine"
+msgstr "Kuviot"
+
+#: ../avant-preferences/window.glade.h:26
+msgid "Second step color:"
+msgstr "Lopetusväri:"
+
+#: ../avant-preferences/window.glade.h:27
+msgid "Select A File"
+msgstr "Valitse tiedosto"
+
+#: ../avant-preferences/window.glade.h:28
+msgid "Separator color:"
+msgstr "Erottimen väri:"
+
+#: ../avant-preferences/window.glade.h:29
+msgid "Shadow color:"
+msgstr "Varjon väri:"
+
+#: ../avant-preferences/window.glade.h:30
+msgid "Show separator between launchers and tasks"
+msgstr "Näytä erotin pikakäynnistyksen ja tehtävien välissä"
+
+#: ../avant-preferences/window.glade.h:31
+msgid "Show windows from all viewports"
+msgstr "Näytä ikkunat kaikilta työpöydiltä"
+
+#: ../avant-preferences/window.glade.h:32
+msgid "Task Appearence"
+msgstr "Tehtävien ulkoasu"
+
+#: ../avant-preferences/window.glade.h:33
+msgid "Tasks have arrows"
+msgstr "Näytä ajettavissa tehtävissä nuoli"
+
+#: ../avant-preferences/window.glade.h:34
+msgid "Transparency:"
+msgstr "Läpikuultavuus:"
