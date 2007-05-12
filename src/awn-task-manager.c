@@ -1019,7 +1019,7 @@ awn_task_manager_set_task_icon_by_name (AwnTaskManager *task_manager,
 
 static gboolean
 awn_task_manager_set_task_icon_by_xid (AwnTaskManager *task_manager,
-			    		gulong		xid,
+			    		gint64		xid,
 			    		gchar 	  	*icon_path,
 			        	GError   	**error)
 {
@@ -1073,7 +1073,7 @@ awn_task_manager_unset_task_icon_by_name (AwnTaskManager *task_manager,
 
 static gboolean
 awn_task_manager_unset_task_icon_by_xid (AwnTaskManager *task_manager,
-			    		gulong		xid,
+			    		gint64		xid,
 			    		GError   	**error)
 {
 	AwnTaskManagerPrivate *priv;
@@ -1118,7 +1118,7 @@ awn_task_manager_set_progress_by_name (AwnTaskManager *task_manager,
 
 static gboolean
 awn_task_manager_set_progress_by_xid (AwnTaskManager *task_manager,
-			    		gulong		xid,
+			    		gint64		xid,
 			    		gint		progress,
 			    		GError   	**error)
 {
@@ -1161,7 +1161,7 @@ awn_task_manager_set_info_by_name (AwnTaskManager *task_manager,
 
 static gboolean
 awn_task_manager_set_info_by_xid (AwnTaskManager *task_manager,
-			    		gulong		xid,
+			    		gint64		xid,
 			    		gchar		*info,
 			    		GError   	**error)
 {
@@ -1203,7 +1203,7 @@ awn_task_manager_unset_info_by_name (AwnTaskManager *task_manager,
 
 static gboolean
 awn_task_manager_unset_info_by_xid (AwnTaskManager *task_manager,
-			    		gulong		xid,
+			    		gint64		xid,
 			    		GError   	**error)
 {
 	AwnTaskManagerPrivate *priv;

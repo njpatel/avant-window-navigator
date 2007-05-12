@@ -34,6 +34,7 @@
 #include <libgnome/libgnome.h>
 
 #include "xutils.h"
+#include "inlinepixbufs.h"
 
 /*	TODO:
 	This is a cut-and-paste job at the moment, I still need to bring over 
@@ -65,6 +66,7 @@ awn_x_get_icon (WnckWindow *window, gint width, gint height)
   	if (mini_icon)
   		gdk_pixbuf_unref (mini_icon);
         
+        return gdk_pixbuf_new_from_inline (-1,default_icon_data, TRUE, NULL);
         return wnck_window_get_icon (window);
 
 }

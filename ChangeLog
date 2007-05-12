@@ -1,5 +1,16 @@
 2007-05-12  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-task-manager.c: (awn_task_manager_set_task_icon_by_xid),
+	(awn_task_manager_unset_task_icon_by_xid),
+	(awn_task_manager_set_progress_by_xid),
+	(awn_task_manager_set_info_by_xid),
+	(awn_task_manager_unset_info_by_xid):
+	* src/awn-x.c: (awn_x_get_icon):
+	* src/inlinepixbufs.h:
+	Use own own default icons for windows without icon.
+
+2007-05-12  Neil J. Patel  <njpatel@gmail.com>
+
 	* src/awn-task-manager.c:
 	(awn_task_manager_add_task_menu_item_by_name),
 	(awn_task_manager_add_task_check_item_by_name):
