@@ -109,6 +109,7 @@ main (int argc, char* argv[])
 	guint32 ret;
 	
 	g_type_init();	
+	if (!g_thread_supported ()) g_thread_init (NULL);
 	gtk_init (&argc, &argv);
 	gnome_vfs_init ();
 	
