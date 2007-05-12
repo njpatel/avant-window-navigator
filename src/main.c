@@ -55,11 +55,12 @@ static gboolean drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
                                                      gint            y,
                                                      guint           time,
                                                      GtkWidget *win);
-static gboolean drag_motion_hot (GtkWidget *widget, GdkDragContext *drag_context,
-                                                     gint            x,
-                                                     gint            y,
-                                                     guint           time,
-            		                        AwnSettings *settings);            
+static gboolean drag_motion_hot (GtkWidget *widget, 
+				 GdkDragContext *drag_context,
+                                 gint            x,
+                                 gint            y,
+                                 guint           time,
+            		         AwnSettings *settings);            
 void drag_leave_hot (GtkWidget      *widget, GdkDragContext *drag_context,
                                              guint           time,
                                              AwnSettings *settings);           		                                                                 

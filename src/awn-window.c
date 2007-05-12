@@ -167,6 +167,8 @@ _on_expose (GtkWidget *widget, GdkEventExpose *expose)
 		_position_window(GTK_WIDGET(widget));
 	oWidth = width;
 	oHeight = height;
+	
+	gdk_window_raise (widget->window);
 	return FALSE;
 }
 

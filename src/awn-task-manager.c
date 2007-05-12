@@ -720,11 +720,12 @@ awn_task_manager_update_separator_position (AwnTaskManager *task_manager)
 	settings = priv->settings;
 
 	if (num_tasks == 0) {
-		awn_bar_set_separator_position (settings->bar, -1000);
+		awn_bar_set_draw_separator (settings->bar, 0);
 		return;
 	}
 	new_x = GTK_WIDGET(priv->eb)->allocation.x;
 
+	awn_bar_set_draw_separator (settings->bar, 1);
 	awn_bar_set_separator_position (settings->bar, x+2);
 	x = new_x;
 

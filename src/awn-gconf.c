@@ -23,48 +23,48 @@
 #include "config.h"
 
 #define AWN_PATH		"/apps/avant-window-navigator"
-#define AWN_FORCE_MONITOR	"/apps/avant-window-navigator/force_monitor"
-#define AWN_MONITOR_WIDTH	"/apps/avant-window-navigator/monitor_width"
-#define AWN_MONITOR_HEIGHT	"/apps/avant-window-navigator/monitor_height"
-#define AWN_PANEL_MODE		"/apps/avant-window-navigator/panel_mode"
-#define AWN_AUTO_HIDE		"/apps/avant-window-navigator/auto_hide"
+#define AWN_FORCE_MONITOR	AWN_PATH "/force_monitor"	/*bool*/
+#define AWN_MONITOR_WIDTH	AWN_PATH "/monitor_width"	/*int*/
+#define AWN_MONITOR_HEIGHT	AWN_PATH "/monitor_height"	/*int*/
+#define AWN_PANEL_MODE		AWN_PATH "/panel_mode"		/*bool*/
+#define AWN_AUTO_HIDE		AWN_PATH "/auto_hide"		/*bool*/
 
 
-#define BAR_PATH		"/apps/avant-window-navigator/bar"
-#define BAR_ROUNDED_CORNERS	"/apps/avant-window-navigator/bar/rounded_corners"	/* bool */
-#define BAR_CORNER_RADIUS 	"/apps/avant-window-navigator/bar/corner_radius" 	/* float */
-#define BAR_RENDER_PATTERN	"/apps/avant-window-navigator/bar/render_pattern"	/* bool */
-#define BAR_PATTERN_URI		"/apps/avant-window-navigator/bar/pattern_uri" 		/* string */
-#define BAR_PATTERN_ALPHA 	"/apps/avant-window-navigator/bar/pattern_alpha" 	/* float */
-#define BAR_GLASS_STEP_1	"/apps/avant-window-navigator/bar/glass_step_1"		/*string */
-#define BAR_GLASS_STEP_2	"/apps/avant-window-navigator/bar/glass_step_2"		/*string */
-#define BAR_GLASS_HISTEP_1	"/apps/avant-window-navigator/bar/glass_histep_1"		/*string */
-#define BAR_GLASS_HISTEP_2	"/apps/avant-window-navigator/bar/glass_histep_2"		/*string */
-#define BAR_BORDER_COLOR	"/apps/avant-window-navigator/bar/border_color"		/*string */
-#define BAR_HILIGHT_COLOR	"/apps/avant-window-navigator/bar/hilight_color"		/*string */
-#define BAR_SHOW_SEPARATOR	"/apps/avant-window-navigator/bar/show_separator"		/*string */
-#define BAR_SEP_COLOR		"/apps/avant-window-navigator/bar/sep_color"		/*string */
+#define BAR_PATH		AWN_PATH "/bar"
+#define BAR_ROUNDED_CORNERS	BAR_PATH "/rounded_corners"	/*bool*/
+#define BAR_CORNER_RADIUS 	BAR_PATH "/corner_radius" 	/*float*/
+#define BAR_RENDER_PATTERN	BAR_PATH "/render_pattern"	/*bool*/
+#define BAR_PATTERN_URI		BAR_PATH "/pattern_uri" 	/*string*/
+#define BAR_PATTERN_ALPHA 	BAR_PATH "/pattern_alpha" 	/*float*/
+#define BAR_GLASS_STEP_1	BAR_PATH "/glass_step_1"	/*string*/
+#define BAR_GLASS_STEP_2	BAR_PATH "/glass_step_2"	/*string*/
+#define BAR_GLASS_HISTEP_1	BAR_PATH "/glass_histep_1"	/*string*/
+#define BAR_GLASS_HISTEP_2	BAR_PATH "/glass_histep_2"	/*string*/
+#define BAR_BORDER_COLOR	BAR_PATH "/border_color"	/*string*/
+#define BAR_HILIGHT_COLOR	BAR_PATH "/hilight_color"	/*string*/
+#define BAR_SHOW_SEPARATOR	BAR_PATH "/show_separator"	/*string*/
+#define BAR_SEP_COLOR		BAR_PATH "/sep_color"		/*string*/
 
-#define WINMAN_PATH		"/apps/avant-window-navigator/window_manager"
-#define WINMAN_SHOW_ALL_WINS	"/apps/avant-window-navigator/window_manager/show_all_windows" /*bool*/
-#define WINMAN_LAUNCHERS	"/apps/avant-window-navigator/window_manager/launchers" /*str list*/
+#define WINMAN_PATH		AWN_PATH "/window_manager"
+#define WINMAN_SHOW_ALL_WINS	WINMAN_PATH "/show_all_windows"	/*bool*/
+#define WINMAN_LAUNCHERS	WINMAN_PATH "/launchers"	/*str list*/
 
-#define APP_PATH		"/apps/avant-window-navigator/app"
-#define APP_ACTIVE_PNG		"/apps/avant-window-navigator/app/active_png" /*string*/
-#define APP_USE_PNG		"/apps/avant-window-navigator/app/use_png" /*bool*/
-#define APP_FADE_EFFECT		"/apps/avant-window-navigator/app/fade_effect" /*bool*/
-#define APP_ARROW_COLOR		"/apps/avant-window-navigator/app/arrow_color" /*color*/
-#define APP_TASKS_H_ARROWS	"/apps/avant-window-navigator/app/tasks_have_arrows" /*bool*/
-#define APP_NAME_CHANGE_NOTIFY	"/apps/avant-window-navigator/app/name_change_notify" /*bool*/
-#define APP_ALPHA_EFFECT	"/apps/avant-window-navigator/app/alpha_effect" /*bool*/
+#define APP_PATH		AWN_PATH "/app"
+#define APP_ACTIVE_PNG		APP_PATH "/active_png"		/*string*/
+#define APP_USE_PNG		APP_PATH "/use_png"		/*bool*/
+#define APP_FADE_EFFECT		APP_PATH "/fade_effect"		/*bool*/
+#define APP_ARROW_COLOR		APP_PATH "/arrow_color"		/*color*/
+#define APP_TASKS_H_ARROWS	APP_PATH "/tasks_have_arrows"	/*bool*/
+#define APP_NAME_CHANGE_NOTIFY	APP_PATH "/name_change_notify"	/*bool*/
+#define APP_ALPHA_EFFECT	APP_PATH "/alpha_effect"	/*bool*/
 
-#define TITLE_PATH		"/apps/avant-window-navigator/title"
-#define TITLE_TEXT_COLOR	"/apps/avant-window-navigator/title/text_color" /*color*/
-#define TITLE_SHADOW_COLOR	"/apps/avant-window-navigator/title/shadow_color" /*color*/
-#define TITLE_BACKGROUND	"/apps/avant-window-navigator/title/background" /*color*/
-#define TITLE_ITALIC		"/apps/avant-window-navigator/title/italic" /*bool*/
-#define TITLE_BOLD		"/apps/avant-window-navigator/title/bold" /*bool*/
-#define TITLE_FONT_SIZE		"/apps/avant-window-navigator/title/font_size" /*bool*/
+#define TITLE_PATH		AWN_PATH "/title"
+#define TITLE_TEXT_COLOR	TITLE_PATH "/text_color"	/*color*/
+#define TITLE_SHADOW_COLOR	TITLE_PATH "/shadow_color"	/*color*/
+#define TITLE_BACKGROUND	TITLE_PATH "/background"	/*color*/
+#define TITLE_ITALIC		TITLE_PATH "/italic"		/*bool*/
+#define TITLE_BOLD		TITLE_PATH "/bold"		/*bool*/
+#define TITLE_FONT_SIZE		TITLE_PATH "/font_size"		/*bool*/
 
 /* globals */
 static AwnSettings *settings		= NULL;
@@ -294,19 +294,15 @@ awn_load_color(GConfClient *client, const gchar* key, AwnColor *color, const cha
 	value = gconf_client_get(client, key, NULL);
 	if (value) {
 		hex2float (gconf_client_get_string(client, key, NULL), colors);
-		color->red = colors[0];
-		color->green = colors[1];
-		color->blue = colors[2];
-		color->alpha = colors[3];
 	} else {
 		g_print("%s unset, setting now\n", key);
 		gconf_client_set_string (client, key, def, NULL);
 		hex2float ( (gchar*)def, colors);
-		color->red = colors[0];
-		color->green = colors[1];
-		color->blue = colors[2];
-		color->alpha = colors[3];
 	}
+	color->red = colors[0];
+	color->green = colors[1];
+	color->blue = colors[2];
+	color->alpha = colors[3];
 		
 	gconf_client_notify_add (client, key, (GConfClientNotifyFunc)awn_notify_color, color, NULL, NULL);
 }

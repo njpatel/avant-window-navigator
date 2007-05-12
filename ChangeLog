@@ -1,3 +1,20 @@
+2007-05-12  Neil J. Patel  <njpatel@gmail.com>
+
+	* intltool-extract.in:
+	* intltool-merge.in:
+	* intltool-update.in:
+	* src/awn-bar.c: (awn_bar_init), (render),
+	(awn_bar_set_draw_separator):
+	* src/awn-bar.h:
+	* src/awn-gconf.c: (awn_load_color):
+	Merged a pacth by Diego Rivera which cleans up the GConf keys.
+
+	* src/awn-task-manager.c:
+	Merged a patch by Diego Rivera <diego@rivera.net> which takes a saner
+	approach to separator drawing.
+	* src/awn-window.c: (_on_expose):
+	* src/main.c:
+
 2007-03-22  Neil Jagdish Patel  <njpatel@gmail.com>
 
 	* Added translations

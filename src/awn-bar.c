@@ -38,6 +38,7 @@ static AwnSettings *settings		= NULL;
 static gint dest_width			= 0;
 static gint current_width 		= 400;
 static int separator			= 0;
+static int draw_separator		= 0;
 static GtkWidgetClass *parent_class = NULL;
 
 static void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
@@ -66,7 +67,7 @@ awn_bar_class_init( AwnBarClass *this_class )
 static void
 awn_bar_init( AwnBar *bar )
 {
-
+	;
 }
 
 GtkWidget *
@@ -245,7 +246,7 @@ render (cairo_t *cr, gint x_width, gint height)
 	cairo_stroke(cr);
 
 	/* separator */
-	if (settings->show_separator) {
+	if (draw_separator && settings->show_separator) {
 		double real_x = (settings->monitor.width-dest_width)/2.0;
 		if (current_width > dest_width )
 			real_x = x + current_width - dest_width;
@@ -526,6 +527,12 @@ awn_bar_separator_expose_event  (GtkWidget      *widget,
 }                                 
 
 
+void
+awn_bar_set_draw_separator (GtkWidget *window, int x)
+{
+        draw_separator = (x ? 1 : 0);
+        gtk_widget_queue_draw(GTK_WIDGET(window));
+}
 
 
 
