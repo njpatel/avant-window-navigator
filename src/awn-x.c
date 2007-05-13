@@ -115,7 +115,7 @@ GdkPixbuf *
 awn_x_get_icon_for_window (WnckWindow *window, gint width, gint height)
 {
 	
-	return awn_x_get_icon (window, width, height);
+	//return awn_x_get_icon (window, width, height);
 	WnckApplication *app;
 	GString *name = NULL;
 	gchar *uri = NULL;
@@ -136,10 +136,8 @@ awn_x_get_icon_for_window (WnckWindow *window, gint width, gint height)
 			
 	uri = gnome_util_prepend_user_home(name->str);
 	
-	//g_print ("%s\n", uri);
-	
 	icon = gdk_pixbuf_new_from_file_at_scale (uri, width, height, TRUE, NULL);
-	
+	 
 	g_string_free (name, TRUE);
 	g_free (uri);
 	

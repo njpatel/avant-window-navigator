@@ -2055,86 +2055,114 @@ awn_task_set_check_item (AwnTask *task, gint id, gboolean active)
 
 /********************* MISC FUNCTIONS *******************/
 
+
 static void
 _task_choose_custom_icon (AwnTask *task)
 {
-	g_print("Preferences for %s\n", awn_task_get_name(task));
-	/*
-		TODO : Provide an interface to change the icon of the current
-		       application to one of the users choice. Save it.
-	*/
+#define PIXBUF_SAVE_PATH ".awn/custom-icons"
+
 	AwnTaskPrivate *priv;
-	priv = AWN_TASK_GET_PRIVATE (task);
-
 	GtkWidget *dialog;
-
-	dialog = gtk_file_chooser_dialog_new ("Choose Image...",
-				      GTK_WINDOW (priv->settings->window),
-				      GTK_FILE_CHOOSER_ACTION_OPEN,
-				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-				      NULL);
-
-	int res = gtk_dialog_run (GTK_DIALOG (dialog));
-
-	if ( res == GTK_RESPONSE_ACCEPT) {
-		char *filename;
-
-		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-
-		GString *name = NULL;
-		gchar *uri = NULL;
-
-		if (priv->is_launcher) {
-			name = g_string_new ( gnome_desktop_item_get_string (priv->item, GNOME_DESKTOP_ITEM_EXEC));
-			name = g_string_prepend (name, ".awn/custom-icons/");
-			int i = 0;
-			for (i = 0; i < name->len; i++) {
-				if (name->str[i] == ' ')
-					name->str[i] = '-';
-			}
-			uri = gnome_util_prepend_user_home(name->str);
-			g_string_printf (name, "cp %s %s", filename, uri);
-			g_spawn_command_line_async (name->str, NULL);
-
-			sleep (1);
-			priv->icon = awn_x_get_icon_for_launcher (priv->item, HEIGHT-2, HEIGHT-2);
-		        priv->icon_width = gdk_pixbuf_get_width(priv->icon);
-			priv->icon_height = gdk_pixbuf_get_height(priv->icon);
-
-			gtk_widget_queue_draw (GTK_WIDGET (task));
-
-		} else if (priv->window != NULL) {
-			WnckApplication *app;
-			app = wnck_window_get_application (priv->window);
-
-			g_return_if_fail (WNCK_IS_APPLICATION (app));
-
-			name = g_string_new (wnck_application_get_name (app));
-			name = g_string_prepend (name, ".awn/custom-icons/");
-			int i = 0;
-			for (i = 0; i < name->len; i++) {
-				if (name->str[i] == ' ')
-					name->str[i] = '-';
-			}
-
-			uri = gnome_util_prepend_user_home(name->str);
-			g_string_printf (name, "cp %s %s", filename, uri);
-			g_spawn_command_line_async (name->str, NULL);
-			sleep (1);
-			priv->icon = awn_x_get_icon_for_window (priv->window, HEIGHT-2, HEIGHT-2);
-		        priv->icon_width = gdk_pixbuf_get_width(priv->icon);
-			priv->icon_height = gdk_pixbuf_get_height(priv->icon);
-			gtk_widget_queue_draw (GTK_WIDGET (task));
-
-		} else {
-			return;
-		}
-		g_string_free (name, TRUE);
-		g_free (uri);
-		g_free (filename);
+	gint res = -1;
+	GdkPixbuf *pixbuf = NULL;
+	GdkPixbuf *old_icon = NULL;
+	GError *err = NULL;
+	gchar *filename = NULL;
+	gchar *save = NULL;
+	gchar *name = NULL;
+	
+	g_return_if_fail (AWN_IS_TASK (task));
+	priv = AWN_TASK_GET_PRIVATE (task);
+	
+	/* Create the dialog */
+	dialog = gtk_file_chooser_dialog_new ("Choose New Image...",
+				GTK_WINDOW (priv->settings->window),
+				GTK_FILE_CHOOSER_ACTION_OPEN,
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+				NULL);
+	
+	/* Run it and get the user response */
+	res = gtk_dialog_run (GTK_DIALOG (dialog));
+	
+	/* If not accept, clean up and return */
+	if (res != GTK_RESPONSE_ACCEPT) {
+		gtk_widget_hide (dialog);
+		gtk_widget_destroy (dialog);
+		return;
 	}
+	
+	/* Okay, the user has chosen a new icon, so lets load it up */
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+	pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 48, 48, NULL);
+	
+	/* Check if is actually a pixbuf */
+	if (pixbuf == NULL) {
+		g_free (filename);
+		gtk_widget_hide (dialog);
+		gtk_widget_destroy (dialog);
+		return;
+	}
+	
+	/* So we have a nice new pixbuf, we now want to save it's location
+	   for the future */
+	if (priv->is_launcher) {
+		name = gnome_desktop_item_get_string (priv->item,
+						   GNOME_DESKTOP_ITEM_EXEC);
+	} else {
+		WnckApplication *app = NULL;
+		app = wnck_window_get_application (priv->window);
+		if (app == NULL)
+			name = NULL;
+		else
+			name = wnck_application_get_name (app);
+	}
+	if (name == NULL) {
+		/* Somethings gone very wrong */
+		g_free (filename);
+		gtk_widget_hide (dialog);
+		gtk_widget_destroy (dialog);
+		return;
+	}
+	
+	/* Replace spaces with dashs */
+	int i = 0;
+	for (i = 0; i < strlen (name); i++) {
+		if (name[i] == ' ')
+			name[i] = '-';
+	}
+	
+	/* Now lets build the save-filename and save it */
+	save = g_build_filename (g_get_home_dir (),
+				 PIXBUF_SAVE_PATH,
+				 name,
+				 NULL);
 
+	gdk_pixbuf_save (pixbuf, save, "png", &err, NULL);
+	
+	if (err) {
+		g_print ("%s\n", err->message);
+		g_free (filename);
+		g_free (save);
+		gtk_widget_destroy (dialog);
+		return;
+	}
+	
+	/* Now we have saved the new pixbuf, lets actually set it as the main
+	   pixbuf and refresh the view */
+	old_icon = priv->icon;
+
+	priv->icon = pixbuf;
+	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
+	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
+
+	g_object_unref (G_OBJECT (old_icon));
+
+	gtk_widget_queue_draw(GTK_WIDGET(task));	
+
+	g_free (filename);
+	g_free (save);
+	gtk_widget_hide (dialog);
 	gtk_widget_destroy (dialog);
 }
 
@@ -2186,6 +2214,12 @@ _task_check_item_clicked (GtkMenuItem *item, AwnTask *task)
 }
 
 static void
+on_change_icon_clicked (GtkButton *button, AwnTask *task)
+{
+	_task_choose_custom_icon (task);
+}
+
+static void
 _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 {
 	AwnTaskPrivate *priv;
@@ -2199,8 +2233,8 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 	dialog = gtk_dialog_new_with_buttons ("Preferences",
                                                   GTK_WINDOW (priv->settings->window),
                                                   GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                  //"Change Icon...",
-                                                  //3,
+                                                  "Change Icon...",
+                                                  3,
                                                   GTK_STOCK_CANCEL,
                                                   GTK_RESPONSE_REJECT,
                                                   GTK_STOCK_OK,
@@ -2214,6 +2248,9 @@ _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 	button = gtk_button_new_with_label ("Change Image...");
 	gtk_button_set_image (GTK_BUTTON (button), image);
 	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, TRUE, 0);
+	
+	g_signal_connect (G_OBJECT (button), "clicked",
+			  G_CALLBACK (on_change_icon_clicked), task);
 
 	label = gtk_label_new (" ");
 	char *markup = g_strdup_printf ("<span size='larger' weight='bold'>%s</span>", awn_task_get_application (task));

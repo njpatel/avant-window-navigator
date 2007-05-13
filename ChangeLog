@@ -1,3 +1,11 @@
+2007-05-13  Neil J. Patel  <njpatel@gmail.com>
+
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-task.c: (_task_choose_custom_icon),
+	(on_change_icon_clicked), (_task_show_prefs):
+	* src/awn-x.c: (awn_x_get_icon_for_window):
+	Brand new custom icon interface which actually works :).
+
 2007-05-12  Neil J. Patel  <njpatel@gmail.com>
 
 	* src/awn-task-manager.c: (awn_task_manager_set_task_icon_by_xid),
