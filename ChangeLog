@@ -1,3 +1,9 @@
+2007-05-19  Neil J. Patel  <njpatel@gmail.com>
+
+	* src/awn-window.c: (awn_window_new):
+	Merged patch by Ado Papas whihc should fix the issues when the window
+	manager ignores Awn's requests to activate windows etc.
+
 2007-05-13  Neil J. Patel  <njpatel@gmail.com>
 
 	* src/awn-gconf.c: (awn_gconf_new):

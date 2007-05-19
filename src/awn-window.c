@@ -99,12 +99,18 @@ _position_timeout (gpointer null)
 GtkWidget *
 awn_window_new( AwnSettings *set )
 {
+        static gboolean type_registered = FALSE;
         settings = set;
         AwnWindow *this = g_object_new(AWN_WINDOW_TYPE, 
         			    "type", GTK_WINDOW_TOPLEVEL,
         			    "type-hint", GDK_WINDOW_TYPE_HINT_DOCK,
-        			    NULL);     			    
-        
+        			    NULL);
+
+        if (!type_registered) {
+                wnck_set_client_type (WNCK_CLIENT_TYPE_PAGER);
+                type_registered = TRUE;
+        }
+
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);
         gtk_window_resize (GTK_WINDOW(this), AWN_WINDOW_DEFAULT_WIDTH, AWN_WINDOW_DEFAULT_HEIGHT);
