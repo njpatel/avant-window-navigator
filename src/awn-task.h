@@ -96,6 +96,8 @@ void awn_task_update_icon (AwnTask *task);
 
 void awn_task_set_width (AwnTask *task, gint width);
 
+GnomeDesktopItem* awn_task_get_item (AwnTask *task);
+
 /* DBUS CALLS */
 void awn_task_set_custom_icon (AwnTask *task, GdkPixbuf *icon);
 void awn_task_unset_custom_icon (AwnTask *task);

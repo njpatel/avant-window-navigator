@@ -1,5 +1,14 @@
 2007-05-19  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-task-manager.c: (_task_manager_drag_data_recieved),
+	(awn_task_manger_refresh_launchers), (awn_task_manager_init):
+	* src/awn-task.c: (awn_task_get_item):
+	* src/awn-task.h:
+	Changing the position or launchers in the gconf menu will
+	automatically update the positions of the launchers in Awn.
+
+2007-05-19  Neil J. Patel  <njpatel@gmail.com>
+
 	* src/awn-bar.c: (glass_engine), (render):
 	* src/awn-title.c: (render):
 	Merged patch by Andrea Cimitan which fixes some cairo drawing.

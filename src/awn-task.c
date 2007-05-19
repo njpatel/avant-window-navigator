@@ -1875,6 +1875,17 @@ awn_task_set_width (AwnTask *task, gint width)
 	gtk_widget_set_size_request (GTK_WIDGET (task), width, 100);		
 }
 
+
+GnomeDesktopItem* 
+awn_task_get_item (AwnTask *task)
+{
+	AwnTaskPrivate *priv;
+	g_return_val_if_fail (AWN_IS_TASK (task), NULL);
+	priv = AWN_TASK_GET_PRIVATE (task);
+
+        return priv->item;
+}
+
 /********************* DBUS FUNCTIONS *******************/
 
 void

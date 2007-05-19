@@ -40,6 +40,8 @@
 
 G_DEFINE_TYPE (AwnTaskManager, awn_task_manager, GTK_TYPE_HBOX);
 
+#define AWN_LAUNCHERS_KEY "/apps/avant-window-navigator/window_manager/launchers"
+
 /* FORWARD DECLERATIONS */
 static void _task_manager_window_opened (WnckScreen *screen, WnckWindow *window,
 						AwnTaskManager *task_manager);
@@ -83,6 +85,8 @@ struct _AwnTaskManagerPrivate
 	GList *tasks;
 
 	GtkWidget *eb;
+	
+	gboolean ignore_gconf;
 };
 
 enum
@@ -572,9 +576,10 @@ _task_manager_drag_data_recieved (GtkWidget *widget, GdkDragContext *context,
 		g_print("LOADED : %s\n", _sdata);
 
 		/******* Add to Gconf *********/
+		priv->ignore_gconf = TRUE;
 		settings = priv->settings;
 		settings->launchers = g_slist_append(settings->launchers, g_strdup(uri->str));
-
+                
 		GConfClient *client = gconf_client_get_default();
 		gconf_client_set_list(client,
 					"/apps/avant-window-navigator/window_manager/launchers",
@@ -1364,11 +1369,66 @@ awn_task_manager_class_init (AwnTaskManagerClass *class)
 					 &dbus_glib_awn_task_manager_object_info);
 }
 
+static void 
+awn_task_manger_refresh_launchers (GConfClient *client, 
+                                   guint cid, 
+                                   GConfEntry *entry, 
+                                   AwnTaskManager *task_manager)
+{
+	AwnTaskManagerPrivate *priv;
+	GSList *list, *l;
+	GList *t;
+	GSList *launchers = NULL;
+	GConfValue *value = NULL;
+	
+	
+	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
+        
+        if (priv->ignore_gconf) {
+                priv->ignore_gconf = FALSE;
+                return;
+        }
+        g_print ("Sorting launchers\n");
+        value = gconf_entry_get_value(entry);
+        list = gconf_value_get_list (value);
+        
+        for (l = list; l != NULL; l = l->next) {
+                gchar *string = g_strdup (gconf_value_get_string (l->data));
+                launchers = g_slist_append (launchers, string);
+        }
+        
+        g_slist_free (priv->settings->launchers);
+        priv->settings->launchers = launchers;
+        
+        gint i = 0;
+        for (l = launchers; l != NULL; l = l->next) {
+                AwnTask *task = NULL;
+                for (t = priv->launchers; t != NULL; t = t->next) {
+                        GnomeDesktopItem *item;
+                        item = awn_task_get_item (AWN_TASK (t->data));
+                        gchar *file = gnome_vfs_get_local_path_from_uri 
+                                       (gnome_desktop_item_get_location (item));
+                        if (strcmp (file, l->data) == 0) {
+                                task = AWN_TASK (t->data);
+                        }
+                        g_free (file);
+                        
+                }
+                if (task) {
+                        gtk_box_reorder_child (GTK_BOX (priv->launcher_box),
+                                               GTK_WIDGET (task),
+                                               i);
+                        i++;
+                }
+        }    
+}
+
 static void
 awn_task_manager_init (AwnTaskManager *task_manager)
 {
-	/* set all priv variables */
 	AwnTaskManagerPrivate *priv;
+	GConfClient *client = gconf_client_get_default ();
+	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 
 	priv->screen = wnck_screen_get_default();
@@ -1376,6 +1436,12 @@ awn_task_manager_init (AwnTaskManager *task_manager)
 	priv->title_window = NULL;
 	priv->launchers = NULL;
 	priv->tasks = NULL;
+	priv->ignore_gconf = FALSE;
+	
+	/* Setup GConf to notify us if the launchers list changes */
+	gconf_client_notify_add (client, AWN_LAUNCHERS_KEY, 
+                (GConfClientNotifyFunc)awn_task_manger_refresh_launchers, 
+                task_manager, NULL, NULL);
 }
 
 GtkWidget *
