@@ -161,9 +161,6 @@ glass_engine (cairo_t *cr, double x, gint width, gint height)
 	cairo_set_source(cr, pat);
 	cairo_fill(cr);
 	cairo_pattern_destroy(pat);
-	
-
-
 }
 
 static void
@@ -234,7 +231,7 @@ render (cairo_t *cr, gint x_width, gint height)
 				   settings->hilight_color.green, 
 				   settings->hilight_color.blue,
 				   settings->hilight_color.alpha);
-	render_rect (cr, x+1.5, (height/2)+1.5, width-2, height, 1);
+	render_rect (cr, x+1.5, (height/2)+1.5, width-3, height, 1);
 	cairo_stroke(cr);
 	
 	/* border */
@@ -242,7 +239,7 @@ render (cairo_t *cr, gint x_width, gint height)
 				   settings->border_color.green, 
 				   settings->border_color.blue,
 				   settings->border_color.alpha);
-	render_rect (cr, x +0.5, (height/2)+0.5, width, (height/2)+1, 0);
+	render_rect (cr, x +0.5, (height/2)+0.5, width-1, (height/2)+1, 0);
 	cairo_stroke(cr);
 
 	/* separator */

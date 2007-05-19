@@ -1,5 +1,11 @@
 2007-05-19  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-bar.c: (glass_engine), (render):
+	* src/awn-title.c: (render):
+	Merged patch by Andrea Cimitan which fixes some cairo drawing.
+
+2007-05-19  Neil J. Patel  <njpatel@gmail.com>
+
 	* src/awn-window.c: (awn_window_new):
 	Merged patch by Ado Papas whihc should fix the issues when the window
 	manager ignores Awn's requests to activate windows etc.

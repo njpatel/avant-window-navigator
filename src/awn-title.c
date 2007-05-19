@@ -234,6 +234,8 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 					   settings->background.green, 
 					   settings->background.blue,
 					   settings->background.alpha);
+
+	cairo_translate (cr, 0.5, 0.5);
 	
 	_rounded_rectangle (cr, (double) extents.width+19, (double) extents.height+19, 
 		       (double) x-9.5, (double) y-9.5 );
@@ -242,6 +244,8 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 		       (double) x-9.5, (double) y-9.5);
 	
 	cairo_fill (cr);	      
+
+	cairo_translate (cr, -0.5, -0.5);
 	
 	/* shadow */
 	cairo_move_to (cr, x+1, y+1);
