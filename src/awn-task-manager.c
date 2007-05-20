@@ -1388,7 +1388,7 @@ awn_task_manger_refresh_launchers (GConfClient *client,
                 priv->ignore_gconf = FALSE;
                 return;
         }
-        g_print ("Sorting launchers\n");
+        
         value = gconf_entry_get_value(entry);
         list = gconf_value_get_list (value);
         

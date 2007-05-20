@@ -1,3 +1,15 @@
+2007-05-20  Neil J Patel  <njpatel@gmail.com>
+
+	* Makefile.am:
+	* avant-launchers/Makefile.am:
+	* avant-launchers/avant-launchers.glade:
+	* avant-launchers/avant-launchers.in.py:
+	* configure.in:
+	* src/awn-task-manager.c: (awn_task_manger_refresh_launchers):
+	* src/main.c: (launcher_function), (create_menu):
+	Added a basic GUI for configuring launcher positions. Accessable
+	through the right-click menu on any free part of the bar.
+
 2007-05-19  Neil J. Patel  <njpatel@gmail.com>
 
 	* src/awn-task-manager.c: (_task_manager_drag_data_recieved),

@@ -329,6 +329,18 @@ prefs_function (GtkMenuItem *menuitem, gpointer null)
 		g_print("%s\n", err->message);
 }
 
+static void
+launcher_function (GtkMenuItem *menuitem, gpointer null)
+{
+	GError *err = NULL;
+	
+	gdk_spawn_command_line_on_screen (gdk_screen_get_default(),
+					  "avant-launchers", &err);
+	
+	if (err)
+		g_print("%s\n", err->message);
+}
+
 
 static void
 close_function (GtkMenuItem *menuitem, gpointer null)
@@ -341,12 +353,21 @@ create_menu (void)
 {
 	GtkWidget *menu;
 	GtkWidget *item;
+	GtkWidget *image;
 	
 	menu = gtk_menu_new ();
 	
 	item = gtk_image_menu_item_new_from_stock (GTK_STOCK_PREFERENCES , NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL(menu), item);
 	g_signal_connect (G_OBJECT(item), "activate", G_CALLBACK(prefs_function), NULL);
+	
+	item = gtk_image_menu_item_new_with_label ("Configure launchers");
+	image = gtk_image_new_from_stock (GTK_STOCK_PREFERENCES, 
+	                                  GTK_ICON_SIZE_MENU);
+        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+	gtk_menu_shell_append (GTK_MENU_SHELL(menu), item);
+	g_signal_connect (G_OBJECT(item), "activate", 
+	                  G_CALLBACK(launcher_function), NULL);	
 	
 	item = gtk_image_menu_item_new_from_stock (GTK_STOCK_CLOSE, NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL(menu), item);

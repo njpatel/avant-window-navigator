@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+* Added a basic GUI for configuring launchers, accessable through the right-click menu.
+
 * Changing the positions of launchers in gconf will update the positions of launchers on the bar automatically :). Now just to create a gui for it!
 
 * New custom icon interface (right-click->preferences->Change Icon). It will work without crashing Awn, which is helpful :).

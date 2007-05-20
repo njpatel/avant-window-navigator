@@ -52,6 +52,7 @@ AC_SUBST(DBUS_GLIB_BIN)
 AC_OUTPUT([
 Makefile
 avant-preferences/Makefile
+avant-launchers/Makefile
 src/Makefile
 data/Makefile
 data/active/Makefile
