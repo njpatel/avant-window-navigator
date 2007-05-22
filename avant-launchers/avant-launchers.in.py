@@ -144,14 +144,18 @@ class main:
                 self.uris = uris
                 
                 for i in uris:
+                        text = self.make_icon (i)
                         row = model.append ()
-                        self.model.set_value (row, 0, self.make_icon (i))
+                        self.model.set_value (row, 0, text)
                         self.model.set_value (row, 1, self.make_row (i))
                         self.model.set_value (row, 2, i)
         
         def make_row (self, uri):
-                item = gnomedesktop.item_new_from_file (uri, 0)
-                text = "<b>%s</b>\n%s" % (item.get_string(gnomedesktop.KEY_NAME), item.get_string (gnomedesktop.KEY_COMMENT))
+                try:
+                        item = gnomedesktop.item_new_from_file (uri, 0)
+                        text = "<b>%s</b>\n%s" % (item.get_string(gnomedesktop.KEY_NAME), item.get_string (gnomedesktop.KEY_COMMENT))
+                except:
+                        return ""
                 return text   
         
         def make_icon (self, uri):
