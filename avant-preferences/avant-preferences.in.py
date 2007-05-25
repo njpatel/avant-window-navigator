@@ -47,6 +47,9 @@ _ = gettext.gettext
 
 
 # GCONF KEYS
+AWM_PATH		= "/apps/avant-window-navigator"
+AWM_AUTO_HIDE		= "/apps/avant-window-navigator/auto_hide"			#bool
+AWM_PANEL_MODE		= "/apps/avant-window-navigator/panel_mode"			#bool
 
 BAR_PATH		= "/apps/avant-window-navigator/bar"
 BAR_ROUNDED_CORNERS	= "/apps/avant-window-navigator/bar/rounded_corners"		# bool 
@@ -70,7 +73,7 @@ APP_PATH		= "/apps/avant-window-navigator/app"
 APP_ACTIVE_PNG		= "/apps/avant-window-navigator/app/active_png" 		#string
 APP_ARROW_COLOR		= "/apps/avant-window-navigator/app/arrow_color" 		#color
 APP_TASKS_H_ARROWS	= "/apps/avant-window-navigator/app/tasks_have_arrows" 		#bool
-
+APP_FADE_EFFECT		= "/apps/avant-window-navigator/app/fade_effect" 		#bool
 
 TITLE_PATH		= "/apps/avant-window-navigator/title"
 TITLE_TEXT_COLOR	= "/apps/avant-window-navigator/title/text_color" 		#color
@@ -141,6 +144,8 @@ class main:
 		refresh = self.wTree.get_widget("refreshbutton")
 		refresh.connect("clicked", self.refresh)
 		
+		self.setup_bool (AWM_AUTO_HIDE, self.wTree.get_widget("autohide"))
+		self.setup_bool (AWM_PANEL_MODE, self.wTree.get_widget("panelmode"))
 		self.setup_bool (BAR_RENDER_PATTERN, self.wTree.get_widget("patterncheck"))
 		self.setup_bool (BAR_ROUNDED_CORNERS, self.wTree.get_widget("roundedcornerscheck"))
 		self.setup_bool (WINMAN_SHOW_ALL_WINS, self.wTree.get_widget("allwindowscheck"))
@@ -148,7 +153,8 @@ class main:
 		self.setup_bool (TITLE_BOLD, self.wTree.get_widget("boldcheck"))		
 		self.setup_bool (BAR_SHOW_SEPARATOR, self.wTree.get_widget("separatorcheck"))
 		self.setup_bool (APP_TASKS_H_ARROWS, self.wTree.get_widget("arrowcheck"))
-		
+		self.setup_bool (APP_FADE_EFFECT, self.wTree.get_widget("fadeeffect"))		
+
 		self.setup_chooser(APP_ACTIVE_PNG, self.wTree.get_widget("activefilechooser"))
 		self.setup_chooser(BAR_PATTERN_URI, self.wTree.get_widget("patternchooserbutton"))
 		
@@ -266,4 +272,5 @@ if __name__ == "__main__":
 	gtk.glade.bindtextdomain(I18N_DOMAIN, "/usr/share/locale")
 	app = main()
 	gtk.main()
+
 

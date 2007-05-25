@@ -1,3 +1,10 @@
+2007-05-25  Neil J. Patel  <njp@gmail.com>
+
+	* avant-preferences/avant-preferences.in.py:
+	* avant-preferences/window.glade:
+	Added panel mode, auto-hide and fade effect options thanks to patch by
+	Michaël Pietje.
+
 2007-05-22  Neil J Patel  <njpatel@gmail.com>
 
 	* avant-launchers/avant-launchers.in.py:
