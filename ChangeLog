@@ -1,3 +1,146 @@
+2007-06-16  Neil J. Patel  <njpatel@gmail.com>
+
+	* COPYING:
+	* INSTALL:
+	* Makefile.am:
+	* applets/Makefile.am:
+	* applets/notification-area/Makefile.am:
+	* applets/notification-area/applet.c: (tray_applet_refresh),
+	(tray_icon_added), (tray_icon_removed), (tray_icon_message_sent),
+	(tray_icon_message_cancelled), (awn_applet_factory_init):
+	* applets/notification-area/eggmarshalers.c:
+	(_egg_marshal_VOID__OBJECT_STRING_LONG_LONG),
+	(_egg_marshal_VOID__OBJECT_LONG):
+	* applets/notification-area/eggmarshalers.h:
+	* applets/notification-area/eggtraymanager.c:
+	(egg_tray_manager_get_type), (egg_tray_manager_init),
+	(egg_tray_manager_class_init), (egg_tray_manager_finalize),
+	(egg_tray_manager_set_property), (egg_tray_manager_get_property),
+	(egg_tray_manager_new), (egg_tray_manager_plug_removed),
+	(egg_tray_manager_handle_dock_request), (pending_message_free),
+	(egg_tray_manager_handle_message_data),
+	(egg_tray_manager_handle_begin_message),
+	(egg_tray_manager_handle_cancel_message),
+	(egg_tray_manager_handle_event), (egg_tray_manager_window_filter),
+	(egg_tray_manager_unmanage),
+	(egg_tray_manager_set_orientation_property),
+	(egg_tray_manager_manage_xscreen),
+	(egg_tray_manager_manage_screen),
+	(egg_tray_manager_check_running_xscreen),
+	(egg_tray_manager_check_running),
+	(egg_tray_manager_get_child_title),
+	(egg_tray_manager_set_orientation),
+	(egg_tray_manager_get_orientation):
+	* applets/notification-area/eggtraymanager.h:
+	* applets/notification-area/notification-area.desktop.in.in:
+	* applets/switcher/Makefile.am:
+	* applets/switcher/applet.c: (on_rows_changed), (on_width_changed),
+	(on_height_changed), (on_close_clicked), (show_prefs),
+	(on_button_press_event), (awn_applet_factory_init):
+	* applets/switcher/switcher.desktop.in.in:
+	* applets/switcher/switcher.schemas.in:
+	* applets/trash/Makefile.am:
+	* applets/trash/applet.c: (open_trash), (empty_trash), (show_help),
+	(show_about), (applet_button_release), (awn_applet_factory_init):
+	* applets/trash/trash-monitor.c: (trash_monitor_get_type),
+	(trash_monitor_class_init), (trash_monitor_init),
+	(trash_monitor_get), (volume_mounted_callback),
+	(volume_unmount_started_callback), (trash_dir_changed),
+	(find_directory_callback), (get_trash_volume), (add_volume),
+	(remove_volume), (readd_volumes),
+	(trash_monitor_recheck_trash_dirs), (trash_monitor_empty_trash),
+	(count_items), (trash_changed_notify),
+	(trash_changed_queue_notify), (trash_monitor_get_item_count),
+	(main):
+	* applets/trash/trash-monitor.h:
+	* applets/trash/trash.desktop:
+	* applets/trash/trash.schemas.in:
+	* applets/trash/trashapplet.c: (trash_applet_class_init),
+	(trash_applet_init), (trash_applet_destroy),
+	(trash_applet_size_allocate), (trash_applet_new), (update_icons),
+	(on_awn_height_changed), (on_awn_orient_changed), (draw),
+	(trash_applet_expose_event), (trash_applet_button_release),
+	(trash_applet_key_press), (_bounce_baby),
+	(trash_applet_drag_leave), (trash_applet_drag_motion),
+	(item_count_changed), (trash_applet_update),
+	(trash_applet_queue_update), (trash_applet_theme_change),
+	(error_dialog), (update_transfer_callback), (confirm_empty_trash),
+	(on_empty_trash_cancel), (trash_applet_do_empty),
+	(trash_applet_open_folder), (trash_applet_show_help),
+	(trash_applet_show_about), (confirm_delete_immediately),
+	(trash_applet_drag_data_received):
+	* applets/trash/trashapplet.glade:
+	* applets/trash/trashapplet.h:
+	* applets/trash/xstuff.c: (panel_atom_get),
+	(get_typed_property_data), (xstuff_is_compliant_wm),
+	(xstuff_net_wm_supports), (xstuff_set_no_group),
+	(xstuff_set_pos_size), (xstuff_set_wmspec_dock_hints),
+	(xstuff_set_wmspec_strut), (xstuff_delete_property),
+	(draw_zoom_animation), (xstuff_zoom_animate),
+	(xstuff_get_current_workspace), (xstuff_grab_key_on_all_screens):
+	* applets/trash/xstuff.h:
+	* avant-applets/Makefile.am:
+	* avant-applets/avant-applets.glade:
+	* avant-applets/avant-applets.in.py:
+	* awn-applet-activation/awn-plug.c: (on_plug_embedded),
+	(on_orient_changed), (on_height_changed), (on_delete_notify),
+	(on_destroy_applet), (on_applet_deleted),
+	(on_alpha_screen_changed), (awn_plug_expose_event),
+	(awn_plug_class_init), (awn_plug_init), (awn_plug_finalize),
+	(awn_plug_new):
+	* awn-applet-activation/awn-plug.h:
+	* awn-applet-activation/main.c: (main):
+	* awn.pc:
+	* configure.in:
+	* intltool-merge.in:
+	* libawn/Makefile.am:
+	* libawn/awn-applet-gconf.c: (awn_applet_gconf_get_client),
+	(awn_applet_gconf_get_full_key), (awn_applet_gconf_set_bool),
+	(awn_applet_gconf_set_int), (awn_applet_gconf_set_string),
+	(awn_applet_gconf_set_float), (awn_applet_gconf_set_list),
+	(awn_applet_gconf_set_value), (awn_applet_gconf_get_bool),
+	(awn_applet_gconf_get_int), (awn_applet_gconf_get_string),
+	(awn_applet_gconf_get_float), (awn_applet_gconf_get_value),
+	(awn_applet_gconf_get_list):
+	* libawn/awn-applet-gconf.h:
+	* libawn/awn-applet.c: (on_delete_selected),
+	(awn_applet_create_default_menu), (awn_applet_get_orientation),
+	(awn_applet_get_height), (awn_applet_get_preferences_key),
+	(awn_applet_associate_schemas_in_dir),
+	(awn_applet_add_preferences), (awn_applet_expose_event),
+	(awn_applet_set_property), (awn_applet_get_property),
+	(awn_applet_class_init), (awn_applet_init), (awn_applet_finalize),
+	(awn_applet_new):
+	* libawn/awn-applet.h:
+	* libawn/awn-defines.h:
+	* src/Makefile.am:
+	* src/awn-applet-manager-dbus.xml:
+	* src/awn-applet-manager.c: (awn_applet_manager_quit),
+	(awn_applet_manager_load_applets), (_create_applet),
+	(_zero_applets), (_kill_applets),
+	(awn_applet_manger_refresh_applets),
+	(awn_applet_manager_delete_applet), (awn_applet_manager_dispose),
+	(awn_applet_manager_class_init), (awn_applet_manager_init),
+	(awn_applet_manager_new):
+	* src/awn-applet-manager.h:
+	* src/awn-applet-proxy.c: (awn_applet_proxy_exec),
+	(on_awn_applet_proxy_plug_added),
+	(on_awn_applet_proxy_plug_removed), (awn_applet_proxy_set_orient),
+	(awn_applet_proxy_set_height), (awn_applet_proxy_set_property),
+	(awn_applet_proxy_get_property), (awn_applet_proxy_class_init),
+	(awn_applet_proxy_init), (awn_applet_proxy_finalize),
+	(awn_applet_proxy_new):
+	* src/awn-applet-proxy.h:
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-gconf.h:
+	* src/awn-hotspot.c:
+	* src/awn-window.c: (awn_window_new):
+	* src/awn-window.h:
+	* src/main.c: (main), (applets_function), (close_function),
+	(create_menu):
+	* src/xutils.c: (_wnck_get_client_type):
+	Initial move to applets infrastructure. 
+
 2007-05-25  Neil J. Patel  <njp@gmail.com>
 
 	* avant-preferences/avant-preferences.in.py:

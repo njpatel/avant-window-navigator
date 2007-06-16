@@ -91,6 +91,8 @@ static void load_monitor (AwnSettings *settings);
 AwnSettings* 
 awn_gconf_new()
 {
+	if (settings)
+	        return settings;
 	AwnSettings *s = NULL;
 	
 	s = g_new(AwnSettings, 1);

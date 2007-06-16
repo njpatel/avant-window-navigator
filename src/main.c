@@ -41,13 +41,15 @@
 #include "awn-app.h"
 #include "awn-win-manager.h"
 #include "awn-task-manager.h"
+#include "awn-applet-manager.h"
 #include "awn-hotspot.h"
 #include "awn-utils.h"
 #include "awn-task.h"
 
 #define AWN_NAMESPACE "com.google.code.Awn"
 #define AWN_OBJECT_PATH "/com/google/code/Awn"
-
+#define AWN_APPLET_NAMESPACE "com.google.code.Awn.AppletManager"
+#define AWN_APPLET_OBJECT_PATH "/com/google/code/Awn/AppletManager"
 
 static gboolean expose (GtkWidget *widget, GdkEventExpose *event, AwnSettings *settings);
 static gboolean drag_motion (GtkWidget *widget, GdkDragContext *drag_context,
@@ -94,7 +96,7 @@ panel_atom_get (const char *atom_name)
 
 	return retval;
 }
-                                                    
+    
 int 
 main (int argc, char* argv[])
 {
@@ -102,6 +104,7 @@ main (int argc, char* argv[])
 	AwnSettings* settings;
 	GtkWidget *box = NULL;
 	GtkWidget *task_manager = NULL;
+	GtkWidget *applet_manager = NULL;
 	
 	DBusGConnection *connection;
 	DBusGProxy *proxy;
@@ -126,6 +129,7 @@ main (int argc, char* argv[])
 	
 
 	box = gtk_hbox_new(FALSE, 2);
+	gtk_container_add(GTK_CONTAINER(settings->window), box);
 	
 	if ( argc >= 2) {
 		if (argv[1][1] == 'o') {
@@ -136,20 +140,25 @@ main (int argc, char* argv[])
 	if (!task_manager)
 		task_manager = awn_task_manager_new(settings);
 	
+	applet_manager = awn_applet_manager_new (settings);
+	settings->appman = applet_manager;
+	
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), task_manager, FALSE, TRUE, 0);	
+	gtk_box_pack_start(GTK_BOX(box), applet_manager, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("  "), FALSE, FALSE, 0);
-
-	gtk_container_add(GTK_CONTAINER(settings->window), box);
-	
-	gtk_widget_show_all(settings->bar);
+        
+	gtk_window_set_transient_for(GTK_WINDOW(settings->window), 
+                                     GTK_WINDOW(settings->bar));
+        gtk_widget_show_all(settings->bar);
 	gtk_widget_show_all(settings->window);
-	//gtk_window_set_transient_for(GTK_WINDOW(settings->window), GTK_WINDOW(settings->bar));
-        Atom atoms [2] = { None, None };
+	
+	Atom atoms [2] = { None, None };
         
 	atoms [0] = panel_atom_get ("_NET_WM_WINDOW_TYPE_DOCK");
-
-        XChangeProperty (GDK_WINDOW_XDISPLAY (GTK_WIDGET (settings->window)->window),
+        
+        XChangeProperty (GDK_WINDOW_XDISPLAY (
+                                        GTK_WIDGET (settings->window)->window),
                          GDK_WINDOW_XWINDOW (GTK_WIDGET (settings->window)->window),
 			 panel_atom_get ("_NET_WM_WINDOW_TYPE"),
                          XA_ATOM, 32, PropModeReplace,
@@ -195,16 +204,34 @@ main (int argc, char* argv[])
 		g_error_free (error);
 		//exit(1);
 	}
-	
 	if (ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
 		/* Someone else registered the name before us */
 		//exit(1);
 	}
-		
-	/* Register the app on the bus */
+	/* Register the task manager on the bus */
 	dbus_g_connection_register_g_object (connection,
 					     AWN_OBJECT_PATH,
 					     G_OBJECT (task_manager));
+
+	/* Now the applet manager */
+	if (!org_freedesktop_DBus_request_name (proxy, AWN_APPLET_NAMESPACE,
+						0, &ret, &error)) {
+		g_warning ("There was an error requesting the name: %s",
+			   error->message);
+		g_error_free (error);
+		//exit(1);
+	}
+	if (ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
+		/* Someone else registered the name before us */
+		//exit(1);
+	}
+	/* Register the applet manager on the bus */
+	dbus_g_connection_register_g_object (connection,
+					     AWN_APPLET_OBJECT_PATH,
+					     G_OBJECT (applet_manager));
+	
+	//g_timeout_add (1000, (GSourceFunc)load_applets, applet_manager);
+	awn_applet_manager_load_applets (AWN_APPLET_MANAGER (applet_manager));
 	
 	gtk_main ();
 	
@@ -341,10 +368,25 @@ launcher_function (GtkMenuItem *menuitem, gpointer null)
 		g_print("%s\n", err->message);
 }
 
+static void
+applets_function (GtkMenuItem *menuitem, gpointer null)
+{
+	GError *err = NULL;
+	
+	gdk_spawn_command_line_on_screen (gdk_screen_get_default(),
+					  "avant-applets", &err);
+	
+	if (err)
+		g_print("%s\n", err->message);
+}
 
 static void
 close_function (GtkMenuItem *menuitem, gpointer null)
 {
+	AwnSettings *s = awn_gconf_new ();
+	
+	awn_applet_manager_quit (AWN_APPLET_MANAGER (s->appman));
+	
 	gtk_main_quit ();
 }
 
@@ -357,9 +399,10 @@ create_menu (void)
 	
 	menu = gtk_menu_new ();
 	
-	item = gtk_image_menu_item_new_from_stock (GTK_STOCK_PREFERENCES , NULL);
+	item = gtk_image_menu_item_new_from_stock (GTK_STOCK_PREFERENCES, NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL(menu), item);
-	g_signal_connect (G_OBJECT(item), "activate", G_CALLBACK(prefs_function), NULL);
+	g_signal_connect (G_OBJECT(item), "activate", 
+	                  G_CALLBACK(prefs_function), NULL);
 	
 	item = gtk_image_menu_item_new_with_label ("Configure launchers");
 	image = gtk_image_new_from_stock (GTK_STOCK_PREFERENCES, 
@@ -368,6 +411,15 @@ create_menu (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL(menu), item);
 	g_signal_connect (G_OBJECT(item), "activate", 
 	                  G_CALLBACK(launcher_function), NULL);	
+	                  
+	item = gtk_image_menu_item_new_with_label ("Configure applets");
+	image = gtk_image_new_from_stock (GTK_STOCK_PREFERENCES, 
+	                                  GTK_ICON_SIZE_MENU);
+        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+	gtk_menu_shell_append (GTK_MENU_SHELL(menu), item);
+	g_signal_connect (G_OBJECT(item), "activate", 
+	                  G_CALLBACK(applets_function), NULL);	
+
 	
 	item = gtk_image_menu_item_new_from_stock (GTK_STOCK_CLOSE, NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL(menu), item);

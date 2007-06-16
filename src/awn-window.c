@@ -53,7 +53,7 @@ static const GtkTargetEntry drop_types[] = {
 static const gint n_drop_types = G_N_ELEMENTS (drop_types);
 
 
-static void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
+
 
 static void _update_input_shape (GtkWidget* window, int width, int height);
 static gboolean  _on_configure (GtkWidget* pWidget, GdkEventConfigure* pEvent, gpointer userData);
@@ -114,11 +114,15 @@ awn_window_new( AwnSettings *set )
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);
         gtk_window_resize (GTK_WINDOW(this), AWN_WINDOW_DEFAULT_WIDTH, AWN_WINDOW_DEFAULT_HEIGHT);
+        
         g_signal_connect (G_OBJECT (this), "expose-event",
 			  G_CALLBACK (_on_expose), NULL);
 	
 	g_signal_connect (G_OBJECT (this), "configure-event",
-			  G_CALLBACK (_on_configure), NULL);       
+			  G_CALLBACK (_on_configure), NULL); 
+
+	g_signal_connect (G_OBJECT (this), "screen-changed",
+			  G_CALLBACK (_on_alpha_screen_changed), NULL);       
         
 #if GTK_CHECK_VERSION(2,9,0)
         _update_input_shape (GTK_WIDGET(this), AWN_WINDOW_DEFAULT_WIDTH, AWN_WINDOW_DEFAULT_HEIGHT);
@@ -129,7 +133,7 @@ awn_window_new( AwnSettings *set )
 }
 
 
-static void 
+void 
 _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel)
 {                       
 	GdkScreen* pScreen = gtk_widget_get_screen (pWidget);

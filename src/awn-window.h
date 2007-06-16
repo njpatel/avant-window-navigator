@@ -54,8 +54,7 @@ GType awn_window_get_type(void);
 
 GtkWidget *awn_window_new(AwnSettings *settings);
 
-
-
+void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
 G_END_DECLS
 
 

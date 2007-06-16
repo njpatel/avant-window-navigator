@@ -10,6 +10,17 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+****
+
+Move to applets infrastructure. Please do not report bugs at the moment (unless they consist of you not being able to load applets at all). I am aware of most of the issues, and I am trying to fix them as the day progresses :-).
+
+Anyway, you have a Trash & Workspace switcher applet to keep you happy for now.
+There is a lot of polish still to come, so please don't think that this is it.
+
+No notification area applet as I cannot get it to reliably work with RGBA, I have, however, included the code, as I am working on it, and hope to make it work ASAP.
+
+****
+
 * Added a basic GUI for configuring launchers, accessable through the right-click menu.
 
 * Changing the positions of launchers in gconf will update the positions of launchers on the bar automatically :). Now just to create a gui for it!

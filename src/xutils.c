@@ -41,7 +41,9 @@ _wnck_get_client_type ()
     client_type = WNCK_CLIENT_TYPE_APPLICATION;
 
   return client_type;
-}gboolean
+}
+
+gboolean
 _wnck_get_cardinal (Window  xwindow,
                     Atom    atom,
                     int    *val)

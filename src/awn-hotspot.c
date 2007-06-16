@@ -34,7 +34,7 @@ G_DEFINE_TYPE (AwnHotspot, awn_hotspot, GTK_TYPE_WINDOW)
 #define M_PI		3.14159265358979323846  
 
 static gint AWN_HOTSPOT_DEFAULT_WIDTH		= 1024;
-static gint AWN_HOTSPOT_DEFAULT_HEIGHT		= 2;
+static gint AWN_HOTSPOT_DEFAULT_HEIGHT		= 3;
 
 static AwnSettings *settings = NULL;
 static const GtkTargetEntry drop_types[] = {

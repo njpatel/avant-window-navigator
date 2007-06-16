@@ -428,7 +428,7 @@ sub create_translation_database
        
 	    if (/^msgid "((\\.|[^\\]+)*)"/ ) 
             {
-		$translations{$lang, $msgid} = $msgstr if $inmsgstr && $msgid && $msgstr;
+		$translations{$lang, $msgid} = $msgstr if $inmsgstr && $msgid && $msgstr && $msgid ne $msgstr;
 		$msgid = "";
 		$msgstr = "";
 
@@ -455,7 +455,7 @@ sub create_translation_database
 	        $msgstr .= unescape_po_string($1) if $inmsgstr;
 	    }
 	}
-	$translations{$lang, $msgid} = $msgstr if $inmsgstr && $msgid && $msgstr;
+	$translations{$lang, $msgid} = $msgstr if $inmsgstr && $msgid && $msgstr && $msgstr ne $msgid;
     }
 }
 
