@@ -1,5 +1,10 @@
 2007-06-16  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/main.c: (main):
+	Added a DBus thread init () function.
+
+2007-06-16  Neil J. Patel  <njpatel@gmail.com>
+
 	* COPYING:
 	* applets/separator/Makefile.am:
 	* applets/separator/applet.c: (awn_applet_factory_init):

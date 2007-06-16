@@ -114,7 +114,8 @@ main (int argc, char* argv[])
 	g_type_init();	
 	
   g_thread_init (NULL);
-	
+	dbus_g_thread_init ();
+
   gtk_init (&argc, &argv);
 	gnome_vfs_init ();
 	
