@@ -1,5 +1,10 @@
 2007-06-16  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-applet-manager.c: (awn_applet_manager_load_applets):
+	If there are no applets, add the task manager.
+
+2007-06-16  Neil J. Patel  <njpatel@gmail.com>
+
 	* libawn/Makefile.am:
 	Added $(AWN_LIBS) to LDADD.
 

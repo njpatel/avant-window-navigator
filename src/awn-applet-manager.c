@@ -188,6 +188,10 @@ awn_applet_manager_load_applets (AwnAppletManager *manager)
                                       &err); 
 
         if (keys == NULL || err) {
+                keys = g_slist_append (keys, 
+                                       LIBDIR"/awn/applets/taskman.desktop::1");
+                gconf_client_set_list (client, AWN_APPLETS_KEY,
+                                       GCONF_VALUE_STRING, keys, NULL);
                 if (err)
                         g_print ("%s\n", err->message);
                 return;        
