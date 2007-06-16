@@ -87,7 +87,7 @@ awn_applet_create_default_menu (AwnApplet *applet)
 {
 	AwnAppletPrivate *priv;
 	GtkWidget *menu = NULL;
-	GtkWidget *item = NULL;
+	/*GtkWidget *item = NULL;*/
 	
 	g_return_val_if_fail (AWN_IS_APPLET (applet), menu);
 	priv = AWN_APPLET_GET_PRIVATE(applet);
@@ -252,6 +252,7 @@ static gboolean
 awn_applet_expose_event (GtkWidget *widget, GdkEventExpose *expose)
 {
 	cairo_t *cr = NULL;
+  GtkWidget *child = NULL;
 
 	if (!GDK_IS_DRAWABLE (widget->window))
 		return FALSE;	
@@ -268,9 +269,10 @@ awn_applet_expose_event (GtkWidget *widget, GdkEventExpose *expose)
 	/* Clean up */
 	cairo_destroy (cr);
 	
-	gtk_container_propagate_expose (GTK_CONTAINER (widget),
-					gtk_bin_get_child (GTK_BIN (widget)),
-                                        expose);
+  /* Propagate the signal */
+  child = gtk_bin_get_child (GTK_BIN (widget));
+	if (child)
+    gtk_container_propagate_expose (GTK_CONTAINER (widget), child,  expose);
                                                          
 	return FALSE;
 }

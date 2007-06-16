@@ -26,15 +26,22 @@
 #include <gtk/gtk.h>
 
 #include "awn-gconf.h"
-
 G_BEGIN_DECLS
 
-#define AWN_BAR_TYPE      (awn_bar_get_type())
-#define AWN_BAR(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), AWN_TYPE_BAR, AwnBar))
-#define AWN_BAR_CLASS(obj)		(G_TYPE_CHECK_CLASS_CAST ((obj), AWN_BAR, AwnBarClass))
+#define AWN_TYPE_BAR          (awn_bar_get_type())
+
+#define AWN_BAR(obj)			    (G_TYPE_CHECK_INSTANCE_CAST ((obj),\
+                              AWN_TYPE_BAR, AwnBar))
+
+#define AWN_BAR_CLASS(obj)		(G_TYPE_CHECK_CLASS_CAST ((obj), \
+                              AWN_BAR, AwnBarClass))
+
 #define AWN_IS_BAR(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), AWN_TYPE_BAR))
+
 #define AWN_IS_BAR_CLASS(obj)	(G_TYPE_CHECK_CLASS_TYPE ((obj), AWN_TYPE_BAR))
-#define AWN_BAR_GET_CLASS		(G_TYPE_INSTANCE_GET_CLASS ((obj), AWN_TYPE_BAR, AwnBarClass))
+
+#define AWN_BAR_GET_CLASS		(G_TYPE_INSTANCE_GET_CLASS ((obj), \
+                            AWN_TYPE_BAR, AwnBarClass))
 
 typedef struct _AwnBar AwnBar;
 typedef struct _AwnBarClass AwnBarClass;
@@ -59,6 +66,9 @@ void awn_bar_set_draw_separator (GtkWidget *bar, int x);
 gboolean awn_bar_separator_expose_event  (GtkWidget      *widget,
                                  GdkEventExpose *event,
                                  GtkWidget 	*bar);
+
+void
+awn_bar_add_separator (AwnBar *bar, GtkWidget *widget);
 
 G_END_DECLS
 

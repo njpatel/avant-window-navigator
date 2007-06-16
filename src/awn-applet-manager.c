@@ -25,8 +25,11 @@
 
 #include "awn-applet-manager.h"
 
+#include <stdio.h>
+#include <string.h>
 #include <libawn/awn-applet.h>
 
+#include "awn-bar.h"
 #include "awn-applet-proxy.h"
 
 #define AWN_APPLET_MANAGER_GET_PRIVATE(obj) \
@@ -126,8 +129,10 @@ awn_applet_manager_load_applets (AwnAppletManager *manager)
                 
                 awn_applet_proxy_exec (AWN_APPLET_PROXY (applet));
                 
-
-                
+                if (g_strstr_len (tokens[0], strlen (tokens[0]), "separator")) {
+                        awn_bar_add_separator (AWN_BAR (priv->settings->bar),
+                                               applet);
+                }
                 g_print ("APPLET : %s\n", tokens[0]);
                 g_strfreev (tokens);
         }
@@ -375,11 +380,16 @@ GtkWidget *
 awn_applet_manager_new (AwnSettings *settings)
 {
 	GtkWidget *applet_manager;
+        AwnAppletManagerPrivate *priv;
 
 	applet_manager = g_object_new (AWN_TYPE_APPLET_MANAGER,
 			     "homogeneous", FALSE,
-			     "spacing", 0 ,
+			     "spacing", 3 ,
 			     NULL);
+        priv = AWN_APPLET_MANAGER_GET_PRIVATE (applet_manager);
+
+        priv->settings = settings;
+
 	return applet_manager;
 }
 

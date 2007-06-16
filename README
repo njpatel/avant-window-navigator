@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+* New separator applet.
+
 ****
 
 Move to applets infrastructure. Please do not report bugs at the moment (unless they consist of you not being able to load applets at all). I am aware of most of the issues, and I am trying to fix them as the day progresses :-).

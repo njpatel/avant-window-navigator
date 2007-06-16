@@ -31,6 +31,18 @@
 
 G_DEFINE_TYPE (AwnBar, awn_bar, GTK_TYPE_WINDOW)
 
+#define AWN_BAR_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), \
+        AWN_TYPE_BAR, AwnBarPrivate))
+
+typedef struct {
+        AwnSettings *settings;
+        gint dest_width;
+        gint current_width;
+        
+        GList *seps;
+
+} AwnBarPrivate;
+
 #define AWN_BAR_DEFAULT_WIDTH		1024
 #define AWN_BAR_DEFAULT_HEIGHT		100
 
@@ -61,20 +73,25 @@ awn_bar_class_init( AwnBarClass *this_class )
 
 
         parent_class = gtk_type_class (gtk_widget_get_type ());
-        
+
+	g_type_class_add_private (g_obj_class, sizeof (AwnBarPrivate));
 }
 
 static void
 awn_bar_init( AwnBar *bar )
 {
-	;
+	AwnBarPrivate *priv;
+
+        priv = AWN_BAR_GET_PRIVATE (bar);
+
+        priv->seps = NULL;
 }
 
 GtkWidget *
 awn_bar_new( AwnSettings *set )
 {
         settings = set;
-        AwnBar *this = g_object_new(AWN_BAR_TYPE, 
+        AwnBar *this = g_object_new(AWN_TYPE_BAR, 
         			    "type", GTK_WINDOW_TOPLEVEL,
         			    "type-hint", GDK_WINDOW_TYPE_HINT_DOCK,
         			    NULL);
@@ -188,9 +205,10 @@ pattern_engine (cairo_t *cr, double x, gint width, gint height)
 }
 
 static void 
-render (cairo_t *cr, gint x_width, gint height)
+render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 {
-	gint width = current_width;
+	AwnBarPrivate *priv = AWN_BAR_GET_PRIVATE (bar);
+        gint width = current_width;
 	cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, 0.0f);
 	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 	cairo_paint (cr);
@@ -298,6 +316,70 @@ render (cairo_t *cr, gint x_width, gint height)
 				           settings->hilight_color.alpha);
 		cairo_stroke(cr);
 	}
+
+        GList *s;
+        for (s = priv->seps; s != NULL; s = s->next) {
+                if (!GTK_IS_WIDGET (s->data))
+                        continue;
+
+                gint sep = (GTK_WIDGET (s->data))->allocation.x;
+                sep += (GTK_WIDGET (s->data))->allocation.width/2;
+
+                double real_x = (settings->monitor.width-dest_width)/2.0;
+		if (current_width > dest_width )
+			real_x = x + current_width - dest_width;
+		else
+			real_x = x + dest_width - current_width;
+		
+		cairo_set_line_width (cr, 1.0);
+		
+		cairo_move_to (cr, real_x+sep-2.5, 51);
+		cairo_line_to (cr, real_x+sep-2.5, 100);
+		cairo_set_source_rgba (cr, settings->hilight_color.red, 
+				   	   settings->hilight_color.green, 
+				           settings->hilight_color.blue,
+				           settings->hilight_color.alpha);
+		
+		cairo_stroke(cr);
+		
+		cairo_move_to (cr, real_x+sep-1.5, 50);
+		cairo_line_to (cr, real_x+sep-1.5, 100);
+		cairo_set_source_rgba (cr, settings->border_color.red, 
+				   	   settings->border_color.green, 
+				           settings->border_color.blue,
+				           settings->border_color.alpha);
+		
+		cairo_stroke(cr);
+		
+		cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+		cairo_move_to (cr, real_x+sep-0.5, 50);
+		cairo_line_to (cr, real_x+sep-0.5, 100);
+		cairo_set_source_rgba (cr, settings->sep_color.red, 
+				   	   settings->sep_color.green, 
+				           settings->sep_color.blue,
+				           settings->sep_color.alpha);
+		cairo_stroke(cr);
+	
+
+		cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+		cairo_move_to (cr, real_x+sep+0.5, 50);
+		cairo_line_to (cr, real_x+sep+0.5, 100);
+		cairo_set_source_rgba (cr, settings->border_color.red, 
+				   	   settings->border_color.green, 
+				           settings->border_color.blue,
+				           settings->border_color.alpha);
+		cairo_stroke(cr);
+
+		
+		cairo_move_to (cr, real_x+sep+1.5, 51);
+		cairo_line_to (cr, real_x+sep+1.5, 100);
+		cairo_set_source_rgba (cr, settings->hilight_color.red, 
+				   	   settings->hilight_color.green, 
+				           settings->hilight_color.blue,
+				           settings->hilight_color.alpha);
+		cairo_stroke(cr);
+
+        }
 }
 
 gboolean 
@@ -314,7 +396,7 @@ _on_expose (GtkWidget *widget, GdkEventExpose *expose)
 		return FALSE;
 
 	gtk_window_get_size (GTK_WINDOW (widget), &width, &height);
-	render (cr, width, height);
+	render (AWN_BAR (widget), cr, width, height);
 	//render3 (cr, width, height);
 	cairo_destroy (cr);
 	
@@ -531,7 +613,20 @@ awn_bar_set_draw_separator (GtkWidget *window, int x)
         gtk_widget_queue_draw(GTK_WIDGET(window));
 }
 
+void
+awn_bar_add_separator (AwnBar *bar, GtkWidget *widget)
+{
+        AwnBarPrivate *priv;
 
+        g_return_if_fail (AWN_IS_BAR (bar));
+        g_return_if_fail (GTK_IS_WIDGET (widget));
+
+        priv = AWN_BAR_GET_PRIVATE (bar);
+
+        priv->seps = g_list_append (priv->seps, (gpointer)widget);
+
+        gtk_widget_queue_draw (GTK_WIDGET (bar));
+}
 
 
 

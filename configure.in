@@ -71,6 +71,7 @@ libawn/Makefile
 src/Makefile
 awn-applet-activation/Makefile
 applets/Makefile
+applets/separator/Makefile
 applets/switcher/Makefile
 applets/trash/Makefile
 applets/notification-area/Makefile

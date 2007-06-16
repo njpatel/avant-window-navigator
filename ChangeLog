@@ -1,6 +1,25 @@
 2007-06-16  Neil J. Patel  <njpatel@gmail.com>
 
 	* COPYING:
+	* applets/separator/Makefile.am:
+	* applets/separator/applet.c: (awn_applet_factory_init):
+	* applets/separator/separator.desktop.in.in:
+	* configure.in:
+	* libawn/awn-applet.c: (awn_applet_create_default_menu),
+	(awn_applet_expose_event):
+	* src/awn-applet-manager.c: (awn_applet_manager_load_applets),
+	(awn_applet_manager_new):
+	* src/awn-bar.c: (awn_bar_class_init), (awn_bar_init),
+	(awn_bar_new), (render), (_on_expose), (awn_bar_add_separator):
+	* src/awn-bar.h:
+	Added a separator applet, which works quite nicely :-).
+
+	* src/main.c: (main):
+	Made sure g_thread_init () is called;
+
+2007-06-16  Neil J. Patel  <njpatel@gmail.com>
+
+	* COPYING:
 	* INSTALL:
 	* Makefile.am:
 	* applets/Makefile.am:
