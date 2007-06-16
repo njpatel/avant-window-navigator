@@ -1,5 +1,10 @@
 2007-06-16  Neil J. Patel  <njpatel@gmail.com>
 
+	* libawn/Makefile.am:
+	Added $(AWN_LIBS) to LDADD.
+
+2007-06-16  Neil J. Patel  <njpatel@gmail.com>
+
 		* src/awn-task-manager.c: (_refresh_box):
 		Check that the task manager is valid.
 

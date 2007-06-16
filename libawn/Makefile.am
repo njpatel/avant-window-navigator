@@ -24,6 +24,6 @@ libawn_la_SOURCES =	\
 	awn-applet.c                                    \
 	awn-applet-gconf.c                              
 
-libawn_la_LIBADD = $(DEPS_LIBS)
+libawn_la_LIBADD = $(DEPS_LIBS) $(AWN_LIBS)
 libawn_la_LDFLAGS = -version-info 0:1:0
 
