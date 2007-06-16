@@ -1,5 +1,15 @@
 2007-06-16  Neil J. Patel  <njpatel@gmail.com>
 
+	* applets/Makefile.am:
+	* applets/taskman.desktop:
+	An internal test applet.
+
+ * src/main.c: (main):
+ Swapped the threads_init function to be the first called.
+
+
+2007-06-16  Neil J. Patel  <njpatel@gmail.com>
+
 	* src/main.c: (main):
 	Added a DBus thread init () function.
 

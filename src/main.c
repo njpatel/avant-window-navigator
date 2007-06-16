@@ -111,10 +111,10 @@ main (int argc, char* argv[])
 	GError *error = NULL;
 	guint32 ret;
 	
-	g_type_init();	
-	
   g_thread_init (NULL);
 	dbus_g_thread_init ();
+  
+  g_type_init ();
 
   gtk_init (&argc, &argv);
 	gnome_vfs_init ();
