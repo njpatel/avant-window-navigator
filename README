@@ -10,6 +10,8 @@ configure with avant-preferences OR System->Preferences(->More Preferences)->Ava
 
 New Features In SVN (newest first):
 
+* Hey hey hey, the task manager is now an (internal) applet :). This means you can order it like the other applets, and you need to add it to you configuration, just like you have to with any other applet..
+
 * New separator applet.
 
 ****

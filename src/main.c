@@ -103,7 +103,7 @@ main (int argc, char* argv[])
 	
 	AwnSettings* settings;
 	GtkWidget *box = NULL;
-	GtkWidget *task_manager = NULL;
+	//GtkWidget *task_manager = NULL;
 	GtkWidget *applet_manager = NULL;
 	
 	DBusGConnection *connection;
@@ -111,12 +111,12 @@ main (int argc, char* argv[])
 	GError *error = NULL;
 	guint32 ret;
 	
-  g_thread_init (NULL);
+  	g_thread_init (NULL);
 	dbus_g_thread_init ();
   
-  g_type_init ();
+  	g_type_init ();
 
-  gtk_init (&argc, &argv);
+  	gtk_init (&argc, &argv);
 	gnome_vfs_init ();
 	
 	settings = awn_gconf_new();
@@ -133,7 +133,7 @@ main (int argc, char* argv[])
 
 	box = gtk_hbox_new(FALSE, 2);
 	gtk_container_add(GTK_CONTAINER(settings->window), box);
-	
+	/*
 	if ( argc >= 2) {
 		if (argv[1][1] == 'o') {
 			task_manager = awn_win_mgr_new(settings);
@@ -142,12 +142,12 @@ main (int argc, char* argv[])
 		
 	if (!task_manager)
 		task_manager = awn_task_manager_new(settings);
-	
+	*/
 	applet_manager = awn_applet_manager_new (settings);
 	settings->appman = applet_manager;
 	
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("  "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), task_manager, FALSE, TRUE, 0);	
+	//gtk_box_pack_start(GTK_BOX(box), task_manager, FALSE, TRUE, 0);	
 	gtk_box_pack_start(GTK_BOX(box), applet_manager, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("  "), FALSE, FALSE, 0);
         
@@ -200,6 +200,7 @@ main (int argc, char* argv[])
 		
 	proxy = dbus_g_proxy_new_for_name (connection, DBUS_SERVICE_DBUS,
 					   DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+	/*
 	if (!org_freedesktop_DBus_request_name (proxy, AWN_NAMESPACE,
 						0, &ret, &error)) {
 		g_warning ("There was an error requesting the name: %s",
@@ -210,12 +211,13 @@ main (int argc, char* argv[])
 	if (ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
 		/* Someone else registered the name before us */
 		//exit(1);
-	}
-	/* Register the task manager on the bus */
+	
+	/*}
+	 Register the task manager on the bus 
 	dbus_g_connection_register_g_object (connection,
 					     AWN_OBJECT_PATH,
 					     G_OBJECT (task_manager));
-
+	*/
 	/* Now the applet manager */
 	if (!org_freedesktop_DBus_request_name (proxy, AWN_APPLET_NAMESPACE,
 						0, &ret, &error)) {

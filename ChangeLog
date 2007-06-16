@@ -1,5 +1,13 @@
 2007-06-16  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-applet-manager.c: (_load_taskmanager), (_create_applet),
+	(awn_applet_manager_load_applets):
+	* src/main.c: (main):
+	Task manager is now an (internal) applet. So you can order it like
+	any other applet.
+
+2007-06-16  Neil J. Patel  <njpatel@gmail.com>
+
 	* applets/Makefile.am:
 	* applets/taskman.desktop:
 	An internal test applet.

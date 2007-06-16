@@ -28,9 +28,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <libawn/awn-applet.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-bindings.h>
 
 #include "awn-bar.h"
 #include "awn-applet-proxy.h"
+
+#include "awn-task-manager.h"
 
 #define AWN_APPLET_MANAGER_GET_PRIVATE(obj) \
         (G_TYPE_INSTANCE_GET_PRIVATE ((obj), \
@@ -74,6 +78,97 @@ awn_applet_manager_quit (AwnAppletManager *manager)
  	g_signal_emit (manager, _appman_signals[DELETE_NOTIFY], 0);
 }
 
+static GtkWidget*
+_load_taskmanager (AwnAppletManager *manager)
+{
+#define A_NAMESPACE "com.google.code.Awn"
+#define A_OBJECT_PATH "/com/google/code/Awn"
+        AwnAppletManagerPrivate *priv;      
+        DBusGConnection *connection;
+        DBusGProxy *proxy;
+        GError *error = NULL;
+        guint32 ret;
+
+        GtkWidget *taskman;
+        
+        priv = AWN_APPLET_MANAGER_GET_PRIVATE (manager);
+
+        taskman = awn_task_manager_new (priv->settings);
+        
+  	/* Get the connection and ensure the name is not used yet */
+	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+	if (connection == NULL) {
+		g_warning ("Failed to make connection to session bus: %s",
+			   error->message);
+		g_error_free (error);
+		return taskman;
+	}
+		
+	proxy = dbus_g_proxy_new_for_name (connection, DBUS_SERVICE_DBUS,
+					   DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+	if (!org_freedesktop_DBus_request_name (proxy, A_NAMESPACE,
+						0, &ret, &error)) {
+		g_warning ("There was an error requesting the name: %s",
+			   error->message);
+		g_error_free (error);
+		return taskman;
+	}
+	if (ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
+		/* Someone else registered the name before us */
+		return taskman;
+	}
+	/* Register the task manager on the bus */
+	dbus_g_connection_register_g_object (connection,
+					     A_OBJECT_PATH,
+					     G_OBJECT (taskman));
+      
+	return taskman;
+}
+
+
+static GtkWidget*
+_create_applet (AwnAppletManager *manager, const gchar *path, const gchar *uid)
+{
+	AwnAppletManagerPrivate *priv;
+        GtkWidget *applet = NULL;
+        	
+	g_return_val_if_fail (AWN_IS_APPLET_MANAGER (manager), NULL);
+	priv = AWN_APPLET_MANAGER_GET_PRIVATE (manager);   
+	
+	if (g_strstr_len (path, strlen (path), "taskman")) {
+		applet = _load_taskmanager (manager);
+	} else {
+		applet = awn_applet_proxy_new (path, uid);
+	}
+        
+        g_object_set (G_OBJECT (applet), 
+                      "orient", AWN_ORIENTATION_BOTTOM,
+                      "height", 50,
+                      NULL);
+                
+        gtk_widget_set_size_request (applet, -1, 100);
+        gtk_box_pack_start (GTK_BOX (manager), applet, 
+                            FALSE, FALSE, 0);
+        gtk_widget_show_all (GTK_WIDGET (applet));
+                
+        g_object_set_qdata (G_OBJECT (applet), 
+                            touch_quark, GINT_TO_POINTER (0));
+                
+        g_hash_table_insert (priv->applets, 
+                             g_strdup (uid),
+                             applet);
+	
+	if (AWN_IS_APPLET_PROXY (applet))
+		awn_applet_proxy_exec (AWN_APPLET_PROXY (applet));
+
+               
+        if (g_strstr_len (path, strlen (path), "separator")) {
+	        awn_bar_add_separator (AWN_BAR (priv->settings->bar), applet);
+	}
+                
+        return applet;
+}
+
 void
 awn_applet_manager_load_applets (AwnAppletManager *manager)
 {
@@ -109,11 +204,16 @@ awn_applet_manager_load_applets (AwnAppletManager *manager)
                         continue;
                 }
                 
-                applet = awn_applet_proxy_new (tokens[0], tokens[1]);
-                g_object_set (G_OBJECT (applet), 
-                              "orient", AWN_ORIENTATION_BOTTOM,
-                              "height", 50,
-                              NULL);
+		if (g_strstr_len (tokens[0], strlen (tokens[0]), "taskman")) {
+			applet = _load_taskmanager (manager);
+		} else {
+			applet = awn_applet_proxy_new (tokens[0], tokens[1]);
+                	g_object_set (G_OBJECT (applet), 
+                              	      "orient", AWN_ORIENTATION_BOTTOM,
+                               	      "height", 50,
+                                      NULL);
+		}
+
                 
                 gtk_widget_set_size_request (applet, -1, 100);
                 gtk_box_pack_start (GTK_BOX (manager), applet, 
@@ -127,48 +227,17 @@ awn_applet_manager_load_applets (AwnAppletManager *manager)
                                      g_strdup (tokens[1]),
                                      applet);
                 
-                awn_applet_proxy_exec (AWN_APPLET_PROXY (applet));
+		if (AWN_IS_APPLET_PROXY (applet))
+			awn_applet_proxy_exec (AWN_APPLET_PROXY (applet));
                 
                 if (g_strstr_len (tokens[0], strlen (tokens[0]), "separator")) {
-                        awn_bar_add_separator (AWN_BAR (priv->settings->bar),
-                                               applet);
+                        awn_bar_add_separator (AWN_BAR (priv->settings->bar), applet);
                 }
                 g_print ("APPLET : %s\n", tokens[0]);
                 g_strfreev (tokens);
         }
 }
 
-static GtkWidget*
-_create_applet (AwnAppletManager *manager, const gchar *path, const gchar *uid)
-{
-	AwnAppletManagerPrivate *priv;
-        GtkWidget *applet = NULL;
-        	
-	g_return_val_if_fail (AWN_IS_APPLET_MANAGER (manager), NULL);
-	priv = AWN_APPLET_MANAGER_GET_PRIVATE (manager);   
-	
-        applet = awn_applet_proxy_new (path, uid);
-        g_object_set (G_OBJECT (applet), 
-                      "orient", AWN_ORIENTATION_BOTTOM,
-                      "height", 50,
-                      NULL);
-                
-        gtk_widget_set_size_request (applet, -1, 100);
-        gtk_box_pack_start (GTK_BOX (manager), applet, 
-                            FALSE, FALSE, 0);
-        gtk_widget_show_all (GTK_WIDGET (applet));
-                
-        g_object_set_qdata (G_OBJECT (applet), 
-                            touch_quark, GINT_TO_POINTER (0));
-                
-        g_hash_table_insert (priv->applets, 
-                             g_strdup (uid),
-                             applet);
-                
-        awn_applet_proxy_exec (AWN_APPLET_PROXY (applet));
-        
-        return applet;
-}
 
 static void
 _zero_applets (gpointer key, GtkWidget *applet, AwnAppletManager *manager)
