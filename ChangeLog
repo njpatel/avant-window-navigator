@@ -1,5 +1,10 @@
 2007-06-16  Neil J. Patel  <njpatel@gmail.com>
 
+		* src/awn-task-manager.c: (_refresh_box):
+		Check that the task manager is valid.
+
+2007-06-16  Neil J. Patel  <njpatel@gmail.com>
+
 	* src/awn-applet-manager.c: (_load_taskmanager), (_create_applet),
 	(awn_applet_manager_load_applets):
 	* src/main.c: (main):
