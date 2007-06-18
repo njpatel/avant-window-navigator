@@ -46,6 +46,7 @@
 #include "awn-utils.h"
 #include "awn-task.h"
 
+
 #define AWN_NAMESPACE "com.google.code.Awn"
 #define AWN_OBJECT_PATH "/com/google/code/Awn"
 #define AWN_APPLET_NAMESPACE "com.google.code.Awn.AppletManager"

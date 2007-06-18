@@ -33,7 +33,6 @@
 
 #include "awn-bar.h"
 #include "awn-applet-proxy.h"
-
 #include "awn-task-manager.h"
 
 #define AWN_APPLET_MANAGER_GET_PRIVATE(obj) \
@@ -199,6 +198,7 @@ awn_applet_manager_load_applets (AwnAppletManager *manager)
         
         for (k = keys; k != NULL; k = k->next) {
                 GtkWidget *applet = NULL;
+                GtkWidget *bin;
                 
                 gchar **tokens = NULL;
                 tokens = g_strsplit (k->data, "::", 2);
@@ -220,6 +220,7 @@ awn_applet_manager_load_applets (AwnAppletManager *manager)
 
                 
                 gtk_widget_set_size_request (applet, -1, 100);
+                
                 gtk_box_pack_start (GTK_BOX (manager), applet, 
                                     FALSE, FALSE, 0);
                 gtk_widget_show_all (GTK_WIDGET (applet));
@@ -316,7 +317,7 @@ awn_applet_manger_refresh_applets (GConfClient *client,
                         g_print ("Creating new applet :%s uid:%s\n", 
                                  tokens[0],
                                  tokens[1]);
-                        applet = _create_applet (manager, tokens[0], tokens[1]);
+                        applet =  _create_applet (manager, tokens[0], tokens[1]);
                 }
                 
                 gtk_box_reorder_child (GTK_BOX (manager),GTK_WIDGET (applet),i);

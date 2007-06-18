@@ -25,11 +25,41 @@
 #include <gtk/gtk.h>
 #include <libawn/awn-applet.h>
 
+static gboolean
+expose (GtkWidget *widget, GdkEventExpose *event, gpointer null)
+{
+	cairo_t *cr = NULL;
+
+	if (!GDK_IS_DRAWABLE (widget->window))
+		return FALSE;	
+	
+	cr = gdk_cairo_create (widget->window);
+	if (!cr)
+		return FALSE;
+	
+	/* Clear the background to transparent */
+	cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, 0.0f);
+	cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
+	cairo_paint (cr);
+	
+	/* Clean up */
+	cairo_destroy (cr);
+
+  return TRUE;
+}
+
 gboolean 
 awn_applet_factory_init (AwnApplet *applet)
 {
+  GtkWidget *eb;
+
+  eb = gtk_event_box_new ();
+  gtk_event_box_set_visible_window (GTK_EVENT_BOX (eb), TRUE);
+  g_signal_connect (G_OBJECT (eb), "expose-event", G_CALLBACK (expose), NULL);
+
   gint height = awn_applet_get_height (applet);
   gtk_widget_set_size_request (GTK_WIDGET (applet), 5, height * 2);
+  
   gtk_widget_show_all (GTK_WIDGET (applet));
   
   return TRUE;

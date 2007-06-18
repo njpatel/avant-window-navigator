@@ -45,7 +45,7 @@ typedef struct _AwnAppletProxyPrivate  AwnAppletProxyPrivate;
 #define AWN_IS_APPLET_PROXY_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE ((obj), \
         AWN_TYPE_APPLET_PROXY))
 
-#define AWN_APPLET_PROXY_GET_CLASS	(G_TYPE_INSTANCE_GET_CLASS ((obj), \
+#define AWN_APPLET_PROXY_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                 AWN_TYPE_APPLET_PROXY, \
                                 AwnAppletProxyClass))
 

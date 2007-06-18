@@ -1,3 +1,15 @@
+2007-06-18  Neil J. Patel  <njpatel@gmail.com>
+
+	* applets/separator/applet.c: (expose), (awn_applet_factory_init):
+	Made separator draw a clear rectangle.
+
+	* configure.in:
+	* src/awn-applet-manager.c: (awn_applet_manager_load_applets):
+	* src/awn-applet-manager.h:
+	* src/awn-applet-proxy.h:
+	* src/main.c:
+	Some cleanup work.
+
 2007-06-16  Neil J. Patel  <njpatel@gmail.com>
 
 	* src/awn-applet-manager.c: (awn_applet_manager_load_applets):
