@@ -112,7 +112,7 @@ main (int argc, char* argv[])
 	GError *error = NULL;
 	guint32 ret;
 	
-  	g_thread_init (NULL);
+  	if (!g_thread_supported ()) g_thread_init (NULL);
 	dbus_g_thread_init ();
   
   	g_type_init ();

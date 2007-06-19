@@ -1,3 +1,8 @@
+2007-06-19  Neil J. Patel  <njp@f7>
+
+	* src/main.c: (main):
+	Check g_thread_supported () before calling g_thread_init ().
+
 2007-06-18  Neil J. Patel  <njpatel@gmail.com>
 
 	* applets/separator/applet.c: (expose), (awn_applet_factory_init):
