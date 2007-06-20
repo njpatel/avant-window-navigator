@@ -1,5 +1,11 @@
 2007-06-20  Neil J. Patel  <njpatel@gmail.com>
 
+	* data/avant-window-navigator.desktop.in.in:
+	Removed 'Application' category from desktop file, as it is not a valid
+	desktop category.
+
+2007-06-20  Neil J. Patel  <njpatel@gmail.com>
+
 	* libawn/Makefile.am:
 	Added -shared flag to gcc
 
