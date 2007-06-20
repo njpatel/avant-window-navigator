@@ -2233,7 +2233,10 @@ on_change_icon_clicked (GtkButton *button, AwnTask *task)
 static void
 _task_show_prefs (GtkMenuItem *item, AwnTask *task)
 {
-	AwnTaskPrivate *priv;
+	_task_choose_custom_icon (task);
+  return;
+
+  AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
 
 	GtkWidget *dialog;
@@ -2378,8 +2381,7 @@ awn_task_create_menu(AwnTask *task, GtkMenu *menu)
 	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show(item);
 
-	item = gtk_image_menu_item_new_from_stock ("gtk-preferences",
-						   NULL);
+	item = gtk_menu_item_new_with_label (_("Change Icon"));
 	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show(item);
 	g_signal_connect (G_OBJECT(item), "activate",

@@ -1,3 +1,8 @@
+2007-06-21  Neil J. Patel  <njpatel@gmail.com>
+
+	* src/awn-task.c: (_task_show_prefs), (awn_task_create_menu):
+	Swapped the 'preferences' menu item for a 'Change icon' menuitem. Bug #231.
+
 2007-06-20  Neil J. Patel  <njpatel@gmail.com>
 
 	* data/avant-window-navigator.desktop.in.in:
