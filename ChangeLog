@@ -1,4 +1,9 @@
-2007-06-19  Neil J. Patel  <njp@f7>
+2007-06-20  Neil J. Patel  <njpatel@gmail.com>
+
+	* libawn/Makefile.am:
+	Added -shared flag to gcc
+
+2007-06-19  Neil J. Patel  <njpatel@gmail.com>
 
 	* src/main.c: (main):
 	Check g_thread_supported () before calling g_thread_init ().

@@ -11,6 +11,7 @@ INCLUDES = \
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\" 	        \
 	-DLIBDIR=\""$(libdir)"\"                        \
+	-shared																					\
 	$(NULL)	
 
 libawnincdir = $(includedir)/libawn
