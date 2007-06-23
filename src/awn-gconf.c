@@ -29,7 +29,6 @@
 #define AWN_PANEL_MODE		AWN_PATH "/panel_mode"		/*bool*/
 #define AWN_AUTO_HIDE		AWN_PATH "/auto_hide"		/*bool*/
 
-
 #define BAR_PATH		AWN_PATH "/bar"
 #define BAR_ROUNDED_CORNERS	BAR_PATH "/rounded_corners"	/*bool*/
 #define BAR_CORNER_RADIUS 	BAR_PATH "/corner_radius" 	/*float*/
@@ -44,6 +43,7 @@
 #define BAR_HILIGHT_COLOR	BAR_PATH "/hilight_color"	/*string*/
 #define BAR_SHOW_SEPARATOR	BAR_PATH "/show_separator"	/*string*/
 #define BAR_SEP_COLOR		BAR_PATH "/sep_color"		/*string*/
+#define BAR_HEIGHT		BAR_PATH "/bar_height"		/*int*/
 
 #define WINMAN_PATH		AWN_PATH "/window_manager"
 #define WINMAN_SHOW_ALL_WINS	WINMAN_PATH "/show_all_windows"	/*bool*/
@@ -111,7 +111,8 @@ awn_gconf_new()
 	
 	/* Bar settings */
 	gconf_client_add_dir(client, BAR_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	
+
+	awn_load_int(client, BAR_HEIGHT, &s->bar_height,48);
 	awn_load_bool(client, BAR_ROUNDED_CORNERS, &s->rounded_corners, TRUE);
 	awn_load_float(client, BAR_CORNER_RADIUS, &s->corner_radius, 10.0);	
 	awn_load_bool(client, BAR_RENDER_PATTERN, &s->render_pattern, FALSE);	

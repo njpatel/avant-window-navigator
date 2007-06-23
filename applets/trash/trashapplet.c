@@ -289,7 +289,7 @@ static void
 draw (GtkWidget *widget, cairo_t *cr, gint width, gint height)
 {
 	TrashApplet *applet = TRASH_APPLET (widget);
-	gint y = (100 - applet->height + PADDING) - applet->y_offset;
+	gint y = (applet->height + PADDING) - applet->y_offset;
 	
 	/* Clear the background to transparent */
 	cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, 0.0f);

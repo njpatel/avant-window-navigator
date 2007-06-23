@@ -57,7 +57,9 @@ typedef struct {
 	
 	gboolean auto_hide;
 	gboolean hidden;
-		
+	
+	int bar_height;
+
 	/* Bar appearance settings */
 	gboolean rounded_corners;
 	gfloat corner_radius;

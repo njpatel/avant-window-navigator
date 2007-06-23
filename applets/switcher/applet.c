@@ -113,7 +113,7 @@ show_prefs (GtkMenuItem *item, Switcher *app)
   /* Number of rows */
   hbox = gtk_hbox_new (FALSE, 8);
   gtk_box_pack_start (GTK_BOX (mbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new ("Rows:");
+  label = gtk_label_new (_("Rows:"));
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
   button = gtk_spin_button_new_with_range (1, 4, 1.0);
@@ -125,7 +125,7 @@ show_prefs (GtkMenuItem *item, Switcher *app)
 
   hbox = gtk_hbox_new (FALSE, 8);
   gtk_box_pack_start (GTK_BOX (mbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new ("Width:");
+  label = gtk_label_new (_("Width:"));
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
   button = gtk_spin_button_new_with_range (1, 400, 1.0);
@@ -137,7 +137,7 @@ show_prefs (GtkMenuItem *item, Switcher *app)
 
   hbox = gtk_hbox_new (FALSE, 8);
   gtk_box_pack_start (GTK_BOX (mbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new ("Height:");
+  label = gtk_label_new (_("Height:"));
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
   button = gtk_spin_button_new_with_range (1, 400, 1.0);

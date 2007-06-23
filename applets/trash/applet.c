@@ -116,7 +116,9 @@ awn_applet_factory_init (AwnApplet *applet)
                     G_CALLBACK (applet_button_release), menu);
                          
   
-  gtk_widget_set_size_request (GTK_WIDGET (applet), 50, 100);
+  gtk_widget_set_size_request (GTK_WIDGET (applet),
+                               awn_applet_get_height (applet), 
+                               awn_applet_get_height (applet) * 2);
   
   gtk_container_add (GTK_CONTAINER (applet), trash);
   

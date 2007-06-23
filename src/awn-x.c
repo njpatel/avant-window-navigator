@@ -70,7 +70,7 @@ awn_x_get_icon (WnckWindow *window, gint width, gint height)
         return wnck_window_get_icon (window);
 
 }
-
+int num = 0;
 void 
 awn_x_set_strut (GtkWindow *window)
 {
@@ -81,9 +81,11 @@ awn_x_set_strut (GtkWindow *window)
 	
 	gtk_window_get_size (window, &width, &height);
 	gtk_window_get_position (window, &x, &y);
-	
-	xutils_set_strut ((GTK_WIDGET(window)->window), 50, x, x+width);
-
+	xutils_set_strut ((GTK_WIDGET(window)->window), (height / 2), x, x+width);
+	num++;
+	if (num == 20) {
+		num = 0;
+	}
 }
 
 void
@@ -114,7 +116,6 @@ awn_x_set_icon_geometry  (Window xwindow,
 GdkPixbuf * 
 awn_x_get_icon_for_window (WnckWindow *window, gint width, gint height)
 {
-	
 	//return awn_x_get_icon (window, width, height);
 	WnckApplication *app;
 	GString *name = NULL;

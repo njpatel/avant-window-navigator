@@ -25,6 +25,8 @@
 
 #include "awn-bar.h"
 
+#include "awn-x.h"
+
 #include <X11/Xlib.h>
 #include <X11/extensions/shape.h>
 #include <gdk/gdkx.h>
@@ -44,13 +46,13 @@ typedef struct {
 } AwnBarPrivate;
 
 #define AWN_BAR_DEFAULT_WIDTH		1024
-#define AWN_BAR_DEFAULT_HEIGHT		100
 
 static AwnSettings *settings		= NULL;
 static gint dest_width			= 0;
 static gint current_width 		= 400;
 static int separator			= 0;
 static int draw_separator		= 0;
+int bar_height = 0;
 static GtkWidgetClass *parent_class = NULL;
 
 static void _on_alpha_screen_changed (GtkWidget* pWidget, GdkScreen* pOldScreen, GtkWidget* pLabel);
@@ -97,6 +99,8 @@ awn_bar_new( AwnSettings *set )
         			    NULL);
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);
+
+        bar_height = set->bar_height;
         
         _position_window(GTK_WIDGET(this));
         
@@ -107,9 +111,8 @@ awn_bar_new( AwnSettings *set )
 			  G_CALLBACK (_on_configure), NULL);       
         
 #if GTK_CHECK_VERSION(2,9,0)
-        _update_input_shape (GTK_WIDGET(this), AWN_BAR_DEFAULT_WIDTH, AWN_BAR_DEFAULT_HEIGHT);
+        _update_input_shape (GTK_WIDGET(this), AWN_BAR_DEFAULT_WIDTH,(bar_height+2)*2);
 #endif        
-               
         
         return GTK_WIDGET(this);
 }
@@ -270,8 +273,8 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 		
 		cairo_set_line_width (cr, 1.0);
 		
-		cairo_move_to (cr, real_x+separator-2.5, 51);
-		cairo_line_to (cr, real_x+separator-2.5, 100);
+		cairo_move_to (cr, real_x+separator-2.5, bar_height + 3);
+		cairo_line_to (cr, real_x+separator-2.5, (bar_height + 2) * 2);
 		cairo_set_source_rgba (cr, settings->hilight_color.red, 
 				   	   settings->hilight_color.green, 
 				           settings->hilight_color.blue,
@@ -279,8 +282,8 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 		
 		cairo_stroke(cr);
 		
-		cairo_move_to (cr, real_x+separator-1.5, 50);
-		cairo_line_to (cr, real_x+separator-1.5, 100);
+		cairo_move_to (cr, real_x+separator-1.5, bar_height + 2);
+		cairo_line_to (cr, real_x+separator-1.5, (bar_height + 2) * 2);
 		cairo_set_source_rgba (cr, settings->border_color.red, 
 				   	   settings->border_color.green, 
 				           settings->border_color.blue,
@@ -289,8 +292,8 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 		cairo_stroke(cr);
 		
 		cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-		cairo_move_to (cr, real_x+separator-0.5, 50);
-		cairo_line_to (cr, real_x+separator-0.5, 100);
+		cairo_move_to (cr, real_x+separator-0.5, bar_height + 2);
+		cairo_line_to (cr, real_x+separator-0.5, (bar_height + 2) * 2);
 		cairo_set_source_rgba (cr, settings->sep_color.red, 
 				   	   settings->sep_color.green, 
 				           settings->sep_color.blue,
@@ -299,8 +302,8 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 	
 
 		cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
-		cairo_move_to (cr, real_x+separator+0.5, 50);
-		cairo_line_to (cr, real_x+separator+0.5, 100);
+		cairo_move_to (cr, real_x+separator+0.5, bar_height + 2);
+		cairo_line_to (cr, real_x+separator+0.5, (bar_height + 2) * 2);
 		cairo_set_source_rgba (cr, settings->border_color.red, 
 				   	   settings->border_color.green, 
 				           settings->border_color.blue,
@@ -308,8 +311,8 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 		cairo_stroke(cr);
 
 		
-		cairo_move_to (cr, real_x+separator+1.5, 51);
-		cairo_line_to (cr, real_x+separator+1.5, 100);
+		cairo_move_to (cr, real_x+separator+1.5, bar_height + 3);
+		cairo_line_to (cr, real_x+separator+1.5, (bar_height + 2) * 2);
 		cairo_set_source_rgba (cr, settings->hilight_color.red, 
 				   	   settings->hilight_color.green, 
 				           settings->hilight_color.blue,
@@ -333,8 +336,8 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 		
 		cairo_set_line_width (cr, 1.0);
 		
-		cairo_move_to (cr, real_x+sep-2.5, 51);
-		cairo_line_to (cr, real_x+sep-2.5, 100);
+		cairo_move_to (cr, real_x+sep-2.5, settings->bar_height+3);
+		cairo_line_to (cr, real_x+sep-2.5, (settings->bar_height+2)*2);
 		cairo_set_source_rgba (cr, settings->hilight_color.red, 
 				   	   settings->hilight_color.green, 
 				           settings->hilight_color.blue,
@@ -342,8 +345,8 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 		
 		cairo_stroke(cr);
 		
-		cairo_move_to (cr, real_x+sep-1.5, 50);
-		cairo_line_to (cr, real_x+sep-1.5, 100);
+		cairo_move_to (cr, real_x+sep-1.5, settings->bar_height+2);
+		cairo_line_to (cr, real_x+sep-1.5, (settings->bar_height+2)*2);
 		cairo_set_source_rgba (cr, settings->border_color.red, 
 				   	   settings->border_color.green, 
 				           settings->border_color.blue,
@@ -352,8 +355,8 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 		cairo_stroke(cr);
 		
 		cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-		cairo_move_to (cr, real_x+sep-0.5, 50);
-		cairo_line_to (cr, real_x+sep-0.5, 100);
+		cairo_move_to (cr, real_x+sep-0.5, settings->bar_height+2);
+		cairo_line_to (cr, real_x+sep-0.5, (settings->bar_height+2)*2);
 		cairo_set_source_rgba (cr, settings->sep_color.red, 
 				   	   settings->sep_color.green, 
 				           settings->sep_color.blue,
@@ -362,8 +365,8 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 	
 
 		cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
-		cairo_move_to (cr, real_x+sep+0.5, 50);
-		cairo_line_to (cr, real_x+sep+0.5, 100);
+		cairo_move_to (cr, real_x+sep+0.5, settings->bar_height+2);
+		cairo_line_to (cr, real_x+sep+0.5, (settings->bar_height+2)*2);
 		cairo_set_source_rgba (cr, settings->border_color.red, 
 				   	   settings->border_color.green, 
 				           settings->border_color.blue,
@@ -371,8 +374,8 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 		cairo_stroke(cr);
 
 		
-		cairo_move_to (cr, real_x+sep+1.5, 51);
-		cairo_line_to (cr, real_x+sep+1.5, 100);
+		cairo_move_to (cr, real_x+sep+1.5, settings->bar_height+3);
+		cairo_line_to (cr, real_x+sep+1.5, settings->bar_height*2);
 		cairo_set_source_rgba (cr, settings->hilight_color.red, 
 				   	   settings->hilight_color.green, 
 				           settings->hilight_color.blue,
@@ -520,14 +523,16 @@ _position_window (GtkWidget *window)
 	
 	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
 	
-	y = settings->monitor.height - 100;
+	y = settings->monitor.height - ((bar_height + 2) * 2);
 	//x = (int) ( (settings->monitor.width - ww)/2);
 	x = 0;
 	if ( settings->monitor.width != ww) {
-		gtk_window_resize(GTK_WINDOW(window), settings->monitor.width, 100);
+		gtk_window_resize(GTK_WINDOW(window), settings->monitor.width, ((bar_height+2) *2));
 		gtk_window_move(GTK_WINDOW(window), x, y);
 	}
 	
+       if (settings->panel_mode)
+                awn_x_set_strut (GTK_WINDOW(window));
 }
 
 
@@ -544,8 +549,6 @@ resize( GtkWidget *window)
                 resizing = 0;
                 return FALSE;
         }
-        
-        
         
         if ( dest_width > current_width) {
                 if (dest_width - current_width < 2) {

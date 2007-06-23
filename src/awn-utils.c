@@ -39,38 +39,15 @@ _move_bar (AwnSettings *settings)
 	gint x, y;
 	
 	gtk_window_get_position (GTK_WINDOW (settings->bar), &x, &y);
-	gtk_window_move (GTK_WINDOW (settings->bar), x, settings->monitor.height - 100 + current_y);
+	gtk_window_move (GTK_WINDOW (settings->bar), x, settings->monitor.height - ((settings->bar_height +2)*2) + current_y);
 	
 	gtk_window_get_position (GTK_WINDOW (settings->window), &x, &y);
-	gtk_window_move (GTK_WINDOW (settings->window), x, settings->monitor.height - 100 + current_y);
-	
-	//g_print ("%d %d %d\n", current_y, dest_y, settings->monitor.height - 100 + current_y);
+	gtk_window_move (GTK_WINDOW (settings->window), x, settings->monitor.height - ((settings->bar_height +2)*2) + current_y);
 	
 	return TRUE;
 	
 }
 
-void
-hide_window (GtkWindow *window)
-{
-	gint x, y;
-	
-	gtk_window_get_position (window, &x, &y);
-	
-	gtk_window_move (window, x, y+100);
-	
-}
-
-void
-show_window (GtkWindow *window)
-{
-	gint x, y;
-	
-	gtk_window_get_position (window, &x, &y);
-	
-	gtk_window_move (window, x, y-100);
-	
-}
 
 void 
 awn_hide (AwnSettings *settings)
@@ -80,7 +57,7 @@ awn_hide (AwnSettings *settings)
 	//hide_window (GTK_WINDOW (settings->bar));
 	//hide_window (GTK_WINDOW (settings->window));
 	
-	dest_y = 50;
+	dest_y = settings->bar_height + 2;
 	
 	if (!effect_lock) {
 		g_timeout_add (20, (GSourceFunc)_move_bar, (gpointer)settings);
@@ -94,13 +71,6 @@ awn_hide (AwnSettings *settings)
 void 
 awn_show (AwnSettings *settings)
 {
-//	gint x, y;
-	
-//	gtk_window_get_position (GTK_WINDOW (settings->bar), &x, &y);
-//	gtk_window_move (GTK_WINDOW (settings->bar), x, settings->monitor.height-100);
-	
-//	gtk_window_get_position (GTK_WINDOW (settings->window), &x, &y);
-//	gtk_window_move (GTK_WINDOW (settings->window), x, settings->monitor.height-100);
 	
 	dest_y = 0;
 

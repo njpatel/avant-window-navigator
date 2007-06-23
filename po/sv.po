@@ -1,18 +1,18 @@
-# en_Gb Translation.
-# Copyright (C) 2007 Neil J. Patel
-# This file is distributed under the same license as the avant-window-navigator package.
-# Neil J. Patel <njpatel@gmail.com>, 2007
+# Swedish translation for avant-window-navigator.
+# Copyright (C) 2007 Free Software Foundation, Inc.
+# This file is distributed under the same license as the awn package.
+# Daniel Nylander <po@danielnylander.se>, 2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.1\n"
+"Project-Id-Version: avant-window-navigator\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-06-23 15:51+0100\n"
-"PO-Revision-Date: 2007-03-15 13:19+GMT\n"
-"Last-Translator: Neil Patel <njpatel@gmail.com>\n"
-"Language-Team: en_GB <njpatel@gmail.com>\n"
+"PO-Revision-Date: 2007-03-11 15:53+0100\n"
+"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../applets/switcher/applet.c:116
@@ -28,8 +28,9 @@ msgid "Height:"
 msgstr ""
 
 #: ../applets/trash/trashapplet.glade.h:1
+#, fuzzy
 msgid "<b>From:</b>"
-msgstr ""
+msgstr "<b>Pilar</b>"
 
 #: ../applets/trash/trashapplet.glade.h:2
 msgid "<big><b>Emptying the Trash</b></big>"
@@ -41,47 +42,48 @@ msgstr ""
 
 #: ../avant-preferences/window.glade.h:1
 msgid "<b>Active Icon</b>"
-msgstr ""
+msgstr "<b>Aktiv ikon</b>"
 
 #: ../avant-preferences/window.glade.h:2
 msgid "<b>Arrows</b>"
-msgstr ""
+msgstr "<b>Pilar</b>"
 
 #: ../avant-preferences/window.glade.h:3
+#, fuzzy
 msgid "<b>Bar behaviour</b>"
-msgstr ""
+msgstr "<b>Avgränsare</b>"
 
 #: ../avant-preferences/window.glade.h:4
 msgid "<b>Borders</b>"
-msgstr ""
+msgstr "<b>Ramar</b>"
 
 #: ../avant-preferences/window.glade.h:5
 msgid "<b>Corners</b>"
-msgstr ""
+msgstr "<b>Hörn</b>"
 
 #: ../avant-preferences/window.glade.h:6
 msgid "<b>Gradient</b>"
-msgstr ""
+msgstr "<b>Toning</b>"
 
 #: ../avant-preferences/window.glade.h:7
 msgid "<b>Highlight</b>"
-msgstr ""
+msgstr "<b>Markera</b>"
 
 #: ../avant-preferences/window.glade.h:8
 msgid "<b>Pattern</b>"
-msgstr ""
+msgstr "<b>Mönster</b>"
 
 #: ../avant-preferences/window.glade.h:9
 msgid "<b>Separator</b>"
-msgstr ""
+msgstr "<b>Avgränsare</b>"
 
 #: ../avant-preferences/window.glade.h:10
 msgid "<b>Text</b>"
-msgstr ""
+msgstr "<b>Text</b>"
 
 #: ../avant-preferences/window.glade.h:11
 msgid "<b>Windows</b>"
-msgstr ""
+msgstr "<b>Fönster</b>"
 
 #: ../avant-preferences/window.glade.h:12
 msgid "Auto hide bar when not in use"
@@ -89,31 +91,31 @@ msgstr ""
 
 #: ../avant-preferences/window.glade.h:13
 msgid "Avant Preferences"
-msgstr ""
+msgstr "Inställningar för Avant"
 
 #: ../avant-preferences/window.glade.h:14
 msgid "Background color:"
-msgstr "Background colour:"
+msgstr "Bakgrundsfärg:"
 
 #: ../avant-preferences/window.glade.h:15
 msgid "Bar Appearence"
-msgstr ""
+msgstr "Radutseende"
 
 #: ../avant-preferences/window.glade.h:16
 msgid "Bold"
-msgstr ""
+msgstr "Fet"
 
 #: ../avant-preferences/window.glade.h:17
 msgid "Color:"
-msgstr "Colour:"
+msgstr "Färg:"
 
 #: ../avant-preferences/window.glade.h:18
 msgid "Enable pattern"
-msgstr ""
+msgstr "Aktivera mönster"
 
 #: ../avant-preferences/window.glade.h:19
 msgid "Enable rounded corners"
-msgstr ""
+msgstr "Aktivera rundade hörn"
 
 #: ../avant-preferences/window.glade.h:20
 msgid "Fade effect (experimental)"
@@ -121,31 +123,31 @@ msgstr ""
 
 #: ../avant-preferences/window.glade.h:21
 msgid "First step color:"
-msgstr "First step colour:"
+msgstr "Första färgen:"
 
 #: ../avant-preferences/window.glade.h:22
 msgid "Font size:"
-msgstr ""
+msgstr "Typsnittsstorlek:"
 
 #: ../avant-preferences/window.glade.h:23
 msgid "General"
-msgstr ""
+msgstr "Allmänt"
 
 #: ../avant-preferences/window.glade.h:24
 msgid "Glass Engine"
-msgstr ""
+msgstr "Glasmotor"
 
 #: ../avant-preferences/window.glade.h:25
 msgid "Internal border:"
-msgstr ""
+msgstr "Intern ram:"
 
 #: ../avant-preferences/window.glade.h:26
 msgid "Italic"
-msgstr ""
+msgstr "Kursiv"
 
 #: ../avant-preferences/window.glade.h:27
 msgid "Main border:"
-msgstr ""
+msgstr "Huvudram:"
 
 #: ../avant-preferences/window.glade.h:28
 msgid "Maximized windows don't cover the bar (requires restart)"
@@ -153,39 +155,39 @@ msgstr ""
 
 #: ../avant-preferences/window.glade.h:29
 msgid "Pattern Engine"
-msgstr ""
+msgstr "Mönstermotor"
 
 #: ../avant-preferences/window.glade.h:30
 msgid "Second step color:"
-msgstr "Second step colour:"
+msgstr "Andra färgen:"
 
 #: ../avant-preferences/window.glade.h:31
 msgid "Select A File"
-msgstr ""
+msgstr "Välj en fil"
 
 #: ../avant-preferences/window.glade.h:32
 msgid "Separator color:"
-msgstr ""
+msgstr "Färg för avgränsare:"
 
 #: ../avant-preferences/window.glade.h:33
 msgid "Shadow color:"
-msgstr ""
+msgstr "Skuggfärg:"
 
 #: ../avant-preferences/window.glade.h:34
 msgid "Show separator between launchers and tasks"
-msgstr ""
+msgstr "Visa avgränsare mellan programstartare och uppgifter"
 
 #: ../avant-preferences/window.glade.h:35
 msgid "Show windows from all viewports"
-msgstr ""
+msgstr "Visa fönster från alla arbetsytor"
 
 #: ../avant-preferences/window.glade.h:36
 msgid "Task Appearence"
-msgstr ""
+msgstr "Uppgiftsutseende"
 
 #: ../avant-preferences/window.glade.h:37
 msgid "Tasks have arrows"
-msgstr ""
+msgstr "Uppgifter har pilar"
 
 #: ../avant-preferences/window.glade.h:38
 msgid "The bar automatically hides when not used"
@@ -193,7 +195,7 @@ msgstr ""
 
 #: ../avant-preferences/window.glade.h:39
 msgid "Transparency:"
-msgstr ""
+msgstr "Genomskinlighet:"
 
 #: ../avant-preferences/window.glade.h:40
 msgid "Unused icons fade when mouse-over"
@@ -208,8 +210,9 @@ msgid "Add Applet"
 msgstr ""
 
 #: ../avant-applets/avant-applets.glade.h:2
+#, fuzzy
 msgid "Avant Applet Preferences"
-msgstr ""
+msgstr "Inställningar för Avant"
 
 #: ../avant-applets/avant-applets.glade.h:3
 #: ../avant-launchers/avant-launchers.glade.h:2
@@ -217,5 +220,6 @@ msgid "Positions"
 msgstr ""
 
 #: ../avant-launchers/avant-launchers.glade.h:1
+#, fuzzy
 msgid "Avant Launcher Preferences"
-msgstr ""
+msgstr "Inställningar för Avant"

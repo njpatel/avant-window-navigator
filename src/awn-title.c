@@ -34,7 +34,6 @@ G_DEFINE_TYPE (AwnTitle, awn_title, GTK_TYPE_WINDOW)
 #define M_PI		3.14159265358979323846 
 
 static gint AWN_TITLE_DEFAULT_WIDTH		= 1024;
-static gint AWN_TITLE_DEFAULT_HEIGHT		= 50;
 
 static AwnSettings *settings = NULL; 
 
@@ -82,7 +81,7 @@ awn_title_new( AwnSettings *sets )
         
         
         
-        gtk_window_resize (GTK_WINDOW(this), settings->monitor.width, AWN_TITLE_DEFAULT_HEIGHT);
+        gtk_window_resize (GTK_WINDOW(this), settings->monitor.width, settings->bar_height + 2);
         
         g_signal_connect (G_OBJECT (this),"destroy",
 			  G_CALLBACK (gtk_main_quit), NULL);
@@ -95,7 +94,7 @@ awn_title_new( AwnSettings *sets )
 			  G_CALLBACK (_on_configure), NULL);       
         
 #if GTK_CHECK_VERSION(2,9,0)
-        _update_input_shape (GTK_WIDGET(this), AWN_TITLE_DEFAULT_WIDTH, AWN_TITLE_DEFAULT_HEIGHT);
+        _update_input_shape (GTK_WIDGET(this), AWN_TITLE_DEFAULT_WIDTH, settings->bar_height + 2);
 #endif  
         
                
@@ -213,7 +212,7 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 
 	double x,y;
 	
-	pango_layout_get_pixel_extents(pLayout, &extents, &logical_extents);
+	pango_layout_get_pixel_extents(pLayout, &logical_extents, &extents);
 	x = (width/2)-(extents.width/2 + extents.x);
 	y = (height/2)-(extents.height/2 + extents.y);
 	
@@ -237,11 +236,11 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 
 	cairo_translate (cr, 0.5, 0.5);
 	
-	_rounded_rectangle (cr, (double) extents.width+19, (double) extents.height+19, 
-		       (double) x-9.5, (double) y-9.5 );
+	_rounded_rectangle (cr, (double) extents.width+19, (double) extents.height+7, 
+		       (double) x-9.5, (double) y-4.5 );
 	
-	_rounded_corners (cr, (double) extents.width+20, (double) extents.height+20, 
-		       (double) x-9.5, (double) y-9.5);
+	_rounded_corners (cr, (double) extents.width+20, (double) extents.height+8, 
+		       (double) x-9.5, (double) y-4.5);
 	
 	cairo_fill (cr);	      
 
@@ -274,7 +273,7 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 				   settings->text_color.green, 
 				   settings->text_color.blue,
 				   settings->text_color.alpha);
-   pango_cairo_show_layout(cr, pLayout);
+   	pango_cairo_show_layout(cr, pLayout);
 	
 	/*
 	cairo_text_path (cr, utf8);
@@ -393,7 +392,7 @@ _on_expose (GtkWidget *widget, GdkEventExpose *expose, AwnTitle *title)
 	oWidth = width;
 	oHeight = height;
 	
-	void awn_x_set_icon_geometry  (Window xwindow, int x, int y, int width, int height);
+	//void awn_x_set_icon_geometry  (Window xwindow, int x, int y, int width, int height);
 	
 	return FALSE;
 }
@@ -422,7 +421,8 @@ _position_window (GtkWidget *window)
 	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
 	
 	x = (int) ((settings->monitor.width - ww) / 2);
-	y = (int) (settings->monitor.height-100);
+
+	y = (int) (settings->monitor.height - ((settings->bar_height +2)*2));
 	
 	gtk_window_move(GTK_WINDOW(window), x, y);
 	
@@ -433,7 +433,7 @@ _position_window (GtkWidget *window)
 void 
 awn_title_resize(AwnTitle *title)
 {
-	gtk_window_resize(GTK_WINDOW(title), 1, 100);
+	gtk_window_resize(GTK_WINDOW(title), 1, ((settings->bar_height + 2) * 2));
 }
 
 

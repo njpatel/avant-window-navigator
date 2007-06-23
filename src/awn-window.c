@@ -38,7 +38,6 @@
 G_DEFINE_TYPE (AwnWindow, awn_window, GTK_TYPE_WINDOW) 
 
 #define AWN_WINDOW_DEFAULT_WIDTH		300
-#define AWN_WINDOW_DEFAULT_HEIGHT		100
 
 static AwnSettings *settings		= NULL;
 static gboolean stop_position = TRUE;
@@ -113,7 +112,7 @@ awn_window_new( AwnSettings *set )
 
         _on_alpha_screen_changed (GTK_WIDGET(this), NULL, NULL);
         gtk_widget_set_app_paintable (GTK_WIDGET(this), TRUE);
-        gtk_window_resize (GTK_WINDOW(this), AWN_WINDOW_DEFAULT_WIDTH, AWN_WINDOW_DEFAULT_HEIGHT);
+        gtk_window_resize (GTK_WINDOW(this), AWN_WINDOW_DEFAULT_WIDTH, (set->bar_height + 2) * 2);
         
         g_signal_connect (G_OBJECT (this), "expose-event",
 			  G_CALLBACK (_on_expose), NULL);
@@ -125,7 +124,7 @@ awn_window_new( AwnSettings *set )
 			  G_CALLBACK (_on_alpha_screen_changed), NULL);       
         
 #if GTK_CHECK_VERSION(2,9,0)
-        _update_input_shape (GTK_WIDGET(this), AWN_WINDOW_DEFAULT_WIDTH, AWN_WINDOW_DEFAULT_HEIGHT);
+        _update_input_shape (GTK_WIDGET(this), AWN_WINDOW_DEFAULT_WIDTH, (set->bar_height + 2) * 2);
 #endif  
         
       	g_timeout_add(5000, (GSourceFunc)_position_timeout, NULL);
@@ -323,9 +322,6 @@ _position_window (GtkWidget *window)
 		y_pos = (int)settings->monitor.height;
 	else
 		y_pos = (int) (settings->monitor.height-wh);
-	
-	if (settings->panel_mode)
-		awn_x_set_strut (GTK_WINDOW(window));	
 	
 	if (stop_position) {
 		current_pos = x_pos;

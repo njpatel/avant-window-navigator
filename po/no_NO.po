@@ -1,4 +1,4 @@
-# en_Gb Translation.
+# Norwegian translation
 # Copyright (C) 2007 Neil J. Patel
 # This file is distributed under the same license as the avant-window-navigator package.
 # Neil J. Patel <njpatel@gmail.com>, 2007
@@ -93,7 +93,7 @@ msgstr ""
 
 #: ../avant-preferences/window.glade.h:14
 msgid "Background color:"
-msgstr "Background colour:"
+msgstr ""
 
 #: ../avant-preferences/window.glade.h:15
 msgid "Bar Appearence"
@@ -105,7 +105,7 @@ msgstr ""
 
 #: ../avant-preferences/window.glade.h:17
 msgid "Color:"
-msgstr "Colour:"
+msgstr ""
 
 #: ../avant-preferences/window.glade.h:18
 msgid "Enable pattern"
@@ -121,7 +121,7 @@ msgstr ""
 
 #: ../avant-preferences/window.glade.h:21
 msgid "First step color:"
-msgstr "First step colour:"
+msgstr ""
 
 #: ../avant-preferences/window.glade.h:22
 msgid "Font size:"
@@ -157,7 +157,7 @@ msgstr ""
 
 #: ../avant-preferences/window.glade.h:30
 msgid "Second step color:"
-msgstr "Second step colour:"
+msgstr ""
 
 #: ../avant-preferences/window.glade.h:31
 msgid "Select A File"
@@ -219,3 +219,15 @@ msgstr ""
 #: ../avant-launchers/avant-launchers.glade.h:1
 msgid "Avant Launcher Preferences"
 msgstr ""
+
+#~ msgid "Bakgrunnsfarge:"
+#~ msgstr "Bakgrunnsfarge:"
+
+#~ msgid "Farge:"
+#~ msgstr "Farge:"
+
+#~ msgid "Farge for første steg:"
+#~ msgstr "Farge for første steg:"
+
+#~ msgid "Farge for andre steg:"
+#~ msgstr "Farge for andre steg:"

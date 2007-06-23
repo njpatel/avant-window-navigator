@@ -1,3 +1,35 @@
+2007-06-23  Neil J. Patel  <njpatel@gmail.com>
+
+	* applets/trash/applet.c: (awn_applet_factory_init):
+	* applets/trash/trashapplet.c: (draw):
+	* awn-applet-activation/awn-plug.c: (awn_plug_new):
+	* src/awn-app.c: (awn_app_new), (on_icon_changed),
+	(awn_app_create_active_icon):
+	* src/awn-applet-manager.c: (_create_applet),
+	(awn_applet_manager_load_applets):
+	* src/awn-bar.c: (awn_bar_new), (render), (_position_window),
+	(resize):
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-gconf.h:
+	* src/awn-task-manager.c: (awn_task_manager_set_task_icon_by_name),
+	(awn_task_manager_set_task_icon_by_xid):
+	* src/awn-task.c: (awn_task_init), (_task_opening_effect),
+	(icon_loader_get_icon_spec), (_task_destroy), (draw),
+	(awn_task_win_enter_in), (awn_task_win_enter_out),
+	(_task_wnck_icon_changed), (awn_task_set_window),
+	(awn_task_set_launcher), (awn_task_refresh_icon_geometry),
+	(awn_task_update_icon), (awn_task_set_width),
+	(awn_task_unset_custom_icon), (_task_choose_custom_icon):
+	* src/awn-title.c: (awn_title_new), (render), (_on_expose),
+	(_position_window), (awn_title_resize):
+	* src/awn-utils.c: (_move_bar), (awn_hide), (awn_show):
+	* src/awn-window.c: (awn_window_new), (_position_window):
+	* src/awn-x.c: (awn_x_set_strut), (awn_x_get_icon_for_window):
+	* src/main.c: (drag_leave_hot), (leave_notify_event):
+	Merged patch by Angafirith from the forums to enable Awn to be resized.
+	Cleaned up code in trash applet to reflect this change.
+	Fixed positioning problems which the patch did not deal with.
+
 2007-06-21  Neil J. Patel  <njpatel@gmail.com>
 
 	* src/awn-task.c: (_task_show_prefs), (awn_task_create_menu):

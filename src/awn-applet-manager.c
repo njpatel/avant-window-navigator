@@ -142,10 +142,11 @@ _create_applet (AwnAppletManager *manager, const gchar *path, const gchar *uid)
         
         g_object_set (G_OBJECT (applet), 
                       "orient", AWN_ORIENTATION_BOTTOM,
-                      "height", 50,
+                      "height", priv->settings->bar_height,
                       NULL);
                 
-        gtk_widget_set_size_request (applet, -1, 100);
+        gtk_widget_set_size_request (applet, -1,
+                                     priv->settings->bar_height *2);
         gtk_box_pack_start (GTK_BOX (manager), applet, 
                             FALSE, FALSE, 0);
         gtk_widget_show_all (GTK_WIDGET (applet));
@@ -214,12 +215,13 @@ awn_applet_manager_load_applets (AwnAppletManager *manager)
 			applet = awn_applet_proxy_new (tokens[0], tokens[1]);
                 	g_object_set (G_OBJECT (applet), 
                               	      "orient", AWN_ORIENTATION_BOTTOM,
-                               	      "height", 50,
+                               	      "height", priv->settings->bar_height,
                                       NULL);
 		}
 
                 
-                gtk_widget_set_size_request (applet, -1, 100);
+                gtk_widget_set_size_request (applet, -1, 
+                                             priv->settings->bar_height *2);
                 
                 gtk_box_pack_start (GTK_BOX (manager), applet, 
                                     FALSE, FALSE, 0);

@@ -44,9 +44,6 @@ G_DEFINE_TYPE (AwnTask, awn_task, GTK_TYPE_DRAWING_AREA);
 #define  M_PI 					3.14159265358979323846
 #define  AWN_CLICK_IDLE_TIME			450
 
-#define WIDTH					60
-#define HEIGHT					50
-
 #define M_PI		3.14159265358979323846
 
 /* FORWARD DECLERATIONS */
@@ -217,7 +214,7 @@ awn_task_init (AwnTask *task)
 {
 	gtk_widget_add_events (GTK_WIDGET (task),GDK_ALL_EVENTS_MASK);
 
-	gtk_widget_set_size_request(GTK_WIDGET(task), WIDTH, 100);
+	gtk_widget_set_size_request(GTK_WIDGET(task), 60, 20);
 
 	gtk_drag_dest_set (GTK_WIDGET (task),
                            GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_DROP,
@@ -285,7 +282,7 @@ _task_opening_effect (AwnTask *task)
 		priv->effect_lock = TRUE;
 		priv->current_effect = AWN_TASK_EFFECT_OPENING;
 		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
-		priv->y_offset = -48;
+		priv->y_offset = priv->settings->bar_height * -1;
 	}
 
 	if (priv->effect_direction) {
@@ -306,6 +303,9 @@ _task_opening_effect (AwnTask *task)
 
 		}
 	}
+	gtk_widget_set_size_request(GTK_WIDGET(task), 
+				    (priv->settings->bar_height * 5/4), 
+				    (priv->settings->bar_height + 2) * 2);
 
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 
@@ -492,6 +492,7 @@ _task_hover_effect2 (AwnTask *task)
 GdkPixbuf *
 icon_loader_get_icon_spec( const char *name, int width, int height )
 {
+	printf("%d,%d\n",width,height);
         GdkPixbuf *icon = NULL;
         GdkScreen *screen = gdk_screen_get_default();
         GtkIconTheme *theme = NULL;
@@ -579,98 +580,6 @@ icon_loader_get_icon_spec( const char *name, int width, int height )
         return icon;
 }
 
-/*
-static void
-_load_pixbufs (AwnTask *task)
-{
-	AwnTaskPrivate *priv;
-
-	if (!AWN_IS_TASK (task)) return;
-
-	priv = AWN_TASK_GET_PRIVATE (task);
-
-	int i = 0;
-	for (i = 0; i < 15; i++) {
-
-		if (priv->is_launcher) {
-			char *icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
-			priv->pixbufs[i] = icon_loader_get_icon_spec (icon_name, HEIGHT+i, HEIGHT+i) ;
-			g_free (icon_name);
-		} else {
-			priv->pixbufs[i] = awn_x_get_icon_for_window (priv->window, HEIGHT+i, HEIGHT+i);
-		}
-	}
-}
-
-static gboolean
-_task_hover_effect3 (AwnTask *task)
-{
-	AwnTaskPrivate *priv;
-
-	if (!AWN_IS_TASK (task)) return FALSE;
-
-	priv = AWN_TASK_GET_PRIVATE (task);
-
-	if (priv->effect_lock) {
-		if ( priv->current_effect != AWN_TASK_EFFECT_HOVER)
-			return TRUE;
-	} else {
-		priv->effect_lock = TRUE;
-		priv->current_effect = AWN_TASK_EFFECT_HOVER;
-		priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
-		priv->y_offset = 0;
-		priv->count = 0;
-	}
-
-	if (priv->pixbufs[0] == NULL)
-		_load_pixbufs (task);
-
-	if (priv->hover && (priv->count == 13) )
-		return TRUE;
-
-	if (priv->effect_direction) {
-		priv->count++;
-		priv->y_offset +=0.5;
-		priv->icon = priv->pixbufs[priv->count];
-		priv->icon_width = gdk_pixbuf_get_width(priv->icon);
-		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
-
-		//gtk_widget_set_size_request (GTK_WIDGET(task), priv->icon_width + 12, 100);
-
-		if (priv->count >= 14)
-			priv->effect_direction = AWN_TASK_EFFECT_DIR_DOWN;
-
-	} else {
-		priv->count--;
-		priv->y_offset -=0.5;
-		priv->icon = priv->pixbufs[priv->count];
-		priv->icon_width = gdk_pixbuf_get_width(priv->icon);
-		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
-		//gtk_widget_set_size_request (GTK_WIDGET(task), priv->icon_width + 12, 100);
-		if (priv->count < 1) {
-			//finished bouncing, back to normal
-			if (priv->hover)
-				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
-			else {
-				priv->effect_lock = FALSE;
-				priv->current_effect = AWN_TASK_EFFECT_NONE;
-				priv->effect_direction = AWN_TASK_EFFECT_DIR_UP;
-				priv->count = 0;
-				priv->y_offset = 0;
-				//gtk_widget_set_size_request (GTK_WIDGET(task), WIDTH, 100);
-			}
-		}
-	}
-
-	gtk_widget_queue_draw(GTK_WIDGET(task));
-
-
-	if (priv->effect_lock == FALSE)
-		return FALSE;
-
-	return TRUE;
-}
-*/
 static void
 launch_hover_effect (AwnTask *task )
 {
@@ -801,7 +710,7 @@ _task_destroy (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
-	const gint max = HEIGHT;
+	const gint max = priv->settings->bar_height + 2;
 	gfloat i;
 
 	if (priv->effect_lock) {
@@ -958,7 +867,8 @@ draw (GtkWidget *task, cairo_t *cr)
 	if (priv->window && wnck_window_is_active(priv->window)) {
 
 		cairo_set_source_rgba(cr, 1, 1, 1, 0.2);
-		cairo_rectangle(cr, 0 , HEIGHT+2, WIDTH, HEIGHT-2);
+		cairo_rectangle(cr, 0 , settings->bar_height, 
+				width, settings->bar_height);
 		cairo_fill(cr);
 	}
 	/* content */
@@ -966,7 +876,9 @@ draw (GtkWidget *task, cairo_t *cr)
 		double x1, y1;
 
 		x1 = (width-priv->icon_width)/2;
-		y1 = ((HEIGHT-priv->icon_height)/2) + HEIGHT + (-1 * priv->y_offset);
+		y1 = ((settings->bar_height + 2 - priv->icon_height)/2) + settings->bar_height + 2 + (-1 * priv->y_offset);
+		
+		y1 = settings->bar_height + (-1 * priv->y_offset);
 
 		gdk_cairo_set_source_pixbuf (cr, priv->icon, x1, y1);
 		cairo_paint_with_alpha(cr, priv->alpha);
@@ -981,9 +893,9 @@ draw (GtkWidget *task, cairo_t *cr)
 				   settings->arrow_color.green,
 				   settings->arrow_color.blue,
 				   settings->arrow_color.alpha);
-	cairo_move_to(cr, x1-5, 100);
-	cairo_line_to(cr, x1, 95);
-	cairo_line_to(cr, x1+5, 100);
+	cairo_move_to(cr, x1-5, (settings->bar_height * 2));
+	cairo_line_to(cr, x1, ((settings->bar_height *2)) - 5);
+	cairo_line_to(cr, x1+5, (settings->bar_height * 2));
 	cairo_close_path (cr);
 
 	if (settings->tasks_have_arrows) {
@@ -999,24 +911,6 @@ draw (GtkWidget *task, cairo_t *cr)
 	/* progress meter */
 	cairo_new_path (cr);
 	if (priv->progress != 100) {
-		/*
-		_rounded_rectangle (cr, width-6, 5, 3, 44);
-		_rounded_corners (cr, width-6, 5, 3, 44);
-
-		cairo_set_source_rgba (cr, settings->background.red,
-					   settings->background.green,
-					   settings->background.blue,
-					   settings->background.alpha);
-		cairo_fill (cr);
-
-		cairo_set_source_rgba (cr, settings->text_color.red,
-				   settings->text_color.green,
-				   settings->text_color.blue,
-				   settings->text_color.alpha);
-
-		cairo_rectangle (cr, 5, 46, ( (double)(priv->progress/100.0) * (width-10) ), 1);
-		cairo_fill (cr);
-		*/
 		cairo_move_to (cr, width/2.0, 75);
 		cairo_set_source_rgba (cr, settings->background.red,
 					   settings->background.green,
@@ -1028,10 +922,13 @@ draw (GtkWidget *task, cairo_t *cr)
 
 		cairo_move_to (cr, width/2.0, 75);
 		cairo_set_source_rgba (cr, settings->text_color.red,
-				   settings->text_color.green,
-				   settings->text_color.blue,
-				   0.8);
-		cairo_arc (cr, width/2.0, 75, 12, 270.0 * (M_PI / 180.0),  (270.0 + ((double)(priv->progress/100.0) * 360.0))  * (M_PI / 180.0) );
+				   	   settings->text_color.green,
+				   	   settings->text_color.blue,
+				   	   0.8);
+		cairo_arc (cr, width/2.0,
+			   settings->bar_height * 1.5, 
+			   12, 270.0 * (M_PI / 180.0),  
+			   (270.0 + ((double)(priv->progress/100.0) * 360.0))  * (M_PI / 180.0) );
 		cairo_fill (cr);
 	}
 
@@ -1325,8 +1222,6 @@ awn_task_win_enter_in (GtkWidget *window, GdkEventMotion *event, AwnTask *task)
 
 	priv = AWN_TASK_GET_PRIVATE (task);
 	settings = priv->settings;
-	//priv->alpha = 0.2;
-	//gtk_widget_queue_draw(GTK_WIDGET(task));
 	if (settings->fade_effect)
 		launch_fade_out_effect(task);
 	return FALSE;
@@ -1343,7 +1238,6 @@ awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *tas
 	priv = AWN_TASK_GET_PRIVATE (task);
 	priv->alpha = 1.0;
 	gtk_widget_queue_draw(GTK_WIDGET(task));
-	//launch_fade_in_effect(task);
 	return FALSE;
 }
 
@@ -1403,7 +1297,11 @@ _task_wnck_icon_changed (WnckWindow *window, AwnTask *task)
 
         GdkPixbuf *old = NULL;
         old = priv->icon;
-        priv->icon = awn_x_get_icon_for_window (priv->window, HEIGHT-2, HEIGHT-2);
+	int height = priv->settings->bar_height;
+	if ((priv->settings->task_width - 12) < height) {
+		height = priv->settings->task_width - 12;
+	}
+	priv->icon = awn_x_get_icon_for_window (priv->window, height, height);
 	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
         gdk_pixbuf_unref(old);
@@ -1504,7 +1402,7 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
 
 	priv->window = window;
 	if (!priv->is_launcher) {
-		priv->icon = awn_x_get_icon_for_window (priv->window, priv->settings->task_width-12, priv->settings->task_width-12);
+		priv->icon = awn_x_get_icon_for_window (priv->window, priv->settings->bar_height, priv->settings->bar_height);
 		priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 		priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 
@@ -1532,97 +1430,6 @@ awn_task_set_window (AwnTask *task, WnckWindow *window)
 	return TRUE;
 }
 
-/******************************************************************************
-	This function takes a icon name, and searchs through know directories
-	for th icon.
-
-	TODO: There _has_ to be a better way than this, may something I am
-	missing?
-*/
-
-
-
-GdkPixbuf *
-icon_loader_get_icon( const char *name )
-{
-        GdkPixbuf *icon = NULL;
-        GdkScreen *screen = gdk_screen_get_default();
-        GtkIconTheme *theme = NULL;
-        theme = gtk_icon_theme_get_for_screen (screen);
-
-        if (!name)
-                return NULL;
-
-        GError *error = NULL;
-
-        /* first we try gtkicontheme */
-        if (theme)
-        	icon = gtk_icon_theme_load_icon( theme, name, HEIGHT-2, 0, &error);
-        else {
-        	g_print("Icon theme could not be loaded");
-        	error = (GError *) 1;
-        }
-        if (error) {
-                /* lets try and load directly from file */
-                error = NULL;
-                GString *str;
-
-                if ( strstr(name, "/") != NULL )
-                        str = g_string_new(name);
-                else {
-                        str = g_string_new("/usr/share/pixmaps/");
-                        g_string_append(str, name);
-                }
-
-                icon = gdk_pixbuf_new_from_file_at_scale(str->str,
-                                                         HEIGHT-2,
-                                                         HEIGHT-2,
-                                                         TRUE, &error);
-                g_string_free(str, TRUE);
-        }
-
-        if (icon == NULL) {
-                /* lets try and load directly from file */
-                error = NULL;
-                GString *str;
-
-                if ( strstr(name, "/") != NULL )
-                        str = g_string_new(name);
-                else {
-                        str = g_string_new("/usr/local/share/pixmaps/");
-                        g_string_append(str, name);
-                }
-
-                icon = gdk_pixbuf_new_from_file_at_scale(str->str,
-                                                         HEIGHT-2,
-                                                         HEIGHT-2,
-                                                         TRUE, &error);
-                g_string_free(str, TRUE);
-        }
-
-        if (icon == NULL) {
-                error = NULL;
-                GString *str;
-
-                str = g_string_new("/usr/share/");
-                g_string_append(str, name);
-                g_string_erase(str, (str->len - 4), -1 );
-                g_string_append(str, "/");
-		g_string_append(str, "pixmaps/");
-		g_string_append(str, name);
-
-		icon = gdk_pixbuf_new_from_file_at_scale
-       		                             (str->str,
-                                             HEIGHT-2,
-                                             HEIGHT-2,
-                                             TRUE,
-                                             &error);
-                g_string_free(str, TRUE);
-        }
-
-        return icon;
-}
-
 gboolean
 awn_task_set_launcher (AwnTask *task, GnomeDesktopItem *item)
 {
@@ -1637,7 +1444,7 @@ awn_task_set_launcher (AwnTask *task, GnomeDesktopItem *item)
 		return FALSE;
 	g_free (icon_name);
 	priv->item = item;
-	priv->icon = awn_x_get_icon_for_launcher (item, priv->settings->task_width-12, priv->settings->task_width-12);
+	priv->icon = awn_x_get_icon_for_launcher (item, priv->settings->bar_height, priv->settings->bar_height);
 
 	priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
@@ -1813,13 +1620,10 @@ awn_task_refresh_icon_geometry (AwnTask *task)
 		else
 			res = old_x - x;
 		if (res > 10) {
-			//awn_x_set_icon_geometry  (awn_task_get_xid(AWN_TASK(task)), x, y,WIDTH, 50);
 			wnck_window_set_icon_geometry (priv->window, x, y, width, height);
 		}
 		old_x = x;
 		old_y = y;
-		
-		//g_print ("x:%d, y:%d, w:%d, h:%d", x, y, width, height); 
 	}
 
 }
@@ -1833,7 +1637,11 @@ awn_task_update_icon (AwnTask *task)
 
 	old = priv->icon;
 
-	priv->icon = awn_x_get_icon_for_launcher (priv->item, HEIGHT-2, HEIGHT-2);
+	int height = priv->settings->bar_height;
+	if ((priv->settings->task_width - 12) < height) {
+		height = priv->settings->task_width - 12;
+	}
+	priv->icon = awn_x_get_icon_for_launcher (priv->item,height,height);
         priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 
@@ -1872,7 +1680,9 @@ awn_task_set_width (AwnTask *task, gint width)
 	if (G_IS_OBJECT (old) && priv->is_launcher)
 		gdk_pixbuf_unref (old);
 
-	gtk_widget_set_size_request (GTK_WIDGET (task), width, 100);		
+	gtk_widget_set_size_request (GTK_WIDGET (task), 
+				     width, 
+				     (priv->settings->bar_height + 2) * 2);		
 }
 
 
@@ -1923,12 +1733,12 @@ awn_task_unset_custom_icon (AwnTask *task)
 	if (priv->is_launcher) {
 		icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
 		if (!icon_name)
-			priv->icon = awn_x_get_icon_for_window (priv->window, HEIGHT-2, HEIGHT-2);
+			priv->icon = awn_x_get_icon_for_window (priv->window, priv->settings->bar_height, priv->settings->bar_height);
 
-		priv->icon = icon_loader_get_icon(icon_name);
+		priv->icon = icon_loader_get_icon_spec(icon_name,priv->settings->bar_height,priv->settings->bar_height);
 		g_free (icon_name);
         } else {
-        	priv->icon = awn_x_get_icon_for_window (priv->window, HEIGHT-2, HEIGHT-2);
+        	priv->icon = awn_x_get_icon_for_window (priv->window,priv->settings->bar_height,priv->settings->bar_height);
         }
         priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
@@ -2105,7 +1915,7 @@ _task_choose_custom_icon (AwnTask *task)
 	
 	/* Okay, the user has chosen a new icon, so lets load it up */
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-	pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 48, 48, NULL);
+	pixbuf = gdk_pixbuf_new_from_file_at_size (filename, priv->settings->bar_height, priv->settings->bar_height, NULL);
 	
 	/* Check if is actually a pixbuf */
 	if (pixbuf == NULL) {

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: avant-window-navigator 0.1.1-svn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-03 15:44+0100\n"
+"POT-Creation-Date: 2007-06-23 15:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Pavel Sefranek <pavel.sefranek@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,106 +15,227 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: avant-preferences/window.glade:9
-msgid "Avant Preferences"
-msgstr "Nastavení Avant"
+#: ../applets/switcher/applet.c:116
+msgid "Rows:"
+msgstr ""
 
-#: avant-preferences/window.glade:83
-msgid "Colour:"
-msgstr "Barva:"
+#: ../applets/switcher/applet.c:128
+msgid "Width:"
+msgstr ""
 
-#: avant-preferences/window.glade:135
-msgid "Shadow colour:"
-msgstr "Barva stínu:"
+#: ../applets/switcher/applet.c:140
+msgid "Height:"
+msgstr ""
 
-#: avant-preferences/window.glade:187
-msgid "Font size:"
-msgstr "Velikost písma:"
+#: ../applets/trash/trashapplet.glade.h:1
+#, fuzzy
+msgid "<b>From:</b>"
+msgstr "<b>Okraje</b>"
 
-#: avant-preferences/window.glade:284
-msgid "Italic"
-msgstr "Kurzíva"
+#: ../applets/trash/trashapplet.glade.h:2
+msgid "<big><b>Emptying the Trash</b></big>"
+msgstr ""
 
-#: avant-preferences/window.glade:365
-msgid "Bold"
-msgstr "Tučné"
+#: ../applets/trash/trashapplet.glade.h:3
+msgid "Emptying the Trash"
+msgstr ""
 
-#: avant-preferences/window.glade:405
-msgid "<b>Text</b>"
-msgstr "<b>Text</b>"
-
-#: avant-preferences/window.glade:454 avant-preferences/window.glade:1086
-msgid "Select A File"
-msgstr "Vyberte soubor"
-
-#: avant-preferences/window.glade:468
+#: ../avant-preferences/window.glade.h:1
 msgid "<b>Active Icon</b>"
 msgstr "<b>Aktivní ikona</b>"
 
-#: avant-preferences/window.glade:504
-msgid "General Appearance"
-msgstr "Obecné"
+#: ../avant-preferences/window.glade.h:2
+#, fuzzy
+msgid "<b>Arrows</b>"
+msgstr "<b>Okraje</b>"
 
-#: avant-preferences/window.glade:565
-msgid "Main border:"
-msgstr "Vnější okraj:"
+#: ../avant-preferences/window.glade.h:3
+#, fuzzy
+msgid "<b>Bar behaviour</b>"
+msgstr "<b>Okraje</b>"
 
-#: avant-preferences/window.glade:617
-msgid "Internal border:"
-msgstr "Vnitřní okraj:"
-
-#: avant-preferences/window.glade:667
+#: ../avant-preferences/window.glade.h:4
 msgid "<b>Borders</b>"
 msgstr "<b>Okraje</b>"
 
-#: avant-preferences/window.glade:728 avant-preferences/window.glade:891
-msgid "First step colour:"
-msgstr "První barva:"
-
-#: avant-preferences/window.glade:780 avant-preferences/window.glade:943
-msgid "Second step colour:"
-msgstr "Druhá barva:"
-
-#: avant-preferences/window.glade:830
-msgid "<b>Gradient</b>"
-msgstr "<b>Gradient</b>"
-
-#: avant-preferences/window.glade:993
-msgid "<b>Highlight</b>"
-msgstr "<b>Zvýraznění</b>"
-
-#: avant-preferences/window.glade:1055
-msgid "Enable pattern"
-msgstr "Povolit vzorek"
-
-#: avant-preferences/window.glade:1116
-msgid "Transparency:"
-msgstr "Průhlednost:"
-
-#: avant-preferences/window.glade:1170
-msgid "<b>Pattern</b>"
-msgstr "<b>Vzorek</b>"
-
-#: avant-preferences/window.glade:1232
-msgid "Enable rounded corners"
-msgstr "Povolit zaoblené rohy"
-
-#: avant-preferences/window.glade:1261
+#: ../avant-preferences/window.glade.h:5
 msgid "<b>Corners</b>"
 msgstr "<b>Rohy</b>"
 
-#: avant-preferences/window.glade:1297
-msgid "Bar Appearance"
-msgstr "Panel"
+#: ../avant-preferences/window.glade.h:6
+msgid "<b>Gradient</b>"
+msgstr "<b>Gradient</b>"
 
-#: avant-preferences/window.glade:1359
-msgid "Show windows from all viewports"
-msgstr "Zobrazovat okna ze všech pracovních ploch"
+#: ../avant-preferences/window.glade.h:7
+msgid "<b>Highlight</b>"
+msgstr "<b>Zvýraznění</b>"
 
-#: avant-preferences/window.glade:1388
+#: ../avant-preferences/window.glade.h:8
+msgid "<b>Pattern</b>"
+msgstr "<b>Vzorek</b>"
+
+#: ../avant-preferences/window.glade.h:9
+#, fuzzy
+msgid "<b>Separator</b>"
+msgstr "<b>Text</b>"
+
+#: ../avant-preferences/window.glade.h:10
+msgid "<b>Text</b>"
+msgstr "<b>Text</b>"
+
+#: ../avant-preferences/window.glade.h:11
 msgid "<b>Windows</b>"
 msgstr "<b>Okna</b>"
 
-#: avant-preferences/window.glade:1424
-msgid "Window Management"
-msgstr "Okna"
+#: ../avant-preferences/window.glade.h:12
+msgid "Auto hide bar when not in use"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:13
+msgid "Avant Preferences"
+msgstr "Nastavení Avant"
+
+#: ../avant-preferences/window.glade.h:14
+#, fuzzy
+msgid "Background color:"
+msgstr "Druhá barva:"
+
+#: ../avant-preferences/window.glade.h:15
+#, fuzzy
+msgid "Bar Appearence"
+msgstr "Panel"
+
+#: ../avant-preferences/window.glade.h:16
+msgid "Bold"
+msgstr "Tučné"
+
+#: ../avant-preferences/window.glade.h:17
+#, fuzzy
+msgid "Color:"
+msgstr "Barva:"
+
+#: ../avant-preferences/window.glade.h:18
+msgid "Enable pattern"
+msgstr "Povolit vzorek"
+
+#: ../avant-preferences/window.glade.h:19
+msgid "Enable rounded corners"
+msgstr "Povolit zaoblené rohy"
+
+#: ../avant-preferences/window.glade.h:20
+msgid "Fade effect (experimental)"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:21
+#, fuzzy
+msgid "First step color:"
+msgstr "První barva:"
+
+#: ../avant-preferences/window.glade.h:22
+msgid "Font size:"
+msgstr "Velikost písma:"
+
+#: ../avant-preferences/window.glade.h:23
+msgid "General"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:24
+msgid "Glass Engine"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:25
+msgid "Internal border:"
+msgstr "Vnitřní okraj:"
+
+#: ../avant-preferences/window.glade.h:26
+msgid "Italic"
+msgstr "Kurzíva"
+
+#: ../avant-preferences/window.glade.h:27
+msgid "Main border:"
+msgstr "Vnější okraj:"
+
+#: ../avant-preferences/window.glade.h:28
+msgid "Maximized windows don't cover the bar (requires restart)"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:29
+msgid "Pattern Engine"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:30
+#, fuzzy
+msgid "Second step color:"
+msgstr "Druhá barva:"
+
+#: ../avant-preferences/window.glade.h:31
+msgid "Select A File"
+msgstr "Vyberte soubor"
+
+#: ../avant-preferences/window.glade.h:32
+#, fuzzy
+msgid "Separator color:"
+msgstr "Barva stínu:"
+
+#: ../avant-preferences/window.glade.h:33
+#, fuzzy
+msgid "Shadow color:"
+msgstr "Barva stínu:"
+
+#: ../avant-preferences/window.glade.h:34
+msgid "Show separator between launchers and tasks"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:35
+msgid "Show windows from all viewports"
+msgstr "Zobrazovat okna ze všech pracovních ploch"
+
+#: ../avant-preferences/window.glade.h:36
+#, fuzzy
+msgid "Task Appearence"
+msgstr "Panel"
+
+#: ../avant-preferences/window.glade.h:37
+msgid "Tasks have arrows"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:38
+msgid "The bar automatically hides when not used"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:39
+msgid "Transparency:"
+msgstr "Průhlednost:"
+
+#: ../avant-preferences/window.glade.h:40
+msgid "Unused icons fade when mouse-over"
+msgstr ""
+
+#: ../avant-preferences/window.glade.h:41
+msgid "Windows don't overlap the bar if this is set"
+msgstr ""
+
+#: ../avant-applets/avant-applets.glade.h:1
+msgid "Add Applet"
+msgstr ""
+
+#: ../avant-applets/avant-applets.glade.h:2
+#, fuzzy
+msgid "Avant Applet Preferences"
+msgstr "Nastavení Avant"
+
+#: ../avant-applets/avant-applets.glade.h:3
+#: ../avant-launchers/avant-launchers.glade.h:2
+msgid "Positions"
+msgstr ""
+
+#: ../avant-launchers/avant-launchers.glade.h:1
+#, fuzzy
+msgid "Avant Launcher Preferences"
+msgstr "Nastavení Avant"
+
+#~ msgid "General Appearance"
+#~ msgstr "Obecné"
+
+#~ msgid "Window Management"
+#~ msgstr "Okna"

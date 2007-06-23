@@ -51,12 +51,12 @@ awn_app_new (WnckWindow *window, AwnSettings *sets)
 	app->xid =wnck_window_get_xid(app->window);
 	app->alignment = gtk_alignment_new (0.5, 1, 0, 0);
 	gtk_alignment_set_padding(GTK_ALIGNMENT (app->alignment), 0 ,0, 0, 0);
-	gtk_widget_set_size_request(app->alignment, 60, 100);
+	gtk_widget_set_size_request(app->alignment, 60, sets->bar_height + 2);
 	app->event_box = gtk_event_box_new();
 	gtk_event_box_set_visible_window (GTK_EVENT_BOX (app->event_box), FALSE);
 	app->image = gtk_image_new ();
 	
-	app->wnck_icon = gdk_pixbuf_copy (awn_x_get_icon (app->window, 48, 48));
+	app->wnck_icon = gdk_pixbuf_copy (awn_x_get_icon (app->window, sets->bar_height, sets->bar_height));
 	app->current_icon = app->wnck_icon;
 	gtk_image_set_from_pixbuf(GTK_IMAGE (app->image), app->current_icon);
 	app->active_icon = NULL;
@@ -177,7 +177,9 @@ on_icon_changed (WnckWindow *window, AwnApp *app)
         GdkPixbuf *old = NULL;
         
         old = app->wnck_icon;
-        app->wnck_icon = gdk_pixbuf_copy (awn_x_get_icon (app->window, 48, 48));
+	int width = gdk_pixbuf_get_width(old);
+	int height = gdk_pixbuf_get_height(old);
+        app->wnck_icon = gdk_pixbuf_copy (awn_x_get_icon (app->window, width, height));
         app->current_icon = app->wnck_icon;
         gtk_image_set_from_pixbuf(GTK_IMAGE(app->image), app->current_icon);
         gdk_pixbuf_unref(old);
@@ -258,6 +260,7 @@ awn_app_create_active_icon(AwnApp *app)
         	
         	
        	int width = gdk_pixbuf_get_width(app->current_icon);
+	printf("Current Width: %d\n",width);
        	int pad = (int) ( (60 - width ) / 2);
        	
        	gdk_pixbuf_composite (app->current_icon, app->active_icon, 

@@ -9,6 +9,15 @@ launch with avant-window-navigator OR Applications->Accessories->Avant Window Na
 configure with avant-preferences OR System->Preferences(->More Preferences)->Avant Preferences
 
 New Features In SVN (newest first):
+===================================
+
+* Merged patch by Angafirith (from the forums) which allows you to resize Awn
+  by changing the /apps/avant-window-navigator/bar/bar_height varibale, and then
+  restarting. Be warned, changing the variable to a non-standard icon size
+  will cause you to have very blurry icons (because apps don't set 36x36 icons,
+  for instance), so the best siz4es to choose from, for the moment, are:
+  24, 32, 48, 64, 128, 256 (if your feeling brave :-). I'll think of a way 
+  around this in a bit.
 
 * Hey hey hey, the task manager is now an (internal) applet :). This means you can order it like the other applets, and you need to add it to you configuration, just like you have to with any other applet..
 

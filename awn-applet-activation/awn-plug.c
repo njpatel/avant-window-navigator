@@ -290,6 +290,7 @@ awn_plug_new (const gchar *path,
         			      G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
         if (priv->module == NULL) {
                 g_warning ("Unable to load module %s\n", path);
+                g_warning (g_module_error());
                 return NULL;
         }
         /* Try and load the symbol */

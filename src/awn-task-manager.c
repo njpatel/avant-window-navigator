@@ -1012,8 +1012,8 @@ awn_task_manager_set_task_icon_by_name (AwnTaskManager *task_manager,
 
 	/* Try and load icon from path */
 	icon = gdk_pixbuf_new_from_file_at_scale (icon_path,
-                                                  46,
-                                                  46,
+                                                  priv->settings->bar_height,
+                                                  priv->settings->bar_height,
                                                   TRUE,
                                                   NULL);
 	if (icon)
@@ -1044,8 +1044,8 @@ awn_task_manager_set_task_icon_by_xid (AwnTaskManager *task_manager,
 
 	/* Try and load icon from path */
 	icon = gdk_pixbuf_new_from_file_at_scale (icon_path,
-                                                  46,
-                                                  46,
+                                                  priv->settings->bar_height,
+                                                  priv->settings->bar_height,
                                                   TRUE,
                                                   NULL);
 	if (icon)
