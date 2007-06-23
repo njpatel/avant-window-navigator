@@ -84,6 +84,9 @@ awn_applet_manager_load_applets (AwnAppletManager *manager);
 void
 awn_applet_manager_quit (AwnAppletManager *manager);
 
+void
+awn_applet_manager_height_changed (AwnAppletManager *manager);
+
 G_END_DECLS
 
 #endif

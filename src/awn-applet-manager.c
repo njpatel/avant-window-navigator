@@ -71,6 +71,19 @@ static guint _appman_signals[LAST_SIGNAL] = { 0 };
 
 static GtkHBoxClass *parent_class = NULL;
 
+
+void
+awn_applet_manager_height_changed (AwnAppletManager *manager)
+{
+	AwnAppletManagerPrivate *priv;
+        	
+	g_return_if_fail (AWN_IS_APPLET_MANAGER (manager));
+	priv = AWN_APPLET_MANAGER_GET_PRIVATE (manager);   
+	
+	g_signal_emit (G_OBJECT (manager), _appman_signals[HEIGHT_CHANGED], 
+		       1, priv->settings->bar_height);
+}
+
 void
 awn_applet_manager_quit (AwnAppletManager *manager)
 {
@@ -199,8 +212,7 @@ awn_applet_manager_load_applets (AwnAppletManager *manager)
         
         for (k = keys; k != NULL; k = k->next) {
                 GtkWidget *applet = NULL;
-                GtkWidget *bin;
-                
+               
                 gchar **tokens = NULL;
                 tokens = g_strsplit (k->data, "::", 2);
                 

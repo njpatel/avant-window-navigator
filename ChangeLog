@@ -1,5 +1,15 @@
 2007-06-23  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-applet-manager.c: (awn_applet_manager_height_changed),
+	(awn_applet_manager_load_applets):
+	* src/awn-applet-manager.h:
+	* src/awn-task.c: (draw), (_task_choose_custom_icon):
+	* src/main.c: (main), (resize), (bar_height_changed):
+	Fixed positioning of progress and info labels on task.
+	Added initial support for dynamic resizing (doesn't work :-).
+
+2007-06-23  Neil J. Patel  <njpatel@gmail.com>
+
 	* src/awn-hotspot.c: (awn_hotspot_new), (render_pixmap):
 	* src/awn-task-manager.c: (on_height_changed),
 	(awn_task_manager_init):

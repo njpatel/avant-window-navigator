@@ -71,6 +71,9 @@ static gboolean enter_notify_event (GtkWidget *window, GdkEventCrossing *event, 
 static gboolean leave_notify_event (GtkWidget *window, GdkEventCrossing *event, AwnSettings *settings);
 static gboolean button_press_event (GtkWidget *window, GdkEventButton *event);
 
+static void 
+bar_height_changed (GConfClient *client, guint cid, GConfEntry *entry, AwnSettings *Settings);
+
 static Atom
 panel_atom_get (const char *atom_name)
 {
@@ -103,8 +106,8 @@ main (int argc, char* argv[])
 {
 	
 	AwnSettings* settings;
+	GConfClient *client;
 	GtkWidget *box = NULL;
-	//GtkWidget *task_manager = NULL;
 	GtkWidget *applet_manager = NULL;
 	
 	DBusGConnection *connection;
@@ -122,6 +125,11 @@ main (int argc, char* argv[])
 	
 	settings = awn_gconf_new();
 	settings->bar = awn_bar_new(settings);
+	client = gconf_client_get_default();
+	
+	gconf_client_notify_add (client, "/apps/avant-window-navigator/bar/bar_height", 
+				(GConfClientNotifyFunc)bar_height_changed, settings, 
+				NULL, NULL);
 	
 	settings->window = awn_window_new (settings);
 	
@@ -134,21 +142,11 @@ main (int argc, char* argv[])
 
 	box = gtk_hbox_new(FALSE, 2);
 	gtk_container_add(GTK_CONTAINER(settings->window), box);
-	/*
-	if ( argc >= 2) {
-		if (argv[1][1] == 'o') {
-			task_manager = awn_win_mgr_new(settings);
-		}
-	}
-		
-	if (!task_manager)
-		task_manager = awn_task_manager_new(settings);
-	*/
+	
 	applet_manager = awn_applet_manager_new (settings);
 	settings->appman = applet_manager;
 	
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("  "), FALSE, FALSE, 0);
-	//gtk_box_pack_start(GTK_BOX(box), task_manager, FALSE, TRUE, 0);	
 	gtk_box_pack_start(GTK_BOX(box), applet_manager, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("  "), FALSE, FALSE, 0);
         
@@ -437,4 +435,23 @@ button_press_event (GtkWidget *window, GdkEventButton *event)
 	}
  
 	return FALSE;
+}
+
+static void
+resize (AwnSettings *settings, gint height)
+{
+	settings->bar_height = height;
+	awn_applet_manager_height_changed (AWN_APPLET_MANAGER (settings->appman));
+	gtk_widget_set_size_request (settings->window, -1, height*2);
+}
+
+static void 
+bar_height_changed (GConfClient *client, guint cid, GConfEntry *entry, AwnSettings *settings)
+{
+	GConfValue *value = NULL;
+	gint height;
+	
+	value = gconf_entry_get_value(entry);
+	height = gconf_value_get_int(value);
+	resize (settings, height);	
 }

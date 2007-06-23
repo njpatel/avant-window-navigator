@@ -911,16 +911,16 @@ draw (GtkWidget *task, cairo_t *cr)
 	/* progress meter */
 	cairo_new_path (cr);
 	if (priv->progress != 100) {
-		cairo_move_to (cr, width/2.0, 75);
+		cairo_move_to (cr, width/2.0, settings->bar_height *1.5);
 		cairo_set_source_rgba (cr, settings->background.red,
 					   settings->background.green,
 					   settings->background.blue,
 					   settings->background.alpha);
 
-		cairo_arc (cr, width/2.0, 75, 15, 0, 360.0 * (M_PI / 180.0) );
+		cairo_arc (cr, width/2.0, settings->bar_height *1.5, 15, 0, 360.0 * (M_PI / 180.0) );
 		cairo_fill (cr);
 
-		cairo_move_to (cr, width/2.0, 75);
+		cairo_move_to (cr, width/2.0, settings->bar_height *1.5);
 		cairo_set_source_rgba (cr, settings->text_color.red,
 				   	   settings->text_color.green,
 				   	   settings->text_color.blue,
@@ -946,7 +946,7 @@ draw (GtkWidget *task, cairo_t *cr)
 			cairo_set_font_size (cr, 12);
 		cairo_text_extents (cr, priv->info_text, &extents);
 
-		cairo_move_to (cr, width/2.0, 75);
+		cairo_move_to (cr, width/2.0, settings->bar_height *1.5);
 		cairo_set_source_rgba (cr, settings->background.red,
 					   settings->background.green,
 					   settings->background.blue,
@@ -955,12 +955,12 @@ draw (GtkWidget *task, cairo_t *cr)
 		_rounded_rectangle (cr, (double) extents.width+8.0, 
 					(double) extents.height+84.0, 
 					(width/2.0) - 4.0 - ( (extents.width+extents.x_bearing)/2.0), 
-					75- ( extents.height /2.0)-4.0);
+					(settings->bar_height *1.5)- ( extents.height /2.0)-4.0);
 		
 		_rounded_corners (cr, (double) extents.width+8.0, 
 				      (double) extents.height+8.0, 
 				      (width/2.0) - 4.0 - ( (extents.width+extents.x_bearing)/2.0), 
-				      75- ( extents.height /2.0)-4.0);
+				      (settings->bar_height *1.5)- ( extents.height /2.0)-4.0);
 		
 		cairo_fill (cr);
 
@@ -970,7 +970,7 @@ draw (GtkWidget *task, cairo_t *cr)
 				   settings->text_color.blue,
 				   0.8);
 
-		cairo_move_to (cr, (width/2.0) - ((extents.width+ extents.x_bearing)/2.0)-1, 75+ ( extents.height /2.0));
+		cairo_move_to (cr, (width/2.0) - ((extents.width+ extents.x_bearing)/2.0)-1, (settings->bar_height *1.5)+ ( extents.height /2.0));
 		cairo_show_text (cr, priv->info_text);
 	}
 }
@@ -1890,7 +1890,7 @@ _task_choose_custom_icon (AwnTask *task)
 	GError *err = NULL;
 	gchar *filename = NULL;
 	gchar *save = NULL;
-	gchar *name = NULL;
+	gchar *name;
 	
 	g_return_if_fail (AWN_IS_TASK (task));
 	priv = AWN_TASK_GET_PRIVATE (task);
@@ -1928,15 +1928,15 @@ _task_choose_custom_icon (AwnTask *task)
 	/* So we have a nice new pixbuf, we now want to save it's location
 	   for the future */
 	if (priv->is_launcher) {
-		name = gnome_desktop_item_get_string (priv->item,
-						   GNOME_DESKTOP_ITEM_EXEC);
+		name = g_strdup (gnome_desktop_item_get_string (priv->item,
+						   GNOME_DESKTOP_ITEM_EXEC));
 	} else {
 		WnckApplication *app = NULL;
 		app = wnck_window_get_application (priv->window);
 		if (app == NULL)
 			name = NULL;
 		else
-			name = wnck_application_get_name (app);
+			name = g_strdup (wnck_application_get_name (app));
 	}
 	if (name == NULL) {
 		/* Somethings gone very wrong */
@@ -1983,6 +1983,7 @@ _task_choose_custom_icon (AwnTask *task)
 
 	g_free (filename);
 	g_free (save);
+	g_free (name);
 	gtk_widget_hide (dialog);
 	gtk_widget_destroy (dialog);
 }
