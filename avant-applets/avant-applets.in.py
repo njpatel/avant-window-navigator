@@ -306,6 +306,8 @@ class main:
                 hdir = os.path.join (os.environ["HOME"], ".awn/applets")
                 dirs = ["/usr/lib/awn/applets", 
                         "/usr/local/lib/awn/applets",
+                        "/usr/lib64/awn/applets",
+                        "/usr/local/lib64/awn/applets",
                         hdir]
                 applets = []
                 for d in dirs:

@@ -1,5 +1,10 @@
 2007-06-23  Neil J. Patel  <njp@f7>
 
+	* avant-applets/avant-applets.in.py:
+	Look in lib64 for applets as well :-).
+
+2007-06-23  Neil J. Patel  <njp@f7>
+
 	* avant-applets/avant-applets.glade:
 	Set avant-applets window NOT to skip the taskbar and pager.
 
