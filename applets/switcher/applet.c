@@ -170,6 +170,12 @@ on_button_press_event (GtkWidget *applet, GdkEventButton *event, Switcher *app)
   return FALSE;
 }
 
+static void
+on_height_change (AwnApplet *applet, gint height, Switcher *app)
+{
+  gtk_widget_set_size_request (GTK_WIDGET (applet), -1, height);
+}
+
 gboolean 
 awn_applet_factory_init (AwnApplet *applet)
 {
@@ -221,6 +227,8 @@ awn_applet_factory_init (AwnApplet *applet)
   
   gtk_widget_show_all (GTK_WIDGET (applet));
   
+  g_signal_connect (G_OBJECT (applet), "height-changed",
+                    G_CALLBACK (on_height_change), app);
   
   return TRUE;
 }

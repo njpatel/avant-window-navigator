@@ -1440,7 +1440,7 @@ awn_task_manager_init (AwnTaskManager *task_manager)
 	GConfClient *client = gconf_client_get_default ();
         DBusGConnection *connection;
         DBusGProxy *proxy = NULL;
-        GError *error;
+        GError *error = NULL;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 

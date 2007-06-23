@@ -81,7 +81,7 @@ awn_applet_manager_height_changed (AwnAppletManager *manager)
 	priv = AWN_APPLET_MANAGER_GET_PRIVATE (manager);   
 	
 	g_signal_emit (G_OBJECT (manager), _appman_signals[HEIGHT_CHANGED], 
-		       1, priv->settings->bar_height);
+		       0, priv->settings->bar_height);
 }
 
 void
