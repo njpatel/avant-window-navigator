@@ -32,6 +32,7 @@
 G_DEFINE_TYPE (AwnHotspot, awn_hotspot, GTK_TYPE_WINDOW)
 
 #define M_PI		3.14159265358979323846  
+#define PADDING		20
 
 static gint AWN_HOTSPOT_DEFAULT_WIDTH		= 1024;
 static gint AWN_HOTSPOT_DEFAULT_HEIGHT		= 3;
@@ -93,7 +94,9 @@ awn_hotspot_new( AwnSettings *sets )
         
         
         
-        gtk_window_resize (GTK_WINDOW(this), settings->monitor.width, AWN_HOTSPOT_DEFAULT_HEIGHT);
+        gtk_window_resize (GTK_WINDOW(this), 
+        		   settings->monitor.width - (2*PADDING),
+        		   AWN_HOTSPOT_DEFAULT_HEIGHT);
         
         g_signal_connect (G_OBJECT (this),"destroy",
 			  G_CALLBACK (gtk_main_quit), NULL);
@@ -150,7 +153,7 @@ render_pixmap (cairo_t *cr, gint width, gint height)
 	
 	cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, 1.0f);
 	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-	cairo_rectangle (cr, 5, 0, width-10, height);
+	cairo_rectangle (cr, 30, 0, width-30, height);
 	cairo_fill (cr);
 	
 

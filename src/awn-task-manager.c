@@ -25,6 +25,9 @@
 #include <libwnck/libwnck.h>
 #include <libgnome/gnome-desktop-item.h>
 
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-bindings.h>
+
 
 #include "config.h"
 
@@ -1425,10 +1428,19 @@ awn_task_manger_refresh_launchers (GConfClient *client,
 }
 
 static void
+on_height_changed (DBusGProxy *proxy, gint height, AwnTaskManager *manager)
+{
+        g_print ("%d\n", height);
+}
+
+static void
 awn_task_manager_init (AwnTaskManager *task_manager)
 {
 	AwnTaskManagerPrivate *priv;
 	GConfClient *client = gconf_client_get_default ();
+        DBusGConnection *connection;
+        DBusGProxy *proxy = NULL;
+        GError *error;
 	
 	priv = AWN_TASK_MANAGER_GET_PRIVATE (task_manager);
 
@@ -1443,6 +1455,26 @@ awn_task_manager_init (AwnTaskManager *task_manager)
 	gconf_client_notify_add (client, AWN_LAUNCHERS_KEY, 
                 (GConfClientNotifyFunc)awn_task_manger_refresh_launchers, 
                 task_manager, NULL, NULL);
+
+        connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+        if (!connection)
+                return;
+
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                          "com.google.code.Awn.AppletManager",
+                                          "/com/google/code/Awn/AppletManager",
+                                          "com.google.code.Awn.AppletManager");
+        if (!proxy) {
+                g_warning ("Cannot connect to applet manager\n");
+                return;
+        }
+
+        dbus_g_proxy_connect_signal (proxy, 
+                                     "HeightChanged",
+                                     G_CALLBACK (on_height_changed),
+                                     (gpointer)task_manager, 
+                                     NULL);
+             
 }
 
 GtkWidget *

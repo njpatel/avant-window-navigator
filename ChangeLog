@@ -1,9 +1,18 @@
-2007-06-23  Neil J. Patel  <njp@f7>
+2007-06-23  Neil J. Patel  <njpatel@gmail.com>
+
+	* src/awn-hotspot.c: (awn_hotspot_new), (render_pixmap):
+	* src/awn-task-manager.c: (on_height_changed),
+	(awn_task_manager_init):
+	* src/main.c: (main):
+	Made the hotspot for autohide 20px smaller on both sides, so as to not stop
+	hot-corners from working.
+
+2007-06-23  Neil J. Patel  <njpatel@gmail.com>
 
 	* avant-applets/avant-applets.in.py:
 	Look in lib64 for applets as well :-).
 
-2007-06-23  Neil J. Patel  <njp@f7>
+2007-06-23  Neil J. Patel  <njpatel@gmail.com>
 
 	* avant-applets/avant-applets.glade:
 	Set avant-applets window NOT to skip the taskbar and pager.

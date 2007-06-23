@@ -20,7 +20,7 @@
 
 #include <gtk/gtk.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include "dbus/dbus-glib.h"
+#include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
 
 #include "config.h"
@@ -201,24 +201,7 @@ main (int argc, char* argv[])
 		
 	proxy = dbus_g_proxy_new_for_name (connection, DBUS_SERVICE_DBUS,
 					   DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
-	/*
-	if (!org_freedesktop_DBus_request_name (proxy, AWN_NAMESPACE,
-						0, &ret, &error)) {
-		g_warning ("There was an error requesting the name: %s",
-			   error->message);
-		g_error_free (error);
-		//exit(1);
-	}
-	if (ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-		/* Someone else registered the name before us */
-		//exit(1);
-	
-	/*}
-	 Register the task manager on the bus 
-	dbus_g_connection_register_g_object (connection,
-					     AWN_OBJECT_PATH,
-					     G_OBJECT (task_manager));
-	*/
+
 	/* Now the applet manager */
 	if (!org_freedesktop_DBus_request_name (proxy, AWN_APPLET_NAMESPACE,
 						0, &ret, &error)) {
