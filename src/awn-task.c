@@ -1664,13 +1664,13 @@ awn_task_set_width (AwnTask *task, gint width)
 	if (priv->is_launcher) {
 		char * icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
 		if (!icon_name)
-			priv->icon = awn_x_get_icon_for_window (priv->window, width-12, width-12);
+			priv->icon = awn_x_get_icon_for_window (priv->window, width-6, width-6);
 
-		priv->icon = icon_loader_get_icon_spec(icon_name, width-12, width-12);
+		priv->icon = icon_loader_get_icon_spec(icon_name, width-6, width-6);
 		g_free (icon_name);
         } else {
         	if (WNCK_IS_WINDOW (priv->window))
-        		priv->icon = awn_x_get_icon_for_window (priv->window, width-12, width-12);
+        		priv->icon = awn_x_get_icon_for_window (priv->window, width-6, width-6);
         }
         	
 	if (G_IS_OBJECT (priv->icon)) {
