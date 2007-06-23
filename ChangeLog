@@ -1,3 +1,8 @@
+2007-06-23  Neil J. Patel  <njp@f7>
+
+	* avant-applets/avant-applets.glade:
+	Set avant-applets window NOT to skip the taskbar and pager.
+
 2007-06-23  Neil J. Patel  <njpatel@gmail.com>
 
 	* applets/trash/applet.c: (awn_applet_factory_init):
