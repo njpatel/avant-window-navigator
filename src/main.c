@@ -443,6 +443,7 @@ resize (AwnSettings *settings, gint height)
 	settings->bar_height = height;
 	awn_applet_manager_height_changed (AWN_APPLET_MANAGER (settings->appman));
 	gtk_widget_set_size_request (settings->window, -1, height*2);
+	_position_window (settings->window);
 }
 
 static void 

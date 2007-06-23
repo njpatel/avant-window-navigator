@@ -1468,7 +1468,7 @@ awn_task_manager_init (AwnTaskManager *task_manager)
                 g_warning ("Cannot connect to applet manager\n");
                 return;
         }
-
+	dbus_g_proxy_add_signal (proxy, "HeightChanged", G_TYPE_INT, G_TYPE_INVALID);
         dbus_g_proxy_connect_signal (proxy, 
                                      "HeightChanged",
                                      G_CALLBACK (on_height_changed),

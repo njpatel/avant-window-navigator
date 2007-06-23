@@ -56,7 +56,6 @@ static const gint n_drop_types = G_N_ELEMENTS (drop_types);
 
 static void _update_input_shape (GtkWidget* window, int width, int height);
 static gboolean  _on_configure (GtkWidget* pWidget, GdkEventConfigure* pEvent, gpointer userData);
-static void _position_window (GtkWidget *window);
 static gboolean _on_expose (GtkWidget *widget, GdkEventExpose *expose);
 
 
@@ -310,7 +309,7 @@ _position_func (GtkWidget *window)
 	return TRUE;
 }
 
-static void
+void
 _position_window (GtkWidget *window)
 {
 	gint ww, wh;
