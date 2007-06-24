@@ -1,3 +1,10 @@
+2007-06-24  Neil J. Patel  <njpatel@gmail.com>
+
+	* src/awn-bar.c: (_position_window):
+	* src/awn-task-manager.c: (on_height_changed):
+	* src/awn-task.c: (awn_task_set_width):
+	* src/main.c: (resize):
+
 2007-06-23  Neil J. Patel  <njpatel@gmail.com>
 
 	* src/awn-applet-manager.c: (awn_applet_manager_height_changed),

@@ -526,10 +526,10 @@ _position_window (GtkWidget *window)
 	y = settings->monitor.height - ((bar_height + 2) * 2);
 	//x = (int) ( (settings->monitor.width - ww)/2);
 	x = 0;
-	if ( (settings->monitor.width -1) != ww) {
+	if ( (settings->monitor.width) != ww) {
 		gtk_window_resize(GTK_WINDOW(window), 
-				  settings->monitor.width - 1, 
-				  ((bar_height+2) *2)-1);
+				  settings->monitor.width, 
+				  ((bar_height+2) *2));
 		gtk_window_move(GTK_WINDOW(window), x, y);
 	}
 	

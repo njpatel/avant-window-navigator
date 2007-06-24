@@ -1657,6 +1657,7 @@ awn_task_set_width (AwnTask *task, gint width)
 	if (!AWN_IS_TASK (task))
 		return;
 		
+	g_return_if_fail (AWN_IS_TASK (task));
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
 	old = priv->icon;

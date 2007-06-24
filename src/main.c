@@ -444,6 +444,12 @@ resize (AwnSettings *settings, gint height)
 	awn_applet_manager_height_changed (AWN_APPLET_MANAGER (settings->appman));
 	gtk_widget_set_size_request (settings->window, -1, height*2);
 	_position_window (settings->window);
+	gtk_window_resize(GTK_WINDOW(settings->bar), 
+				  settings->monitor.width, 
+				  ((settings->bar_height+2) *2));
+	gtk_window_move (GTK_WINDOW (settings->bar),
+			0, 
+			settings->monitor.height - ((settings->bar_height + 2) * 2));
 }
 
 static void 
