@@ -84,8 +84,9 @@ awn_x_set_strut (GtkWindow *window)
 	
 	gtk_window_get_size (window, &width, &height);
 	gtk_window_get_position (window, &x, &y);
-  height += settings->icon_offset;
-	xutils_set_strut ((GTK_WIDGET(window)->window), (height / 2), x, x+width);
+ 
+	xutils_set_strut ((GTK_WIDGET(window)->window), 
+                    (height / 2)+settings->icon_offset, x, x+width);
 	num++;
 	if (num == 20) {
 		num = 0;
