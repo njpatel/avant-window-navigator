@@ -303,10 +303,10 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 
         if (settings->bar_angle != 0)
         {
-                cairo_set_source_rgba (cr, settings->g_step_2.red,
-                                           settings->g_step_2.blue,
-                                           settings->g_step_2.green,
-                                           settings->g_step_2.alpha+0.2);
+                cairo_set_source_rgba (cr, settings->border_color.red,
+                                           settings->border_color.blue,
+                                           settings->border_color.green,
+                                           settings->border_color.alpha+0.2);
                 cairo_rectangle (cr, x+3, height-3, width-6, height-3);
                 cairo_fill (cr);
                 
