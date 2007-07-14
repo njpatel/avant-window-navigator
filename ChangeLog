@@ -1,6 +1,12 @@
 2007-07-14  Neil J. Patel  <njpatel@gmail.com>
 
 	* src/awn-bar.c: (render):
+	Changed the color of the 'edge' to be the same as the second gradient,
+	just slightly lighter.
+
+2007-07-14  Neil J. Patel  <njpatel@gmail.com>
+
+	* src/awn-bar.c: (render):
 	Doh, forgot separator applets.
 
 2007-07-14  Neil J. Patel  <njpatel@gmail.com>

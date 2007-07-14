@@ -306,7 +306,7 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
                 cairo_set_source_rgba (cr, settings->g_step_2.red,
                                            settings->g_step_2.blue,
                                            settings->g_step_2.green,
-                                           0.8);
+                                           settings->g_step_2.alpha+0.2);
                 cairo_rectangle (cr, x+3, height-3, width-6, height-3);
                 cairo_fill (cr);
                 
