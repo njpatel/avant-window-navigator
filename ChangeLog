@@ -1,5 +1,11 @@
 2007-07-14  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-x.c: (awn_x_set_strut):
+	Add the icon_offset to the strut property (so maximised windows don't
+	go behind the bar).
+
+2007-07-14  Neil J. Patel  <njpatel@gmail.com>
+
 	* src/awn-bar.c: (render):
 	Make the 'edge' colour that of the border colour.
 

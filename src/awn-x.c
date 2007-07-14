@@ -36,6 +36,8 @@
 #include "xutils.h"
 #include "inlinepixbufs.h"
 
+#include "awn-gconf.h"
+
 /*	TODO:
 	This is a cut-and-paste job at the moment, I still need to bring over 
 	the error checking from wnck. However, I have been using it, and haven't
@@ -78,9 +80,11 @@ awn_x_set_strut (GtkWindow *window)
 	int y = 0;
 	int width = 0;
 	int height = 0;
+  AwnSettings *settings = awn_gconf_new ();
 	
 	gtk_window_get_size (window, &width, &height);
 	gtk_window_get_position (window, &x, &y);
+  height += settings->icon_offset;
 	xutils_set_strut ((GTK_WIDGET(window)->window), (height / 2), x, x+width);
 	num++;
 	if (num == 20) {
