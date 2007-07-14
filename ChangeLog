@@ -2,6 +2,15 @@
 
 	Patch by Miika-Petteri Matikainen <miikapetteri@gmail.com>
 
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-gconf.h:
+	* src/awn-task.c: (launch_hover_effect):
+	Adds an option in gconf to disable bouncing effect.
+
+2007-07-14  Neil J. Patel  <njpatel@gmail.com>
+
+	Patch by Miika-Petteri Matikainen <miikapetteri@gmail.com>
+
 	* applets/trash/trashapplet.c: (update_transfer_callback):
 	* awn-applet-activation/awn-plug.c:
 	* src/awn-window.c:

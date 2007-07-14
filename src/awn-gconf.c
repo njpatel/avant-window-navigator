@@ -59,6 +59,7 @@
 #define APP_TASKS_H_ARROWS	APP_PATH "/tasks_have_arrows"	/*bool*/
 #define APP_NAME_CHANGE_NOTIFY	APP_PATH "/name_change_notify"	/*bool*/
 #define APP_ALPHA_EFFECT	APP_PATH "/alpha_effect"	/*bool*/
+#define APP_HOVER_BOUNCE_EFFECT	APP_PATH "/hover_bounce_effect"	/*bool*/
 
 #define TITLE_PATH		AWN_PATH "/title"
 #define TITLE_TEXT_COLOR	TITLE_PATH "/text_color"	/*color*/
@@ -149,6 +150,7 @@ awn_gconf_new()
 	awn_load_bool(client, APP_TASKS_H_ARROWS, &s->tasks_have_arrows, FALSE);
 	awn_load_bool(client, APP_NAME_CHANGE_NOTIFY, &s->name_change_notify, FALSE);
 	awn_load_bool(client, APP_ALPHA_EFFECT, &s->alpha_effect, FALSE);
+	awn_load_bool(client, APP_HOVER_BOUNCE_EFFECT, &s->hover_bounce_effect, TRUE);
 	
 	/* Title settings */
 	gconf_client_add_dir(client, TITLE_PATH, GCONF_CLIENT_PRELOAD_NONE, NULL);

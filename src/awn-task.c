@@ -588,10 +588,11 @@ launch_hover_effect (AwnTask *task )
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
 
-	if (priv->settings->fade_effect)
+	if (priv->settings->fade_effect) {
 		g_timeout_add(25, (GSourceFunc)_task_hover_effect2, (gpointer)task);
-	else
+	} else if (priv->settings->hover_bounce_effect) {
 		g_timeout_add(40, (GSourceFunc)_task_hover_effect, (gpointer)task);
+	}
 }
 
 static gboolean
