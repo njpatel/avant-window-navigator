@@ -1,5 +1,10 @@
 2007-07-14  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-bar.c: (render):
+	Fix separator positioning issue.
+
+2007-07-14  Neil J. Patel  <njpatel@gmail.com>
+
 	* src/awn-task.c: (draw):
 	Stop task icons from drawing over the solid line at the bottom, need to
 	fix applets as well.
