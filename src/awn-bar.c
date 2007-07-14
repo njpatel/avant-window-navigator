@@ -410,6 +410,9 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 		else
 			real_x = x + dest_width - current_width;
 		
+                if (settings->bar_angle != 0)
+                  real_x += 20;
+
 		cairo_set_line_width (cr, 1.0);
 		
 		cairo_move_to (cr, real_x+apply_perspective_x(width, bar_height/2, sep-2.5), bar_height- icon_offset+3 + apply_perspective_y(bar_height));

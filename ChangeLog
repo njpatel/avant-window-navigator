@@ -1,6 +1,11 @@
 2007-07-14  Neil J. Patel  <njpatel@gmail.com>
 
 	* src/awn-bar.c: (render):
+	Doh, forgot separator applets.
+
+2007-07-14  Neil J. Patel  <njpatel@gmail.com>
+
+	* src/awn-bar.c: (render):
 	Fix separator positioning issue.
 
 2007-07-14  Neil J. Patel  <njpatel@gmail.com>
