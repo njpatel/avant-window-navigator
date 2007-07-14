@@ -1,5 +1,11 @@
 2007-07-14  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-task.c: (draw):
+	Stop task icons from drawing over the solid line at the bottom, need to
+	fix applets as well.
+
+2007-07-14  Neil J. Patel  <njpatel@gmail.com>
+
 	* src/awn-bar.c: (render):
 	Added some width when angle > 0.
 	Made the front of the bar (when in 3d mode) solid, so it looks more 3d.

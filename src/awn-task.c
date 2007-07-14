@@ -900,6 +900,20 @@ draw (GtkWidget *task, cairo_t *cr)
 		}
 	}
 
+        /* Don't paint in bottom 3px if there is an offset */
+        if (settings->icon_offset) {
+                cairo_save (cr);
+                cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+                cairo_set_source_rgba (cr, 1, 1, 1, 0);
+                cairo_rectangle (cr, 
+                                 0, 
+                                 ((settings->bar_height *2)-4)+ settings->icon_offset,
+                                 width,
+                                 4);
+                cairo_fill (cr);
+                cairo_restore (cr);
+        }
+
 	/* arrows */
 	double x1;
 	x1 = width/2.0;
