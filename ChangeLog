@@ -1,5 +1,11 @@
 2007-07-14  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-task.c: (_rounded_rect), (draw):
+	Make the highlight have rounded corners, and be the same colour as
+	the main border.
+
+2007-07-14  Neil J. Patel  <njpatel@gmail.com>
+
 	* src/awn-x.c: (awn_x_set_strut):
 	Correct so it actually works!
 

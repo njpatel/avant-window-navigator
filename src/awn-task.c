@@ -846,6 +846,28 @@ _rounded_corners (cairo_t *cr, double w, double h, double x, double y)
 }
 
 static void
+_rounded_rect (cairo_t *cr, gint x, gint y, gint w, gint h)
+{
+	double radius, RADIUS_CORNERS;
+        radius = RADIUS_CORNERS = 6;
+
+        cairo_move_to (cr, x+radius, y);
+	cairo_arc (cr, x+w-radius, y+radius, radius, M_PI * 1.5, M_PI * 2);
+	cairo_arc (cr, x+w-radius, y+h-radius, radius, 0, M_PI * 0.5);
+	cairo_arc (cr, x+radius,   y+h-radius, radius, M_PI * 0.5, M_PI);
+	cairo_arc (cr, x+radius,   y+radius,   radius, M_PI, M_PI * 1.5);
+	cairo_move_to (cr, x+RADIUS_CORNERS, y);
+	cairo_line_to (cr, x+w-RADIUS_CORNERS, y);
+	cairo_move_to (cr, w+x, y+RADIUS_CORNERS);
+	cairo_line_to (cr, w+x, h+y-RADIUS_CORNERS);
+	cairo_move_to (cr, w+x-RADIUS_CORNERS, h+y);
+	cairo_line_to (cr, x+RADIUS_CORNERS, h+y);
+	cairo_move_to (cr, x, h+y-RADIUS_CORNERS);
+	cairo_line_to (cr, x, y+RADIUS_CORNERS);
+
+}
+
+static void
 draw (GtkWidget *task, cairo_t *cr)
 {
 	AwnTaskPrivate *priv;
@@ -869,13 +891,20 @@ draw (GtkWidget *task, cairo_t *cr)
 	/* active */
 	if (priv->window && wnck_window_is_active(priv->window)) {
 
-		cairo_set_source_rgba(cr, 1, 1, 1, 0.2);
-		cairo_rectangle(cr, 0 , settings->bar_height, 
+		cairo_set_source_rgba(cr, settings->border_color.red, 
+                                          settings->border_color.blue, 
+                                          settings->border_color.green,
+                                          0.2);
+		_rounded_rect(cr, 0 , settings->bar_height, 
 				width, settings->bar_height);
-		cairo_fill(cr);
+          
+                cairo_fill(cr);
 		
-		cairo_set_source_rgba(cr, 1, 1, 1, 0.2/3);
-		cairo_rectangle(cr, 0 , settings->bar_height*2, 
+		cairo_set_source_rgba(cr, settings->border_color.red, 
+                                          settings->border_color.blue, 
+                                          settings->border_color.green,
+                                          0.2/3);	
+                _rounded_rect(cr, 0 , settings->bar_height*2, 
 				width, settings->icon_offset);
 		cairo_fill(cr);
 	}
