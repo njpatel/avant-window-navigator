@@ -44,7 +44,7 @@ static gboolean stop_position = TRUE;
 static gboolean is_positioning = FALSE;
 static gint x_pos = 0;
 static gint y_pos = 0;
-static current_pos = 0;
+static gint current_pos = 0;
 
 static const GtkTargetEntry drop_types[] = {
 	{ "STRING", 0, 0 }

@@ -654,7 +654,7 @@ update_transfer_callback (GnomeVFSAsyncHandle *handle,
 					(gulong) progress_info->files_total;
 		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), fraction);
 
-		progress_message = g_strdup_printf (_("Removing item %d of %d"),
+		progress_message = g_strdup_printf (_("Removing item %lu of %lu"),
 						    progress_info->file_index,
 						    progress_info->files_total);
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar),

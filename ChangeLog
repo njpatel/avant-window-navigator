@@ -1,5 +1,14 @@
 2007-07-14  Neil J. Patel  <njpatel@gmail.com>
 
+	Patch by Miika-Petteri Matikainen <miikapetteri@gmail.com>
+
+	* applets/trash/trashapplet.c: (update_transfer_callback):
+	* awn-applet-activation/awn-plug.c:
+	* src/awn-window.c:
+	Fixes some compiler warnings.
+
+2007-07-14  Neil J. Patel  <njpatel@gmail.com>
+
 	Patch by haytjes <hv1989@gmail.com>
 
 	* applets/Makefile.am:

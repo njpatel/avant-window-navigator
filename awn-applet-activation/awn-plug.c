@@ -31,6 +31,7 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
+#include <string.h>
 
 G_DEFINE_TYPE (AwnPlug, awn_plug, GTK_TYPE_PLUG);
 
