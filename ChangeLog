@@ -1,5 +1,11 @@
 2007-07-14  Neil J. Patel  <njpatel@gmail.com>
 
+	* src/awn-bar.c: (render):
+	Added some width when angle > 0.
+	Made the front of the bar (when in 3d mode) solid, so it looks more 3d.
+
+2007-07-14  Neil J. Patel  <njpatel@gmail.com>
+
 	Patch by Miika-Petteri Matikainen <miikapetteri@gmail.com>
 
 	* src/awn-gconf.c: (awn_gconf_new):

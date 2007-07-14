@@ -249,6 +249,7 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
         
         if( settings->bar_angle != 0 ) {
 		icon_offset = 0;
+                width += 40;
 	} else {
 		icon_offset = settings->icon_offset;
 	}
@@ -284,14 +285,42 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 				   		settings->g_histep_2.blue,
 				   		settings->g_histep_2.alpha);
 	
-	if( settings->bar_angle == 0 )
+	if (settings->bar_angle == 0)
 		render_rect (cr, x+1, height/2, width-2, height/5, 0);
-	else
-		render_rect (cr, x+1+apply_perspective_x(width, bar_height/4, 0), height*7/10-2, width-2-2*apply_perspective_x(width, bar_height/4, 0), height/5, 0);
+	else {
+		render_rect (cr, 
+                             x+1+apply_perspective_x(width, 
+                                                     bar_height/4, 
+                                                     0),
+                             height*7/10-2, 
+                             width-2-2*apply_perspective_x(width, 
+                                                           bar_height/4, 
+                                                           0), 
+                             height/5, 0);
+        }
+	cairo_set_source (cr, pat);
+	cairo_fill (cr);
 
-	cairo_set_source(cr, pat);
-	cairo_fill(cr);
-	cairo_pattern_destroy(pat);
+        if (settings->bar_angle != 0)
+        {
+                cairo_set_source_rgba (cr, settings->g_step_2.red,
+                                           settings->g_step_2.blue,
+                                           settings->g_step_2.green,
+                                           0.8);
+                cairo_rectangle (cr, x+3, height-3, width-6, height-3);
+                cairo_fill (cr);
+                
+                /* Remove thetwo trailing triangles */
+                cairo_save (cr);
+                cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+                cairo_set_source_rgba (cr, 1, 1, 1, 0);
+                cairo_rectangle (cr, x, height-3, 3, height-3);
+                cairo_fill (cr);
+                cairo_rectangle (cr, x+3+width-6, height-3, 3, height-3);
+                cairo_fill (cr);
+                cairo_restore (cr);
+        }
+        cairo_pattern_destroy (pat);
 	
 	/* internal hi-lightborder */
 	cairo_set_source_rgba (cr, settings->hilight_color.red, 
