@@ -23,6 +23,7 @@
 
 #include <libawn/awn-applet.h>
 #include <libawn/awn-applet-gconf.h>
+#include <math.h>
 
 #include "eggtraymanager.h"
 
@@ -39,7 +40,9 @@ typedef struct {
 
 static GQuark new_quark = 0;
 static GQuark del_quark = 0;
-static gint   n_rows = 2;
+static gint   n_rows    = 0;
+static int   height    = 0; 
+static int   icon_size = 24;
 
 static void
 tray_icon_added (EggTrayManager *manager, 
@@ -71,6 +74,16 @@ tray_applet_refresh (TrayApplet *applet)
 {
   GList *children; GList *c;
   gint col = 0, row = 0;
+  
+  if( n_rows == 0 ) // auto-detect how much icons can on colomn
+  {
+	n_rows = ceil(height/icon_size);
+	if( floor(height/icon_size) < 1)
+		n_rows = 1;
+
+	icon_size = (height-n_rows)/n_rows;
+  }
+
   
   /* First lets go through existing icons, adding or deleting as necessary*/
   children = gtk_container_get_children (GTK_CONTAINER (applet->table));
@@ -146,7 +159,7 @@ tray_icon_added (EggTrayManager *manager,
   g_object_set_qdata (G_OBJECT (icon), del_quark, GINT_TO_POINTER (0));
 
   applet->icons = g_list_append (applet->icons, icon);
-  gtk_widget_set_size_request (icon, 24, 24);
+  gtk_widget_set_size_request (icon, icon_size, icon_size);
   tray_applet_refresh (applet);
 }
 
@@ -221,7 +234,8 @@ awn_applet_factory_init (AwnApplet *applet)
   g_signal_connect (app->manager, "message_cancelled",
                     G_CALLBACK (tray_icon_message_cancelled), app);
 
-  gtk_widget_set_size_request (GTK_WIDGET (applet), -1, 100);
+  height = awn_applet_get_height (applet);
+  gtk_widget_set_size_request (GTK_WIDGET (applet), -1, height* 2 );
 
   table = gtk_table_new (1, 1, FALSE);
   app->table = table;
@@ -234,8 +248,8 @@ awn_applet_factory_init (AwnApplet *applet)
   
   align = gtk_alignment_new (0, 0.5, 1, 0);
   app->align = align;
-  gtk_alignment_set_padding (GTK_ALIGNMENT (align), 
-                             100-awn_applet_get_height (applet),
+  gtk_alignment_set_padding (GTK_ALIGNMENT (align),
+                             height,
                              0, 0, 0); 
   
   gtk_container_add (GTK_CONTAINER (applet), align);

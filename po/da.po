@@ -100,7 +100,7 @@ msgstr "Andet skridts farve:"
 
 #: ../avant-preferences/window.glade.h:15
 #, fuzzy
-msgid "Bar Appearence"
+msgid "Bar Appearance"
 msgstr "Panel udseende"
 
 #: ../avant-preferences/window.glade.h:16
@@ -190,7 +190,7 @@ msgstr "Vis vinduer fra alle skriveborder"
 
 #: ../avant-preferences/window.glade.h:36
 #, fuzzy
-msgid "Task Appearence"
+msgid "Task Appearance"
 msgstr "Panel udseende"
 
 #: ../avant-preferences/window.glade.h:37

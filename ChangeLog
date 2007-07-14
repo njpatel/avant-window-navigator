@@ -1,3 +1,39 @@
+2007-07-14  Neil J. Patel  <njpatel@gmail.com>
+
+	Patch by haytjes <hv1989@gmail.com>
+
+	* applets/Makefile.am:
+	* applets/notification-area/applet.c: (tray_applet_refresh),
+	(tray_icon_added), (awn_applet_factory_init):
+	* applets/taskman.desktop:
+	* applets/trash/trash.desktop:
+	* applets/trash/trashapplet.c: (draw):
+	* avant-preferences/window.glade:
+	* awn.pc:
+	* libawn/awn-defines.h:
+	* src/awn-applet-manager.c: (awn_applet_manager_load_applets):
+	* src/awn-bar.c: (render_rect), (apply_perspective_x),
+	(apply_perspective_y), (render):
+	* src/awn-bar.h:
+	* src/awn-gconf.c: (awn_gconf_new):
+	* src/awn-gconf.h:
+	* src/awn-task-manager.c: (_task_manager_check_width):
+	* src/awn-task.c: (awn_task_init), (draw),
+	(_task_wnck_icon_changed), (awn_task_set_window),
+	(awn_task_set_launcher), (awn_task_refresh_icon_geometry),
+	(awn_task_update_icon), (awn_task_set_width),
+	(awn_task_set_custom_icon), (awn_task_unset_custom_icon),
+	(_task_choose_custom_icon):
+	* src/awn-title.c: (_position_window):
+	* src/awn-utils.c: (awn_hide):
+	* src/awn-win-manager.c: (_refresh), (on_proximity_in_event):
+	* src/awn-window.c: (_position_window):
+	* src/main.c: (resize):
+	Fixes lots of things.
+	Adds reflection support to the bar.
+	Allows the bar to have an angle, so it looks 3D.
+	Lots of other things, ask him :-).
+
 2007-06-24  Neil J. Patel  <njpatel@gmail.com>
 
 	* src/awn-bar.c: (_position_window):

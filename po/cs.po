@@ -102,7 +102,7 @@ msgstr "Druhá barva:"
 
 #: ../avant-preferences/window.glade.h:15
 #, fuzzy
-msgid "Bar Appearence"
+msgid "Bar Appearance"
 msgstr "Panel"
 
 #: ../avant-preferences/window.glade.h:16
@@ -192,7 +192,7 @@ msgstr "Zobrazovat okna ze všech pracovních ploch"
 
 #: ../avant-preferences/window.glade.h:36
 #, fuzzy
-msgid "Task Appearence"
+msgid "Task Appearance"
 msgstr "Panel"
 
 #: ../avant-preferences/window.glade.h:37

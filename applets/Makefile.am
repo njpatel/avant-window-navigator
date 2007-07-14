@@ -1,4 +1,4 @@
-SUBDIRS = switcher trash
+SUBDIRS = switcher trash separator notification-area
 
 desktopdir = $(libdir)/awn/applets
 

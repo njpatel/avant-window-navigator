@@ -96,7 +96,7 @@ msgid "Background color:"
 msgstr ""
 
 #: ../avant-preferences/window.glade.h:15
-msgid "Bar Appearence"
+msgid "Bar Appearance"
 msgstr ""
 
 #: ../avant-preferences/window.glade.h:16
@@ -180,7 +180,7 @@ msgid "Show windows from all viewports"
 msgstr ""
 
 #: ../avant-preferences/window.glade.h:36
-msgid "Task Appearence"
+msgid "Task Appearance"
 msgstr ""
 
 #: ../avant-preferences/window.glade.h:37

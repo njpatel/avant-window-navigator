@@ -256,7 +256,7 @@ update_icons (TrashApplet *applet)
 	                                               "gnome-stock-trash",
 	                                               applet->height - PADDING,
 	                                               0, NULL);
-	applet->full_icon = gtk_icon_theme_load_icon (theme,
+  applet->full_icon = gtk_icon_theme_load_icon (theme,
 	                                               "gnome-stock-trash-full",
 	                                               applet->height - PADDING,
 	                                               0, NULL);
@@ -290,6 +290,7 @@ draw (GtkWidget *widget, cairo_t *cr, gint width, gint height)
 {
 	TrashApplet *applet = TRASH_APPLET (widget);
 	gint y = (applet->height + PADDING) - applet->y_offset;
+	GdkPixbuf *reflect;
 	
 	/* Clear the background to transparent */
 	cairo_set_source_rgba (cr, 1.0f, 1.0f, 1.0f, 0.0f);
@@ -298,12 +299,24 @@ draw (GtkWidget *widget, cairo_t *cr, gint width, gint height)
 	
 	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
 	
-	if (applet->is_empty)
+	if (applet->is_empty) {
 	        gdk_cairo_set_source_pixbuf (cr, applet->empty_icon, PADDING, y);
+	        reflect = gdk_pixbuf_flip(applet->empty_icon, FALSE);
+	}
         else
+        {
 	        gdk_cairo_set_source_pixbuf (cr, applet->full_icon, PADDING, y);
+		reflect = gdk_pixbuf_flip(applet->full_icon, FALSE);
+	}
 	cairo_paint (cr);
 	
+	if( applet->y_offset >= 0 )
+	{
+		y = (applet->height + PADDING) + applet->height - applet->y_offset;
+		gdk_cairo_set_source_pixbuf (cr, reflect, PADDING, y);
+		cairo_paint_with_alpha(cr, 0.33);
+		//cairo_paint (cr);
+	}
 
 	if (applet->progress != 0 && applet->progress != 1) {
 		
@@ -335,11 +348,13 @@ draw (GtkWidget *widget, cairo_t *cr, gint width, gint height)
 
 		cairo_set_source_rgba (cr, 0, 0, 0, 0.8);
 
-		cairo_move_to (cr, (applet->height/2.0) - ((extents.width+ extents.x_bearing)/2.0)-1, 75+ ( extents.height /2.0));
+		cairo_move_to (cr, (applet->height/2) - ((extents.width+ extents.x_bearing)/2.0)-1, applet->height*3/2 + ( extents.height /2.0));
 		cairo_show_text (cr, text);
-	        
 	}
 
+	if (reflect)
+		g_object_unref (G_OBJECT (reflect));
+		
 }
 
 static gboolean 

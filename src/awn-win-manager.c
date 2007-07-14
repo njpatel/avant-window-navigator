@@ -196,6 +196,8 @@ awn_win_mgr_workspace_changed (WnckScreen *screen, GtkWidget *hbox)
 static void
 _refresh (AwnApp *app, WnckWorkspace *space)
 {
+	g_print("_refresh\n");
+
 	g_return_if_fail (WNCK_IS_WINDOW (app->window));
 	if (!space)
 		return;
@@ -254,15 +256,16 @@ on_proximity_in_event (GtkWidget *eb, GdkEventCrossing *event, AwnApp *app)
 	
 	//g_print("Co-ords : %f , %f\n", event->x_root, event->y_root);
 	gint i = (int)event->x_root;
-	gint x, y;
+	gint x, y, w, h;
 	gdk_window_get_position (app->event_box->window, &x, &y);
+	gdk_window_get_size(WNCK_WINDOW(app->window), &w, &h);
 	
 	/* find middle of event_box */
 	do
-	        x+=60;
+	        x+=w;
 	while (x<i)
 	        ;
-	x -=30;
+	x -=w/2;
 	
 	awn_title_show(AWN_TITLE (title), wnck_window_get_name(WNCK_WINDOW(app->window)), x, 0);
 	

@@ -25,7 +25,7 @@
 #define AWN_APPLET_GCONF_PATH "/apps/avant-window-navigator/applets"
 
 #define AWN_MAX_HEIGHT 100
-#define AWN_MIN_HEIGHT 32
+#define AWN_MIN_HEIGHT 12
 
 typedef enum
 {

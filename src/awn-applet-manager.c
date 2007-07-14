@@ -233,7 +233,7 @@ awn_applet_manager_load_applets (AwnAppletManager *manager)
 
                 
                 gtk_widget_set_size_request (applet, -1, 
-                                             priv->settings->bar_height *2);
+                                             (priv->settings->bar_height)*2 +priv->settings->icon_offset);
                 
                 gtk_box_pack_start (GTK_BOX (manager), applet, 
                                     FALSE, FALSE, 0);

@@ -59,6 +59,7 @@ typedef struct {
 	gboolean hidden;
 	
 	int bar_height;
+	int bar_angle;
 
 	/* Bar appearance settings */
 	gboolean rounded_corners;
@@ -92,6 +93,8 @@ typedef struct {
 	
 	gboolean name_change_notify;
 	gboolean alpha_effect;
+	
+	int icon_offset;
 	
 	/* Title settings */
 	AwnColor text_color;

@@ -103,7 +103,7 @@ msgstr "Cor do segundo nível"
 
 #: ../avant-preferences/window.glade.h:15
 #, fuzzy
-msgid "Bar Appearence"
+msgid "Bar Appearance"
 msgstr "Aparência da Barra "
 
 #: ../avant-preferences/window.glade.h:16
@@ -193,7 +193,7 @@ msgstr "Mostrar janelas de todas as áreas de trabalho"
 
 #: ../avant-preferences/window.glade.h:36
 #, fuzzy
-msgid "Task Appearence"
+msgid "Task Appearance"
 msgstr "Aparência da Barra "
 
 #: ../avant-preferences/window.glade.h:37

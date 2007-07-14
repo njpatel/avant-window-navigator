@@ -320,7 +320,10 @@ _position_window (GtkWidget *window)
 	if (settings->hidden)
 		y_pos = (int)settings->monitor.height;
 	else
-		y_pos = (int) (settings->monitor.height-wh);
+		//if(settings->bar_angle == 0)
+			y_pos = (int) (settings->monitor.height-wh);
+		//else
+			//y_pos = (int) (settings->monitor.height-wh*9/8+2);
 	
 	if (stop_position) {
 		current_pos = x_pos;

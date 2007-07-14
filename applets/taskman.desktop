@@ -4,4 +4,4 @@ Encoding=UTF-8
 Name=Launcher/Taskmanager
 Comment=The main Awn Luancher/TaskManager applet
 Exec=None
-Icon=/usr/share/avant-window-navigator/avant-window-navigator.svg
+Icon=/usr/local/share/avant-window-navigator/avant-window-navigator.svg

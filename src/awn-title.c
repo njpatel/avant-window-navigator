@@ -421,12 +421,9 @@ _position_window (GtkWidget *window)
 	gtk_window_get_size(GTK_WINDOW(window), &ww, &wh);
 	
 	x = (int) ((settings->monitor.width - ww) / 2);
-
-	y = (int) (settings->monitor.height - ((settings->bar_height +2)*2));
+	y = (int) (settings->monitor.height - ((settings->bar_height +2)*2 + settings->icon_offset));
 	
-	gtk_window_move(GTK_WINDOW(window), x, y);
-	
-	
+	gtk_window_move(GTK_WINDOW(window), x, y);	
 }
 
 

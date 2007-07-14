@@ -66,7 +66,8 @@ void awn_bar_set_draw_separator (GtkWidget *bar, int x);
 gboolean awn_bar_separator_expose_event  (GtkWidget      *widget,
                                  GdkEventExpose *event,
                                  GtkWidget 	*bar);
-
+float apply_perspective_x (double width, double height, double x);
+float apply_perspective_y (double height);
 void
 awn_bar_add_separator (AwnBar *bar, GtkWidget *widget);
 

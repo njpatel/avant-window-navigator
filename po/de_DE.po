@@ -100,7 +100,7 @@ msgstr "Farbe 2:"
 
 #: ../avant-preferences/window.glade.h:15
 #, fuzzy
-msgid "Bar Appearence"
+msgid "Bar Appearance"
 msgstr "Design der Leiste"
 
 #: ../avant-preferences/window.glade.h:16
@@ -190,7 +190,7 @@ msgstr "Zeige Fenster aller Arbeitsflächen"
 
 #: ../avant-preferences/window.glade.h:36
 #, fuzzy
-msgid "Task Appearence"
+msgid "Task Appearance"
 msgstr "Design der Leiste"
 
 #: ../avant-preferences/window.glade.h:37

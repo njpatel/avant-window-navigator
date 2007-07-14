@@ -101,7 +101,7 @@ msgid "Background color:"
 msgstr "Χρώμα παρασκηνίου:"
 
 #: ../avant-preferences/window.glade.h:15
-msgid "Bar Appearence"
+msgid "Bar Appearance"
 msgstr "Εμφάνιση Μπάρας"
 
 #: ../avant-preferences/window.glade.h:16
@@ -185,7 +185,7 @@ msgid "Show windows from all viewports"
 msgstr "Προβολή παραθύρων από όλους τους χώρους εργασιών"
 
 #: ../avant-preferences/window.glade.h:36
-msgid "Task Appearence"
+msgid "Task Appearance"
 msgstr "Εμφάνιση Εργασιών"
 
 #: ../avant-preferences/window.glade.h:37

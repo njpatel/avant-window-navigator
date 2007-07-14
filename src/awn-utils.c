@@ -57,7 +57,7 @@ awn_hide (AwnSettings *settings)
 	//hide_window (GTK_WINDOW (settings->bar));
 	//hide_window (GTK_WINDOW (settings->window));
 	
-	dest_y = settings->bar_height + 2;
+	dest_y = settings->bar_height + 4;
 	
 	if (!effect_lock) {
 		g_timeout_add (20, (GSourceFunc)_move_bar, (gpointer)settings);

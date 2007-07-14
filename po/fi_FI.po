@@ -97,7 +97,7 @@ msgid "Background color:"
 msgstr "Taustan väri:"
 
 #: ../avant-preferences/window.glade.h:15
-msgid "Bar Appearence"
+msgid "Bar Appearance"
 msgstr "Palkin ulkoasu"
 
 #: ../avant-preferences/window.glade.h:16
@@ -181,7 +181,7 @@ msgid "Show windows from all viewports"
 msgstr "Näytä ikkunat kaikilta työpöydiltä"
 
 #: ../avant-preferences/window.glade.h:36
-msgid "Task Appearence"
+msgid "Task Appearance"
 msgstr "Tehtävien ulkoasu"
 
 #: ../avant-preferences/window.glade.h:37

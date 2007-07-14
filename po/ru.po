@@ -103,7 +103,7 @@ msgstr "Конечный цвет:"
 
 #: ../avant-preferences/window.glade.h:15
 #, fuzzy
-msgid "Bar Appearence"
+msgid "Bar Appearance"
 msgstr "Внешний вид панели"
 
 #: ../avant-preferences/window.glade.h:16
@@ -193,7 +193,7 @@ msgstr "Показывать окна со всех рабочих мест"
 
 #: ../avant-preferences/window.glade.h:36
 #, fuzzy
-msgid "Task Appearence"
+msgid "Task Appearance"
 msgstr "Внешний вид панели"
 
 #: ../avant-preferences/window.glade.h:37
