@@ -1,3 +1,13 @@
+2007-07-15  Neil J. Patel  <njpatel@gmail.com>
+
+	Patch by haytjes <hv1989@gmail.com>
+
+	* src/awn-bar.c: (render_rect), (render):
+	Fix rendering of the edge.
+
+	* src/awn-utils.c: (_move_bar), (awn_hide):
+	Fix auto hide support for icon_offset.
+
 2007-07-14  Neil J. Patel  <njpatel@gmail.com>
 
 	* src/awn-task.c: (_rounded_rect), (draw):

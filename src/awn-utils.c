@@ -42,7 +42,7 @@ _move_bar (AwnSettings *settings)
 	gtk_window_move (GTK_WINDOW (settings->bar), x, settings->monitor.height - ((settings->bar_height +2)*2) + current_y);
 	
 	gtk_window_get_position (GTK_WINDOW (settings->window), &x, &y);
-	gtk_window_move (GTK_WINDOW (settings->window), x, settings->monitor.height - ((settings->bar_height +2)*2) + current_y);
+	gtk_window_move (GTK_WINDOW (settings->window), x, settings->monitor.height - ((settings->bar_height)*2) - settings->icon_offset + current_y);
 	
 	return TRUE;
 	
@@ -57,7 +57,7 @@ awn_hide (AwnSettings *settings)
 	//hide_window (GTK_WINDOW (settings->bar));
 	//hide_window (GTK_WINDOW (settings->window));
 	
-	dest_y = settings->bar_height + 4;
+	dest_y = settings->bar_height + settings->icon_offset+4;
 	
 	if (!effect_lock) {
 		g_timeout_add (20, (GSourceFunc)_move_bar, (gpointer)settings);
