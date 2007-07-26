@@ -1,5 +1,13 @@
 2007-07-26  Miika-Petteri Matikainen  <miikapetteri@gmail.com>
 
+	* src/awn-task.c: (launch_hover_effect), (_task_fade_out_effect),
+	(launch_fade_out_effect), (_task_fade_in_effect),
+	(launch_fade_in_effect), (awn_task_proximity_in),
+	(awn_task_proximity_out), (awn_task_win_enter_out):
+	Fixes the fade effect.
+
+2007-07-26  Miika-Petteri Matikainen  <miikapetteri@gmail.com>
+
 	* applets/notification-area/eggtraymanager.c:
 	(egg_tray_manager_get_child_title):
 	Fixes string signedness issue in notification-are applet.

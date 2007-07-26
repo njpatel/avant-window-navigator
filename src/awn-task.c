@@ -589,7 +589,8 @@ launch_hover_effect (AwnTask *task )
 	priv = AWN_TASK_GET_PRIVATE (task);
 
 	if (priv->settings->fade_effect) {
-		g_timeout_add(25, (GSourceFunc)_task_hover_effect2, (gpointer)task);
+		priv->alpha = 1.0;
+		//g_timeout_add(25, (GSourceFunc)_task_hover_effect2, (gpointer)task);
 	} else if (priv->settings->hover_bounce_effect) {
 		g_timeout_add(40, (GSourceFunc)_task_hover_effect, (gpointer)task);
 	}
@@ -661,13 +662,15 @@ _task_fade_out_effect (AwnTask *task)
 	priv = AWN_TASK_GET_PRIVATE (task);
 
 	if (priv->hover) {
-		//priv->alpha = 1.0;
+		priv->alpha = 1.0;
 		return FALSE;
 	}
 
 	priv->alpha-=0.05;
 
 	if (priv->alpha <= 0.2) {
+		priv->alpha = 0.2;
+		gtk_widget_queue_draw(GTK_WIDGET(task));
 		return FALSE;
 	}
 
@@ -680,7 +683,7 @@ _task_fade_out_effect (AwnTask *task)
 static void
 launch_fade_out_effect (AwnTask *task )
 {
-	g_timeout_add(25, (GSourceFunc)_task_fade_out_effect, (gpointer)task);
+	g_timeout_add(15, (GSourceFunc)_task_fade_out_effect, (gpointer)task);
 }
 
 
@@ -689,6 +692,12 @@ _task_fade_in_effect (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	priv = AWN_TASK_GET_PRIVATE (task);
+	/*
+	if (priv->hover) {
+		priv->alpha = 1.0;
+		return FALSE;
+	}
+	
 	priv->alpha+=0.05;
 
 	if (priv->alpha >= 1.0 ) {
@@ -699,13 +708,17 @@ _task_fade_in_effect (AwnTask *task)
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 
 	return TRUE;
+	*/
+	priv->alpha = 1.0;
+	gtk_widget_queue_draw(GTK_WIDGET(task));
+	return FALSE;
 
 }
 
 static void
 launch_fade_in_effect (AwnTask *task )
 {
-	g_timeout_add(25, (GSourceFunc)_task_fade_in_effect, (gpointer)task);
+	g_timeout_add(40, (GSourceFunc)_task_fade_in_effect, (gpointer)task);
 }
 
 static gboolean
@@ -1240,9 +1253,12 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 
 	}
 
-	if (priv->hover)
+	if (priv->hover) {
+		if (settings->fade_effect) {
+			priv->alpha = 1.0;
+		}
 		return TRUE;
-	else {
+	} else {
 		if (priv->needs_attention)
 			return FALSE;
 		priv->hover = TRUE;
@@ -1253,7 +1269,7 @@ awn_task_proximity_in (GtkWidget *task, GdkEventCrossing *event)
 		} else {
 			priv->alpha = 1.0;
 			gtk_widget_queue_draw(GTK_WIDGET(task));
-			launch_fade_in_effect(AWN_TASK (task));
+			//launch_fade_in_effect(AWN_TASK (task));
 		}
 	}
 
@@ -1270,6 +1286,12 @@ awn_task_proximity_out (GtkWidget *task, GdkEventCrossing *event)
 	if (priv->title)
 		awn_title_show(AWN_TITLE (priv->title), " ", 20, 0);
 	priv->hover = FALSE;
+	
+	if (priv->settings->fade_effect) {
+		priv->alpha = 1.0;
+		gtk_widget_queue_draw(GTK_WIDGET(task));
+	}
+	
 	//priv->alpha = 1.0;
 	//gtk_widget_queue_draw(GTK_WIDGET(task));
 	//launch_fade_in_effect(task);
@@ -1300,7 +1322,13 @@ awn_task_win_enter_out (GtkWidget *window, GdkEventCrossing *event, AwnTask *tas
 	if (!AWN_IS_TASK (task)) return FALSE;
 
 	priv = AWN_TASK_GET_PRIVATE (task);
-	priv->alpha = 1.0;
+	//priv->alpha = 1.0;
+	
+	if (priv->settings->fade_effect) {
+		priv->alpha = 0.2;
+		launch_fade_in_effect(task);
+	}
+	
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 	return FALSE;
 }
