@@ -27,13 +27,23 @@ static gint dest_y = 0;
 static gboolean
 _move_bar (AwnSettings *settings)
 {
-	if (current_y > dest_y) {
-		current_y-=2;
-	} else if (current_y < dest_y) {
-		current_y+=2;
-	} else {
-		effect_lock = FALSE;
-		return FALSE;
+ _move_bar (AwnSettings *settings)
+ {
+ 	if (current_y > dest_y) {
+		if (current_y - dest_y == 1) {
+			current_y -= 1;
+		} else {
+			current_y -= 2;
+		}
+ 	} else if (current_y < dest_y) {
+		if (dest_y - current_y == 1) {
+			current_y += 1;
+		} else {
+			current_y += 2;
+		}
+ 	} else {
+ 		effect_lock = FALSE;
+ 		return FALSE;
 	}
 
 	gint x, y;

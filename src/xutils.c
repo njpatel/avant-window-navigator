@@ -2337,8 +2337,8 @@ _wnck_read_icons_ (Window         xwindow,
         {
           *iconp = scaled_from_pixdata (pixdata, w, h, ideal_width, ideal_height);
           
-          //*mini_iconp = scaled_from_pixdata (mini_pixdata, mini_w, mini_h,
-           //                                  ideal_mini_width, ideal_mini_height);
+          *mini_iconp = scaled_from_pixdata (mini_pixdata, mini_w, mini_h,
+                                            ideal_mini_width, ideal_mini_height);
 
           return TRUE;
         }

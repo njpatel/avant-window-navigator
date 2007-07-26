@@ -1,5 +1,12 @@
 2007-07-26  haytjes  <hv1989@gmail.com>
 
+	* src/awn-utils.c:
+	* src/xutils.c: (_wnck_read_icons_):
+	Fixes memory leak in _wnck_read_icons_
+	Fixes the CPU going up when AWN was hided
+
+2007-07-26  haytjes  <hv1989@gmail.com>
+
 	* src/awn-bar.c: (render):
 	Fixes the positions of the separators
 
