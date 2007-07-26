@@ -1,5 +1,11 @@
 2007-07-26  haytjes  <hv1989@gmail.com>
 
+	* applets/notification-area/Makefile.am:
+	Sets the location right for making notification-area
+	-- the applet notification-area isn't changed => still buggy --
+
+2007-07-26  haytjes  <hv1989@gmail.com>
+
 	* src/awn-utils.c:
 	* src/xutils.c: (_wnck_read_icons_):
 	Fixes memory leak in _wnck_read_icons_

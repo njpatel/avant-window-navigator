@@ -22,7 +22,7 @@ NAREA_LDADD =                        \
         $(top_builddir)/libawn/libawn.la
         
 
-notification_arealibdir = $(libdir)/awn/applets/notification/
+notification_arealibdir = $(libdir)/awn/applets/notification-area/
 notification_arealib_LTLIBRARIES = notification-area.la
 notification_area_la_SOURCES = $(NAREA_SOURCES)
 notification_area_la_LIBADD = $(NAREA_LDADD)
