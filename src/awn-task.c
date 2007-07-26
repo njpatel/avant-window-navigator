@@ -1360,7 +1360,9 @@ _task_wnck_icon_changed (WnckWindow *window, AwnTask *task)
 		return;
 
         GdkPixbuf *old = NULL;
+        GdkPixbuf *old_reflect = NULL;
         old = priv->icon;
+        old_reflect = priv->reflect;
 	int height = priv->settings->bar_height;
 	if ((priv->settings->task_width - 12) < height) {
 		height = priv->settings->task_width - 12;
@@ -1371,7 +1373,9 @@ _task_wnck_icon_changed (WnckWindow *window, AwnTask *task)
 
         priv->icon_width = gdk_pixbuf_get_width(priv->icon);
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
+	
         gdk_pixbuf_unref(old);
+        gdk_pixbuf_unref(old_reflect);
         gtk_widget_queue_draw(GTK_WIDGET(task));
 }
 
@@ -1712,9 +1716,11 @@ awn_task_update_icon (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	GdkPixbuf *old = NULL;
+	GdkPixbuf *old_reflect = NULL;
 	priv = AWN_TASK_GET_PRIVATE (task);
 
 	old = priv->icon;
+	old_reflect = priv->reflect;
 
 	int height = priv->settings->bar_height;
 	if ((priv->settings->task_width - 12) < height) {
@@ -1728,6 +1734,7 @@ awn_task_update_icon (AwnTask *task)
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 
 	gdk_pixbuf_unref (old);
+	gdk_pixbuf_unref (old_reflect);
 }
 
 void 
@@ -1735,6 +1742,7 @@ awn_task_set_width (AwnTask *task, gint width)
 {
 	AwnTaskPrivate *priv;
 	GdkPixbuf *old = NULL;
+	GdkPixbuf *old_reflect = NULL;
 	
 	if (!AWN_IS_TASK (task))
 		return;
@@ -1743,6 +1751,7 @@ awn_task_set_width (AwnTask *task, gint width)
 	priv = AWN_TASK_GET_PRIVATE (task);
 	
 	old = priv->icon;
+	old_reflect = priv->reflect;
 
 	if (priv->is_launcher) {
 		char * icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
@@ -1766,6 +1775,9 @@ awn_task_set_width (AwnTask *task, gint width)
 	}
 	if (G_IS_OBJECT (old) && priv->is_launcher)
 		gdk_pixbuf_unref (old);
+		
+	if (G_IS_OBJECT (old_reflect))
+		gdk_pixbuf_unref (old_reflect);
 
 	gtk_widget_set_size_request (GTK_WIDGET (task), 
 				     width, 
@@ -1790,11 +1802,13 @@ awn_task_set_custom_icon (AwnTask *task, GdkPixbuf *icon)
 {
 	AwnTaskPrivate *priv;
 	GdkPixbuf *old_icon;
+	GdkPixbuf *old_reflect;
 
 	g_return_if_fail (AWN_IS_TASK (task));
 
 	priv = AWN_TASK_GET_PRIVATE (task);
 	old_icon = priv->icon;
+	old_reflect = priv->reflect;
 
 	priv->icon = icon;
         priv->reflect = gdk_pixbuf_flip (priv->icon,FALSE);
@@ -1802,6 +1816,7 @@ awn_task_set_custom_icon (AwnTask *task, GdkPixbuf *icon)
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 
 	g_object_unref (G_OBJECT (old_icon));
+	g_object_unref (G_OBJECT (old_reflect));
 
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 }
@@ -1811,12 +1826,14 @@ awn_task_unset_custom_icon (AwnTask *task)
 {
 	AwnTaskPrivate *priv;
 	GdkPixbuf *old_icon;
+	GdkPixbuf *old_reflect;
 	char *icon_name = NULL;
 
 	g_return_if_fail (AWN_IS_TASK (task));
 
 	priv = AWN_TASK_GET_PRIVATE (task);
 	old_icon = priv->icon;
+	old_reflect = priv->reflect;
 
 	if (priv->is_launcher) {
 		icon_name = gnome_desktop_item_get_icon (priv->item, priv->settings->icon_theme );
@@ -1834,6 +1851,7 @@ awn_task_unset_custom_icon (AwnTask *task)
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 
 	g_object_unref (G_OBJECT (old_icon));
+	g_object_unref (G_OBJECT (old_reflect));
 
 	gtk_widget_queue_draw(GTK_WIDGET(task));
 }
@@ -1977,6 +1995,7 @@ _task_choose_custom_icon (AwnTask *task)
 	gint res = -1;
 	GdkPixbuf *pixbuf = NULL;
 	GdkPixbuf *old_icon = NULL;
+	GdkPixbuf *old_reflect = NULL;
 	GError *err = NULL;
 	gchar *filename = NULL;
 	gchar *save = NULL;
@@ -2062,6 +2081,7 @@ _task_choose_custom_icon (AwnTask *task)
 	/* Now we have saved the new pixbuf, lets actually set it as the main
 	   pixbuf and refresh the view */
 	old_icon = priv->icon;
+	old_reflect = priv->reflect;
 
 	priv->icon = pixbuf;
         priv->reflect = gdk_pixbuf_flip (priv->icon, FALSE);	
@@ -2069,6 +2089,7 @@ _task_choose_custom_icon (AwnTask *task)
 	priv->icon_height = gdk_pixbuf_get_height(priv->icon);
 
 	g_object_unref (G_OBJECT (old_icon));
+	g_object_unref (G_OBJECT (old_reflect));
 
 	gtk_widget_queue_draw(GTK_WIDGET(task));	
 
