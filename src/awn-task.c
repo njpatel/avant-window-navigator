@@ -737,6 +737,13 @@ _task_destroy (AwnTask *task)
 		priv->title = NULL;
 		g_free(priv->application);
 		gtk_widget_hide (GTK_WIDGET(task));
+		
+		if (priv->icon) {
+			gdk_pixbuf_unref(priv->icon);
+		}
+		if (priv->reflect) {
+			gdk_pixbuf_unref(priv->reflect);
+		}
 		gtk_object_destroy (GTK_OBJECT(task));
 		task = NULL;
 		return FALSE;
