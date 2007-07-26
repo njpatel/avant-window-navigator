@@ -1,5 +1,11 @@
 2007-07-26  Miika-Petteri Matikainen  <miikapetteri@gmail.com>
 
+	* applets/notification-area/eggtraymanager.c:
+	(egg_tray_manager_get_child_title):
+	Fixes string signedness issue in notification-are applet.
+
+2007-07-26  Miika-Petteri Matikainen  <miikapetteri@gmail.com>
+
 	* src/awn-title.c: (render):
 	Fixes a memory leak when hovering over icons.
 

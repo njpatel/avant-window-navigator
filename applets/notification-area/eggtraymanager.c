@@ -702,7 +702,7 @@ egg_tray_manager_get_child_title (EggTrayManager *manager,
   int format;
   gulong nitems;
   gulong bytes_after;
-  guchar *val;
+  guchar *val = NULL;
 
   g_return_val_if_fail (EGG_IS_TRAY_MANAGER (manager), NULL);
   g_return_val_if_fail (GTK_IS_SOCKET (child), NULL);
@@ -735,13 +735,13 @@ egg_tray_manager_get_child_title (EggTrayManager *manager,
       return NULL;
     }
 
-  if (!g_utf8_validate (val, nitems, NULL))
+  if (!g_utf8_validate ((gchar *)val, nitems, NULL))
     {
       XFree (val);
       return NULL;
     }
 
-  retval = g_strndup (val, nitems);
+  retval = g_strndup ((gchar *)val, nitems);
 
   XFree (val);
 #endif
