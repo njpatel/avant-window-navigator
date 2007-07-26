@@ -1,5 +1,10 @@
 2007-07-26  haytjes  <hv1989@gmail.com>
 
+	* src/awn-utils.c: (_move_bar):
+	typo
+
+2007-07-26  haytjes  <hv1989@gmail.com>
+
 	* applets/notification-area/Makefile.am:
 	Sets the location right for making notification-area
 	-- the applet notification-area isn't changed => still buggy --

@@ -27,8 +27,6 @@ static gint dest_y = 0;
 static gboolean
 _move_bar (AwnSettings *settings)
 {
- _move_bar (AwnSettings *settings)
- {
  	if (current_y > dest_y) {
 		if (current_y - dest_y == 1) {
 			current_y -= 1;
