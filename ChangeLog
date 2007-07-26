@@ -1,5 +1,12 @@
 2007-07-26  Miika-Petteri Matikainen  <miikapetteri@gmail.com>
 
+	* applets/trash/trashapplet.c: (trash_applet_destroy),
+	(update_icons), (draw):
+	* applets/trash/trashapplet.h:
+	Trashapplet loads the reflection only when the icon updates.
+
+2007-07-26  Miika-Petteri Matikainen  <miikapetteri@gmail.com>
+
 	* src/awn-task.c: (_task_destroy):
 	Fixes a memory leak in _task_destroy.
 

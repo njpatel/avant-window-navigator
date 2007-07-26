@@ -196,6 +196,18 @@ trash_applet_destroy (GtkObject *object)
 		g_source_remove (applet->update_id);
 	applet->update_id = 0;
 
+	if (applet->empty_icon)
+		g_object_unref(applet->empty_icon);
+		
+	if (applet->full_icon)
+		g_object_unref(applet->full_icon);
+		
+	if (applet->reflect_empty)
+		g_object_unref(applet->reflect_empty);
+		
+	if (applet->reflect_full)
+		g_object_unref(applet->reflect_full);	
+
 	(* GTK_OBJECT_CLASS (trash_applet_parent_class)->destroy) (object);
 }
 
@@ -250,6 +262,8 @@ update_icons (TrashApplet *applet)
   GtkIconTheme *theme = gtk_icon_theme_get_default ();
   GdkPixbuf *old0 = applet->empty_icon;
   GdkPixbuf *old1 = applet->full_icon;
+  GdkPixbuf *reflect_empty_old = applet->reflect_empty;
+  GdkPixbuf *reflect_full_old = applet->reflect_full;
   
 
   applet->empty_icon = gtk_icon_theme_load_icon (theme,
@@ -260,11 +274,21 @@ update_icons (TrashApplet *applet)
 	                                               "gnome-stock-trash-full",
 	                                               applet->height - PADDING,
 	                                               0, NULL);
+	                                               
+  applet->reflect_empty = gdk_pixbuf_flip(applet->empty_icon, FALSE);
+  applet->reflect_full = gdk_pixbuf_flip(applet->full_icon, FALSE);
+  
   if (old0)
     g_object_unref (G_OBJECT (old0));
 
   if (old1)
     g_object_unref (G_OBJECT (old1));
+    
+  if (reflect_empty_old)
+    g_object_unref (G_OBJECT (reflect_empty_old));
+    
+  if (reflect_full_old)
+    g_object_unref (G_OBJECT (reflect_full_old));
 
 }
 
@@ -301,12 +325,12 @@ draw (GtkWidget *widget, cairo_t *cr, gint width, gint height)
 	
 	if (applet->is_empty) {
 	        gdk_cairo_set_source_pixbuf (cr, applet->empty_icon, PADDING, y);
-	        reflect = gdk_pixbuf_flip(applet->empty_icon, FALSE);
+	        reflect = applet->reflect_empty;
 	}
         else
         {
 	        gdk_cairo_set_source_pixbuf (cr, applet->full_icon, PADDING, y);
-		reflect = gdk_pixbuf_flip(applet->full_icon, FALSE);
+		reflect = applet->reflect_full;
 	}
 	cairo_paint (cr);
 	
@@ -350,11 +374,7 @@ draw (GtkWidget *widget, cairo_t *cr, gint width, gint height)
 
 		cairo_move_to (cr, (applet->height/2) - ((extents.width+ extents.x_bearing)/2.0)-1, applet->height*3/2 + ( extents.height /2.0));
 		cairo_show_text (cr, text);
-	}
-
-	if (reflect)
-		g_object_unref (G_OBJECT (reflect));
-		
+	}		
 }
 
 static gboolean 

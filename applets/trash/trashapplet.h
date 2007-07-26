@@ -69,6 +69,8 @@ struct _TrashApplet
 	GtkWidget *image;
 	GdkPixbuf *empty_icon;
 	GdkPixbuf *full_icon;
+	GdkPixbuf *reflect_empty;
+	GdkPixbuf *reflect_full;
 	TrashState icon_state;
 
 	gint item_count;
