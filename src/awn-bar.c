@@ -357,8 +357,14 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 			real_x = x + dest_width - current_width;
 		
 		if (settings->bar_angle != 0)
-                  real_x += 20;
-                cairo_set_line_width (cr, 1.0);
+		{
+			if(settings->icon_offset-3<=height/4){
+				real_x += apply_perspective_x(width, settings->icon_offset-3, 0);
+			} else {
+				real_x += apply_perspective_x(width, height/4, 0);
+			}
+                }
+		cairo_set_line_width (cr, 1.0);
 		
 		cairo_move_to (cr, real_x+apply_perspective_x(width, bar_height/2, separator-2.5), bar_height- icon_offset+3 + apply_perspective_y(bar_height));
 		cairo_line_to (cr, real_x+apply_perspective_x(width, 3, separator-2.5), (bar_height + 2) * 2-3);
@@ -425,8 +431,13 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 		else
 			real_x = x + dest_width - current_width;
 		
-                if (settings->bar_angle != 0)
-                  real_x += 20;
+                if (settings->bar_angle != 0) {
+			if(settings->icon_offset-3<=height/4){
+				real_x += apply_perspective_x(width, settings->icon_offset-3, 0);
+			} else {
+				real_x += apply_perspective_x(width, height/4, 0);
+			}
+		}
 
 		cairo_set_line_width (cr, 1.0);
 		

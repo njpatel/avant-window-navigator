@@ -1,4 +1,9 @@
-2007-07-26  h4writer  <hv1989@gmail.com>
+2007-07-26  haytjes  <hv1989@gmail.com>
+
+	* src/awn-bar.c: (render):
+	Fixes the positions of the separators
+
+2007-07-26  haytjes  <hv1989@gmail.com>
 
 	* src/awn-bar.c: (render_rect), (glass_engine), (pattern_engine),
 	(render):
