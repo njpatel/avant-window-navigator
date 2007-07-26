@@ -1,5 +1,10 @@
 2007-07-26  Miika-Petteri Matikainen  <miikapetteri@gmail.com>
 
+	* src/awn-title.c: (render):
+	Fixes a memory leak when hovering over icons.
+
+2007-07-26  Miika-Petteri Matikainen  <miikapetteri@gmail.com>
+
 	* applets/switcher/applet.c:
 	Fixes a translation issue in Switcher applet.
 

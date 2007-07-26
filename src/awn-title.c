@@ -285,6 +285,7 @@ render (cairo_t *cr, const char *utf8, gint width, gint height, gint x_pos)
 	cairo_set_line_width (cr, 0.7);
 	cairo_stroke (cr);	
 	*/
+	g_object_unref(pLayout);
 }
 
 static void 
