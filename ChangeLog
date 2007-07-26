@@ -1,5 +1,10 @@
 2007-07-26  Miika-Petteri Matikainen  <miikapetteri@gmail.com>
 
+	* applets/switcher/applet.c:
+	Fixes a translation issue in Switcher applet.
+
+2007-07-26  Miika-Petteri Matikainen  <miikapetteri@gmail.com>
+
 	* src/awn-task.c: (_task_wnck_icon_changed),
 	(awn_task_update_icon), (awn_task_set_width),
 	(awn_task_set_custom_icon), (awn_task_unset_custom_icon),
