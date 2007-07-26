@@ -949,8 +949,8 @@ draw (GtkWidget *task, cairo_t *cr)
 		}
 	}
 
-        /* Don't paint in bottom 3px if there is an offset */
-        if (settings->icon_offset) {
+        /* Don't paint in bottom 3px if there is an bar_angle */
+        if ( settings->bar_angle != 0) {
                 cairo_save (cr);
                 cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
                 cairo_set_source_rgba (cr, 1, 1, 1, 0);

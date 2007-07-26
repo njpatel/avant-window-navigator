@@ -160,15 +160,20 @@ render_rect (cairo_t *cr, double x, double y, double width, double height, doubl
 	}
 	else
 	{
+		/* Let the bar 4px of the bottom => 3d look*/
+		if( settings->bar_angle != 0 ) {
+			y-=3;
+		}
+
 		double x0  = x,  	
 		y0	   = y,
 		x1	   = x+width,
 		y1	   = y+height;
 
-		cairo_move_to  (cr, x0 + apply_perspective_x(width, height/2, 0)    , y0 + apply_perspective_y( height )- icon_offset);
-		cairo_line_to  (cr, x0 + apply_perspective_x(width, height/2, width), y0 + apply_perspective_y( height )- icon_offset);
-		cairo_line_to  (cr, x1 + apply_perspective_x(width, 3, 0)  , y1-3 );
-		cairo_line_to  (cr, x0 + apply_perspective_x(width, 3, 0)  , y1-3 );
+		cairo_move_to  (cr, x0 + apply_perspective_x(width, height/2, 0)    , y0 + apply_perspective_y( height ) );
+		cairo_line_to  (cr, x0 + apply_perspective_x(width, height/2, width), y0 + apply_perspective_y( height ) );
+		cairo_line_to  (cr, x0 + apply_perspective_x(width, 2*offset, width), y1-2*offset);
+		cairo_line_to  (cr, x0 + apply_perspective_x(width, 2*offset, 0), y1-2*offset);
 
 	       	cairo_close_path (cr);
 	}
@@ -194,7 +199,7 @@ apply_perspective_y( double height )
 }
 
 static void
-glass_engine (cairo_t *cr, double x, gint width, gint height)
+glass_engine (cairo_t *cr, double x, gint width, gint height, gint offset)
 {
 	cairo_pattern_t *pat;
 	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
@@ -211,14 +216,14 @@ glass_engine (cairo_t *cr, double x, gint width, gint height)
 				   		settings->g_step_2.green, 
 				   		settings->g_step_2.blue,
 				   		settings->g_step_2.alpha);
-	render_rect (cr, x, height/2, width, height/2, 0);
+	render_rect (cr, x, height/2-offset, width, height/2+offset, 0);
 	cairo_set_source(cr, pat);
 	cairo_fill(cr);
 	cairo_pattern_destroy(pat);
 }
 
 static void
-pattern_engine (cairo_t *cr, double x, gint width, gint height)
+pattern_engine (cairo_t *cr, double x, gint width, gint height, gint offset)
 {
 	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
 	cairo_surface_t *image;
@@ -230,7 +235,7 @@ pattern_engine (cairo_t *cr, double x, gint width, gint height)
         cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
 
         cairo_set_source (cr, pattern);
-	render_rect  (cr, x, (height/2), width, (height/2), 0);
+	render_rect  (cr, x, (height/2)-offset, width, (height/2)+offset, 0);
         
         cairo_save(cr);
         	cairo_clip(cr);
@@ -249,7 +254,12 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
         
         if( settings->bar_angle != 0 ) {
 		icon_offset = 0;
-                width += 40;
+		/* count extra space on left and right from bar */
+		if(settings->icon_offset-3<=height/4){
+			width += 2*apply_perspective_x(width, settings->icon_offset-3, 0);
+		} else {
+			width += 2*apply_perspective_x(width, height/4, 0);
+		}
 	} else {
 		icon_offset = settings->icon_offset;
 	}
@@ -265,10 +275,10 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 	
 	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
 	
-	glass_engine(cr, x, width, height);
+	glass_engine(cr, x, width, height, icon_offset);
 	
 	if (settings->render_pattern)
-		pattern_engine(cr, x, width, height);
+		pattern_engine(cr, x, width, height, icon_offset);
 	
 	/* hilight gradient */
 	cairo_pattern_t *pat;
@@ -286,14 +296,14 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 				   		settings->g_histep_2.alpha);
 	
 	if (settings->bar_angle == 0)
-		render_rect (cr, x+1, height/2, width-2, height/5, 0);
+		render_rect (cr, x+1, height/2-icon_offset, width-2, height/5, 0);
 	else {
 		render_rect (cr, 
-                             x+1+apply_perspective_x(width, 
+                             x+3+apply_perspective_x(width, 
                                                      bar_height/4, 
                                                      0),
-                             height*7/10-2, 
-                             width-2-2*apply_perspective_x(width, 
+                             height*7/10, 
+                             width-6-2*apply_perspective_x(width, 
                                                            bar_height/4, 
                                                            0), 
                              height/5, 0);
@@ -304,10 +314,10 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
         if (settings->bar_angle != 0)
         {
                 cairo_set_source_rgba (cr, settings->border_color.red,
-                                           settings->border_color.blue,
                                            settings->border_color.green,
+                                           settings->border_color.blue,
                                            settings->border_color.alpha+0.2);
-                cairo_rectangle (cr, x+3, height-3, width, height-3);
+                cairo_rectangle (cr, x, height-3, width, 3);
                 cairo_fill (cr);
                 
                 /* Remove thetwo trailing triangles */
@@ -327,7 +337,7 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 				   settings->hilight_color.green, 
 				   settings->hilight_color.blue,
 				   settings->hilight_color.alpha);
-	render_rect (cr, x+1.5, (height/2)+1.5, width-3, height, 1);
+	render_rect (cr, x+1.5, (height/2-icon_offset)+1.5, width-3, (height/2+icon_offset), 1);
 	cairo_stroke(cr);
 	
 	/* border */
@@ -335,7 +345,7 @@ render (AwnBar *bar, cairo_t *cr, gint x_width, gint height)
 				   settings->border_color.green, 
 				   settings->border_color.blue,
 				   settings->border_color.alpha);
-	render_rect (cr, x +0.5, (height/2)+0.5, width-1, (height/2)+1, 0);
+	render_rect (cr, x+0.5, (height/2-icon_offset)+1, width-1, (height/2+icon_offset), 0);
 	cairo_stroke(cr);
 
 	/* separator */

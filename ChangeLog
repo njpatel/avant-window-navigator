@@ -1,3 +1,13 @@
+2007-07-26  h4writer  <hv1989@gmail.com>
+
+	* src/awn-bar.c: (render_rect), (glass_engine), (pattern_engine),
+	(render):
+	* src/awn-task.c: (draw):
+	Fixes the look of the bar (icon_offset + bar_angle = 0)
+	Fixes the internal hi-lightborder
+	Calculates the extra width of the bar (instead of taking 40px)
+	Fixes the color of the horizontal bar
+
 2007-07-26  Miika-Petteri Matikainen  <miikapetteri@gmail.com>
 
 	* src/awn-task.c: (launch_hover_effect), (_task_fade_out_effect),
