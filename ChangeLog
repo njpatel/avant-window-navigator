@@ -1,3 +1,42 @@
+2007-07-28  Neil J. Patel  <njpatel@gmail.com>
+
+	Merged patch by Anthony Arobone.
+
+	* applets/notification-area/applet.c: (awn_applet_factory_init):
+	* applets/separator/applet.c: (awn_applet_factory_init):
+	* applets/switcher/applet.c: (awn_applet_factory_init):
+	* applets/taskman.desktop:
+	* applets/trash/applet.c: (awn_applet_factory_init):
+	* applets/trash/trash.desktop:
+	* awn-applet-activation/awn-plug.c: (on_plug_embedded),
+	(on_size_changed), (awn_plug_init), (awn_plug_new):
+	* awn-applet-activation/awn-plug.h:
+	* awn.pc:
+	* configure.in:
+	* intltool-merge.in:
+	* libawn/Makefile.am:
+	* libawn/awn-applet-dialog.c: (awn_applet_dialog_class_init),
+	(awn_applet_dialog_init), (awn_applet_dialog_new),
+	(_on_alpha_screen_changed), (awn_applet_dialog_postion_reset),
+	(_on_realize), (_on_expose_event), (_on_key_press_event):
+	* libawn/awn-applet-dialog.h:
+	* libawn/awn-applet.c: (awn_applet_virtual_on_plug_embedded),
+	(awn_applet_virtual_on_size_changed), (awn_applet_class_init),
+	(awn_applet_new):
+	* libawn/awn-applet.h:
+	* libawn/awn-cairo-utils.c: (awn_cairo_rounded_rect):
+	* libawn/awn-cairo-utils.h:
+	* src/awn-applet-manager-dbus.xml:
+	* src/awn-applet-manager.c: (awn_applet_manager_class_init),
+	(on_awn_applet_manager_size_allocate), (awn_applet_manager_new):
+	* src/awn-applet-manager.h:
+	* src/awn-window.c: (_position_func):
+	Changes the way applets are init()'ed, so you can inhert from the AwnApplet
+	object. 
+	Adds a awn-applet-dialog which allows you to have a nice popup which stays
+	above your applet.
+	Adds some cairo utility functions into libawn.
+
 2007-07-26  haytjes  <hv1989@gmail.com>
 
 	* src/awn-utils.c: (_move_bar):

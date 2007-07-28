@@ -72,9 +72,10 @@ applet_button_release (GtkWidget      *widget,
 		return FALSE;
 }
 
-gboolean 
-awn_applet_factory_init (AwnApplet *applet)
+AwnApplet*
+awn_applet_factory_init ( gchar* uid, gint orient, gint height )
 {
+  AwnApplet *applet = awn_applet_new( uid, orient, height );
   GtkWidget     *trash;
   GtkWidget     *menu;
   GtkWidget     *item;
@@ -122,9 +123,8 @@ awn_applet_factory_init (AwnApplet *applet)
   
   gtk_container_add (GTK_CONTAINER (applet), trash);
   
-  gtk_widget_show_all (GTK_WIDGET (applet));
   gtk_widget_show_all (GTK_WIDGET (menu));
 
-  return TRUE;
+  return applet;
 }
   

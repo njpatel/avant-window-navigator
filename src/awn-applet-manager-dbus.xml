@@ -13,7 +13,11 @@
 
 	<signal name="HeightChanged">
 		<arg type="d" name="orient"/>
-	</signal>	
+	</signal>
+
+	<signal name="SizeChanged">
+		<arg type="d" name="x"/>
+	</signal>
 	
 	<signal name="DestroyNotify">
 	</signal>	

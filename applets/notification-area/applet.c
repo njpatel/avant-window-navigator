@@ -194,9 +194,10 @@ tray_icon_message_cancelled (EggTrayManager *manager,
   /* FIXME: Er, cancel the message :-/? */
 }
 
-gboolean 
-awn_applet_factory_init (AwnApplet *applet)
+AwnApplet*
+awn_applet_factory_init ( gchar* uid, gint orient, gint height )
 {
+  AwnApplet *applet = awn_applet_new( uid, orient, height );
   TrayApplet *app = g_new0 (TrayApplet, 1);
   GdkScreen  *screen;
   GtkWidget  *align, *table, *eb;
@@ -257,6 +258,5 @@ awn_applet_factory_init (AwnApplet *applet)
   gtk_widget_set_colormap (eb, gdk_screen_get_rgb_colormap (screen));
   gtk_container_add (GTK_CONTAINER (eb), table);
   
-  gtk_widget_show_all (GTK_WIDGET (applet));
-  return TRUE;
+  return applet;
 }

@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include "awn-window.h"
+#include "awn-applet-manager.h"
 
 
 #include <X11/Xlib.h>
@@ -299,12 +300,14 @@ _position_func (GtkWidget *window)
 {
 	if (x_pos == current_pos) {
 		is_positioning = FALSE;
+		on_awn_applet_manager_size_allocate(window, NULL, AWN_APPLET_MANAGER(settings->appman) );
 		return FALSE;
 	} else if (x_pos > current_pos) {
 		current_pos++;
 	} else {
 		current_pos--;
 	}
+//	on_awn_applet_manager_size_allocate(window, NULL, AWN_APPLET_MANAGER(settings->appman) );
 	gtk_window_move(GTK_WINDOW(window), current_pos, y_pos);
 	return TRUE;
 }

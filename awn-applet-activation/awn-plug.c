@@ -46,7 +46,7 @@ struct _AwnPlugPrivate
 {
 	AwnAppletInitFunc	init_func;
 	GModule		       *module;
-	GtkWidget	       *applet;
+	AwnApplet	       *applet;
 	
 	DBusGConnection	       *connection;
 	DBusGProxy	       *proxy;
@@ -76,11 +76,17 @@ on_plug_embedded (GtkPlug *lug, AwnPlug *plug)
 	g_return_if_fail (AWN_IS_PLUG (plug));
 	priv = AWN_PLUG_GET_PRIVATE (plug);
 	
-	if (!(priv->init_func (AWN_APPLET (priv->applet)))) {
+/*
+ 	if (!(priv->init_func (AWN_APPLET (priv->applet)))) {
 		g_warning ("Unable to embed applet\n");
 		return;
 	}
+*/
 	gtk_widget_show_all (GTK_WIDGET (plug));
+	
+	// notify the applet that we started
+//	printf("[AWNPLUG] applet type =  %s\n", g_type_name(G_OBJECT_TYPE(priv->applet)));
+	AWN_APPLET_GET_CLASS(priv->applet)->plug_embedded( priv->applet );
 }
 
 static void
@@ -103,6 +109,14 @@ on_height_changed (DBusGProxy *proxy, gint height, AwnPlug *plug)
 	priv = AWN_PLUG_GET_PRIVATE (plug);
 	
 	g_object_set (priv->applet, "height", height, NULL);
+}
+
+
+static void
+on_size_changed (DBusGProxy *proxy, gint x, AwnPlug *plug)
+{
+	AwnPlugPrivate *priv = AWN_PLUG_GET_PRIVATE( plug );
+	AWN_APPLET_GET_CLASS(priv->applet)->size_changed( priv->applet, x );
 }
 
 static void
@@ -233,6 +247,8 @@ awn_plug_init(AwnPlug *plug)
 					 G_TYPE_INVALID);
 		dbus_g_proxy_add_signal (priv->proxy, "DestroyApplet",
 					 G_TYPE_STRING, G_TYPE_INVALID);
+		dbus_g_proxy_add_signal (priv->proxy, "SizeChanged",
+					 G_TYPE_INT, G_TYPE_INVALID);
 
 		dbus_g_proxy_connect_signal (priv->proxy,
                                              "OrientChanged",
@@ -253,6 +269,11 @@ awn_plug_init(AwnPlug *plug)
 		dbus_g_proxy_connect_signal (priv->proxy,
                                              "DestroyApplet",
                                              G_CALLBACK (on_destroy_applet),
+                                             (gpointer)plug,
+                                             NULL);
+		dbus_g_proxy_connect_signal (priv->proxy,
+                                             "SizeChanged",
+                                             G_CALLBACK (on_size_changed),
                                              (gpointer)plug,
                                              NULL);
 	}
@@ -308,14 +329,15 @@ awn_plug_new (const gchar *path,
         }
 	
 	/* Create the default applet */
-	priv->applet = awn_applet_new ();
-	g_object_set (G_OBJECT (priv->applet), 
-		      "uid", uid, 
-		      "orient", orient,
-		      "height", height,
-		      NULL);
-        gtk_container_add (GTK_CONTAINER (plug), priv->applet);
-		
+	priv->applet = AWN_APPLET( priv->init_func( uid, orient, height ) );
+//	g_object_set (G_OBJECT (priv->applet), "uid", uid, NULL);
+	//g_object_set (G_OBJECT (priv->applet), 
+	//	      "uid", uid, 
+	//	      "orient", orient,
+	//	      "height", height,
+	//	      NULL);
+	gtk_container_add (GTK_CONTAINER (plug), GTK_WIDGET(priv->applet) );
+	
 	g_signal_connect (GTK_PLUG (plug), "embedded", 
 			  G_CALLBACK (on_plug_embedded), (gpointer)plug);
 	return plug;

@@ -48,20 +48,13 @@ expose (GtkWidget *widget, GdkEventExpose *event, gpointer null)
   return TRUE;
 }
 
-gboolean 
-awn_applet_factory_init (AwnApplet *applet)
+AwnApplet*
+awn_applet_factory_init ( gchar* uid, gint orient, gint height )
 {
-  GtkWidget *eb;
+  AwnApplet *applet = awn_applet_new( uid, orient, height );
+  g_signal_connect (G_OBJECT (applet), "expose-event", G_CALLBACK (expose), NULL);
 
-  eb = gtk_event_box_new ();
-  gtk_event_box_set_visible_window (GTK_EVENT_BOX (eb), TRUE);
-  g_signal_connect (G_OBJECT (eb), "expose-event", G_CALLBACK (expose), NULL);
-
-  gint height = awn_applet_get_height (applet);
   gtk_widget_set_size_request (GTK_WIDGET (applet), 5, height * 2);
-  
-  gtk_widget_show_all (GTK_WIDGET (applet));
-  
-  return TRUE;
+  return applet;
 }
 

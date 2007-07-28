@@ -74,6 +74,18 @@ static void awn_applet_class_init(AwnAppletClass *klass);
 static void awn_applet_init(AwnApplet *applet);
 static void awn_applet_finalize(GObject *obj);
 
+
+/* VIRTUAL GOBJECT METHODS */
+
+static void awn_applet_virtual_on_plug_embedded( AwnApplet *applet ) {
+//	printf( "[AWNAPPLET] default on_plug_embedded\n" );
+}
+
+static void awn_applet_virtual_on_size_changed( AwnApplet *applet, gint x ) {
+//	printf( "[AWNAPPLET] default on_size_changed\n" );
+}
+
+
 /* MAIN FUNCTIONS */
 
 static void
@@ -352,7 +364,10 @@ awn_applet_class_init(AwnAppletClass *klass)
 {
 	GObjectClass *gobject_class;
 	GtkWidgetClass *widget_class;
-	
+
+	klass->size_changed = awn_applet_virtual_on_size_changed;
+	klass->plug_embedded = awn_applet_virtual_on_plug_embedded;
+
 	parent_class = g_type_class_peek_parent(klass);
 
 	gobject_class = G_OBJECT_CLASS(klass);
@@ -450,12 +465,17 @@ awn_applet_finalize(GObject *obj)
 }
 
 GtkWidget *
-awn_applet_new(void)
+awn_applet_new( const gchar* uid, gint orient, gint height )
 {
 	GtkWidget *applet = g_object_new(AWN_TYPE_APPLET, 
 					 "above-child", FALSE,
 					 "visible-window", TRUE,
 					 NULL);
+	g_object_set( G_OBJECT(applet),
+			  "uid", uid, 
+		      "orient", orient,
+		      "height", height,
+		      NULL);
 	return applet;
 }
 

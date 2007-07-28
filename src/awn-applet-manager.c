@@ -63,6 +63,7 @@ enum
 	HEIGHT_CHANGED,
 	DELETE_NOTIFY,
 	DELETE_APPLET,
+	SIZE_CHANGED,
 
 	LAST_SIGNAL
 };
@@ -440,6 +441,16 @@ awn_applet_manager_class_init (AwnAppletManagerClass *class)
 			G_TYPE_NONE,
 			1, G_TYPE_STRING);
 
+	_appman_signals[SIZE_CHANGED] =
+		g_signal_new ("size_changed",
+			G_OBJECT_CLASS_TYPE (class),
+			G_SIGNAL_RUN_FIRST,
+			G_STRUCT_OFFSET (AwnAppletManagerClass, size_changed),
+			NULL, NULL,
+			g_cclosure_marshal_VOID__INT,
+			G_TYPE_NONE,
+			1, G_TYPE_INT);
+			
 	g_type_class_add_private (obj_class, sizeof (AwnAppletManagerPrivate));
 	
 	dbus_g_object_type_install_info (G_TYPE_FROM_CLASS (class),
@@ -464,6 +475,13 @@ awn_applet_manager_init (AwnAppletManager *applet_manager)
                 applet_manager, NULL, NULL);
 }
 
+void on_awn_applet_manager_size_allocate (GtkWidget *widget, GtkAllocation *allocation, AwnAppletManager *manager) {
+	gint x, y;
+	gtk_window_get_position( GTK_WINDOW(widget), &x, &y );
+	g_signal_emit( G_OBJECT (manager), _appman_signals[SIZE_CHANGED], 0, x );
+}
+
+
 GtkWidget *
 awn_applet_manager_new (AwnSettings *settings)
 {
@@ -474,9 +492,10 @@ awn_applet_manager_new (AwnSettings *settings)
 			     "homogeneous", FALSE,
 			     "spacing", 3 ,
 			     NULL);
-        priv = AWN_APPLET_MANAGER_GET_PRIVATE (applet_manager);
 
-        priv->settings = settings;
+    priv = AWN_APPLET_MANAGER_GET_PRIVATE (applet_manager);
+
+    priv->settings = settings;
 
 	return applet_manager;
 }

@@ -45,7 +45,7 @@ typedef struct _AwnPlugPrivate  AwnPlugPrivate;
 #define AWN_IS_PLUG_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE ((obj), \
         AWN_TYPE_PLUG))
 
-#define AWN_PLUG_GET_CLASS	(G_TYPE_INSTANCE_GET_CLASS ((obj), \
+#define AWN_PLUG_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                 AWN_TYPE_PLUG, \
                                 AwnPlugClass))
 

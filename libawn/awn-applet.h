@@ -38,7 +38,7 @@ typedef struct _AwnAppletPrivate AwnAppletPrivate;
                                 AwnApplet))
 
 #define AWN_APPLET_CLASS(obj)	(G_TYPE_CHECK_CLASS_CAST ((obj), \
-                                AWN_APPLET, \
+                                AWN_TYPE_APPLET, \
                                 AwnAppletClass))
                                 
 #define AWN_IS_APPLET(obj)	(G_TYPE_CHECK_INSTANCE_TYPE ((obj),\
@@ -47,7 +47,7 @@ typedef struct _AwnAppletPrivate AwnAppletPrivate;
 #define AWN_IS_APPLET_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE ((obj), \
         AWN_TYPE_APPLET))
 
-#define AWN_APPLET_GET_CLASS	(G_TYPE_INSTANCE_GET_CLASS ((obj), \
+#define AWN_APPLET_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                 AWN_TYPE_APPLET, \
                                 AwnAppletClass))
 
@@ -60,9 +60,11 @@ struct _AwnAppletClass
 {
 	GtkEventBoxClass parent_class;
 
+	void (*plug_embedded)  (AwnApplet *applet);
 	void (*orient_changed) (AwnApplet *applet, AwnOrientation oreint);
 	void (*height_changed) (AwnApplet *applet, guint height);
 	void (*deleted)        (AwnApplet *applet, const gchar *uid);
+	void (*size_changed)   (AwnApplet *applet, const gint x);
         /* Future padding */
         void (*_applet0) (void);
         void (*_applet1) (void);
@@ -72,10 +74,10 @@ struct _AwnAppletClass
 
 GType awn_applet_get_type (void);
 
-typedef gboolean (*AwnAppletInitFunc) (AwnApplet *applet);
+typedef AwnApplet* (*AwnAppletInitFunc) ( const gchar* uid, gint orient, gint height );
 
 GtkWidget *
-awn_applet_new (void);
+awn_applet_new ( const gchar* uid, gint orient, gint height );
 
 AwnOrientation
 awn_applet_get_orientation (AwnApplet *applet);
@@ -94,6 +96,7 @@ awn_applet_add_preferences (AwnApplet *applet,
 
 GtkWidget*
 awn_applet_create_default_menu (AwnApplet *applet);
+
 
 G_END_DECLS
 

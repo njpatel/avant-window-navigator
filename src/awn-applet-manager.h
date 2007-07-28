@@ -66,6 +66,7 @@ struct _AwnAppletManagerClass
         void (*height_changed) (AwnAppletManager *manager, gint height);
         void (*destroy_notify) (AwnAppletManager *manager);
         void (*destroy_applet) (AwnAppletManager *manager, const gchar *uid);
+        void (*size_changed)   (AwnAppletManager *manager, gint x);
         
         /* Future padding */
         void (*_applet_manager0) (void);
@@ -86,6 +87,9 @@ awn_applet_manager_quit (AwnAppletManager *manager);
 
 void
 awn_applet_manager_height_changed (AwnAppletManager *manager);
+
+void
+on_awn_applet_manager_size_allocate (GtkWidget *widget, GtkAllocation *allocation, AwnAppletManager *manager);
 
 G_END_DECLS
 

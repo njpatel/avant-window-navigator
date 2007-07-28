@@ -177,15 +177,14 @@ on_height_change (AwnApplet *applet, gint height, Switcher *app)
   gtk_widget_set_size_request (GTK_WIDGET (applet), -1, height);
 }
 
-gboolean 
-awn_applet_factory_init (AwnApplet *applet)
+AwnApplet*
+awn_applet_factory_init ( gchar* uid, gint orient, gint height )
 {
+  AwnApplet *applet = awn_applet_new( uid, orient, height );
   Switcher      *app = g_new0 (Switcher, 1);
   GtkWidget     *align;
   GtkWidget     *pager;
   GtkWidget     *menu, *item;
-
-  guint height = awn_applet_get_height (applet);
 
   app->applet = applet;
   g_signal_connect (G_OBJECT (applet), "button-press-event",
@@ -221,7 +220,8 @@ awn_applet_factory_init (AwnApplet *applet)
   gint padding = height;
   padding -= awn_applet_gconf_get_int (applet, "height", NULL);
   padding /= 2;
-  gtk_alignment_set_padding (GTK_ALIGNMENT (align), height+padding, padding, 0, 0); 
+  gtk_alignment_set_padding (GTK_ALIGNMENT (align), height+padding, 
+                             padding, 0, 0); 
   
   gtk_container_add (GTK_CONTAINER (align), pager);
   gtk_container_add (GTK_CONTAINER (applet), align);
@@ -231,6 +231,6 @@ awn_applet_factory_init (AwnApplet *applet)
   g_signal_connect (G_OBJECT (applet), "height-changed",
                     G_CALLBACK (on_height_change), app);
   
-  return TRUE;
+  return applet;
 }
 

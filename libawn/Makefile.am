@@ -19,11 +19,15 @@ libawnincdir = $(includedir)/libawn
 libawninc_HEADERS =	\
 	awn-defines.h                                   \
 	awn-applet.h                                    \
-	awn-applet-gconf.h                              
+	awn-applet-gconf.h                              \
+	awn-applet-dialog.h								\
+	awn-cairo-utils.h								
 
 libawn_la_SOURCES =	\
 	awn-applet.c                                    \
-	awn-applet-gconf.c                              
+	awn-applet-gconf.c                              \
+	awn-applet-dialog.c								\
+	awn-cairo-utils.c								
 
 libawn_la_LIBADD = $(DEPS_LIBS) $(AWN_LIBS)
 libawn_la_LDFLAGS = -version-info 0:1:0
