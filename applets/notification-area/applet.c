@@ -195,7 +195,7 @@ tray_icon_message_cancelled (EggTrayManager *manager,
 }
 
 AwnApplet*
-awn_applet_factory_init ( gchar* uid, gint orient, gint height )
+awn_applet_factory_initp ( gchar* uid, gint orient, gint height )
 {
   AwnApplet *applet = awn_applet_new( uid, orient, height );
   TrayApplet *app = g_new0 (TrayApplet, 1);

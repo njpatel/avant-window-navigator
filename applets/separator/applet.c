@@ -48,13 +48,13 @@ expose (GtkWidget *widget, GdkEventExpose *event, gpointer null)
   return TRUE;
 }
 
-AwnApplet*
-awn_applet_factory_init ( gchar* uid, gint orient, gint height )
+gboolean
+awn_applet_factory_init ( AwnApplet *applet )
 {
-  AwnApplet *applet = awn_applet_new( uid, orient, height );
   g_signal_connect (G_OBJECT (applet), "expose-event", G_CALLBACK (expose), NULL);
 
+  guint height = awn_applet_get_height( applet );
   gtk_widget_set_size_request (GTK_WIDGET (applet), 5, height * 2);
-  return applet;
+  return TRUE;
 }
 

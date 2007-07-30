@@ -73,7 +73,7 @@ applet_button_release (GtkWidget      *widget,
 }
 
 AwnApplet*
-awn_applet_factory_init ( gchar* uid, gint orient, gint height )
+awn_applet_factory_initp ( gchar* uid, gint orient, gint height )
 {
   AwnApplet *applet = awn_applet_new( uid, orient, height );
   GtkWidget     *trash;

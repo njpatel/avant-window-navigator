@@ -178,7 +178,7 @@ on_height_change (AwnApplet *applet, gint height, Switcher *app)
 }
 
 AwnApplet*
-awn_applet_factory_init ( gchar* uid, gint orient, gint height )
+awn_applet_factory_initp ( gchar* uid, gint orient, gint height )
 {
   AwnApplet *applet = awn_applet_new( uid, orient, height );
   Switcher      *app = g_new0 (Switcher, 1);

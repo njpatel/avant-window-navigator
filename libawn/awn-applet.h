@@ -74,7 +74,11 @@ struct _AwnAppletClass
 
 GType awn_applet_get_type (void);
 
-typedef AwnApplet* (*AwnAppletInitFunc) ( const gchar* uid, gint orient, gint height );
+/* Hook to have an AWN Applet built for you */
+typedef gboolean (*AwnAppletInitFunc) ( AwnApplet *applet );
+/* Hook to build your own AWN Applet */
+typedef AwnApplet* (*AwnAppletInitPFunc) ( const gchar* uid, gint orient, gint height );
+
 
 GtkWidget *
 awn_applet_new ( const gchar* uid, gint orient, gint height );

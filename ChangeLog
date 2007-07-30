@@ -1,4 +1,14 @@
-2007-07-30  Neil J. Patel  <njpatel@gmail.com>
+22007-07-30  Anthony Arobone  <aarobone@gmail.com>
+
+	* applets/notification-area/applet.c: (awn_applet_factory_initp):
+	* applets/separator/applet.c: (awn_applet_factory_init):
+	* applets/switcher/applet.c: (awn_applet_factory_initp):
+	* applets/trash/applet.c: (awn_applet_factory_initp):
+	* awn-applet-activation/awn-plug.c: (awn_plug_new):
+	* libawn/awn-applet.h:
+	Made applet hook func backwards comp
+
+007-07-30  Neil J. Patel  <njpatel@gmail.com>
 
 	* applets/taskman.desktop:
 	* applets/trash/trash.desktop:
