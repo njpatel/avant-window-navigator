@@ -1,3 +1,10 @@
+2007-07-30  Neil J. Patel  <njpatel@gmail.com>
+
+	* applets/taskman.desktop:
+	* applets/trash/trash.desktop:
+	* awm.pc:
+	These should not be in here.
+
 2007-07-30  haytjes  <hv1989@gmail.com>
 
 	* src/awn-task.c: (draw):
