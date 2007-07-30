@@ -912,8 +912,8 @@ draw (GtkWidget *task, cairo_t *cr)
 	if (priv->window && wnck_window_is_active(priv->window)) {
 
 		cairo_set_source_rgba(cr, settings->border_color.red, 
-                                          settings->border_color.blue, 
                                           settings->border_color.green,
+                                          settings->border_color.blue, 
                                           0.2);
 		_rounded_rect(cr, 0 , settings->bar_height, 
 				width, settings->bar_height);
@@ -921,8 +921,8 @@ draw (GtkWidget *task, cairo_t *cr)
                 cairo_fill(cr);
 		
 		cairo_set_source_rgba(cr, settings->border_color.red, 
-                                          settings->border_color.blue, 
                                           settings->border_color.green,
+                                          settings->border_color.blue, 
                                           0.2/3);	
                 _rounded_rect(cr, 0 , settings->bar_height*2, 
 				width, settings->icon_offset);
